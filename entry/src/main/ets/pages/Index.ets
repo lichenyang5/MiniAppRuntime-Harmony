@@ -1,23 +1,17 @@
+import { webview } from '@kit.ArkWeb';
+
 @Entry
 @Component
 struct Index {
-  @State message: string = 'Hello World';
+  private controller: webview.WebviewController = new webview.WebviewController();
 
   build() {
-    RelativeContainer() {
-      Text(this.message)
-        .id('HelloWorld')
-        .fontSize($r('app.float.page_text_font_size'))
-        .fontWeight(FontWeight.Bold)
-        .alignRules({
-          center: { anchor: '__container__', align: VerticalAlign.Center },
-          middle: { anchor: '__container__', align: HorizontalAlign.Center }
-        })
-        .onClick(() => {
-          this.message = 'Welcome';
-        })
+    Column() {
+      Web({ src: $rawfile('web/index.html'), controller: this.controller })
+        .width('100%')
+        .height('100%')
     }
-    .height('100%')
     .width('100%')
+    .height('100%')
   }
 }
