@@ -68,3 +68,18 @@ button:active {
   color: #64748b;
   font-size: 14px;
 }
+
+.result {
+  min-height: 120px;
+  margin: 16px 0 0;
+  padding: 14px;
+  overflow: auto;
+  border: 1px solid #dbe4ee;
+  border-radius: 6px;
+  color: #0f172a;
+  background: #f8fafc;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

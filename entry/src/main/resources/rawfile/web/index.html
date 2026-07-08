@@ -12,10 +12,11 @@
       <p class="eyebrow">Phase 2 · ArkWeb Local H5</p>
       <h1>MyASCF / ArkMiniRuntime</h1>
       <p class="summary">
-        当前阶段只验证 ArkWeb 能否加载应用 rawfile 目录下的本地 H5 Demo 页面。
+        当前阶段验证 H5 通过 JavaScriptProxy 调用 ArkTS，并接收 ArkTS 返回的 mock response。
       </p>
-      <button id="demoButton" type="button">输出 H5 日志</button>
-      <p id="status" class="status">等待点击按钮。</p>
+      <button id="demoButton" type="button">调用 ui.showToast</button>
+      <p id="status" class="status">等待 H5 发起调用。</p>
+      <pre id="result" class="result">暂无响应</pre>
     </section>
   </main>
 

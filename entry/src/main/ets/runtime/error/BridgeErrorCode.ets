@@ -1,0 +1,8 @@
+export enum BridgeErrorCode {
+  SUCCESS = 0,
+  UNKNOWN_ACTION = 1001,
+  PARAM_ERROR = 1002,
+  INTERNAL_ERROR = 1003,
+  CALLBACK_LOST = 1004,
+  TIMEOUT = 1005
+}
