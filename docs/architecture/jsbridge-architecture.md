@@ -16,6 +16,7 @@ H5 window.myascf.send
 -> ToastBiz
 -> ToastImp
 -> promptAction.showToast
+-> ClipboardBiz / ClipboardImp
 -> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
@@ -56,6 +57,8 @@ H5 window.myascf.send
 ```
 
 后续接入更多 API 后，`data` 会由具体 API handler 返回。
+
+当前 `system.clipboard.readText` 会通过 `data.text` 返回剪贴板文本。
 
 ## H5 Callback Map
 
@@ -100,6 +103,8 @@ BridgeDispatcher
 -> HandlerRegistry
 -> ToastBiz
 -> ToastImp
+-> ClipboardBiz
+-> ClipboardImp
 ```
 
 Dispatcher 负责处理 UNKNOWN_ACTION 和 INTERNAL_ERROR。Registry 只负责 action 与 handler 的注册和查询。
@@ -128,7 +133,7 @@ H5 侧 `window.myascf.send(action, params, options?)` 支持 timeout，默认 50
 
 - timeout。
 - DebugPanel 可视化。
-- 批量 API 注册。
+- Storage API。
 
 ## 下一步
 

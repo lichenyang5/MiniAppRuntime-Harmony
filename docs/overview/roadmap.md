@@ -20,11 +20,12 @@
 - `PARAM_ERROR` 已在 `ui.showToast` 中生效。
 - BridgeCallbackExecutor 统一执行 ArkTS 到 H5 的回调。
 - H5 timeout 与 callback lost 已有基础处理。
+- Clipboard write/read 已作为第二组真实 API 接入。
 
 ## 后续计划
 
 1. Debug 日志与调试面板。
-2. 更多 API 示例。
+2. Storage API 示例。
 3. 更完整的调用链耗时统计。
 
 ## 当前尚未实现，后续阶段补充

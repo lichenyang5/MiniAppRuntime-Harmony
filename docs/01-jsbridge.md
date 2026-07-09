@@ -14,6 +14,7 @@ H5 window.myascf.send
 -> ToastBiz
 -> ToastImp
 -> promptAction.showToast
+-> ClipboardBiz / ClipboardImp
 -> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
@@ -32,6 +33,7 @@ H5 window.myascf.send
 - 当前只注册 `ui.showToast` 一个真实 API。
 - ToastBiz 校验 `params.message`。
 - ToastImp 调用公开 HarmonyOS Toast 能力。
+- ClipboardBiz / ClipboardImp 支持 `system.clipboard.writeText` 和 `system.clipboard.readText`。
 - BridgeCallbackExecutor 统一封装 `runJavaScript` 回调。
 - H5 send 支持 timeout。
 - H5 能识别 callback lost。
@@ -39,8 +41,8 @@ H5 window.myascf.send
 
 ## 暂未实现
 
-- 批量 API 注册。
+- Storage API。
 
 ## 下一步
 
-下一步补充 DebugPanel / RuntimeLogger 可视化，或者继续扩展第二个 API。
+下一步补充 DebugPanel / RuntimeLogger 可视化，或者继续扩展 storage API。

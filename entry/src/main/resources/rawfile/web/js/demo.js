@@ -3,11 +3,17 @@
   var paramErrorButton = document.getElementById('paramErrorButton');
   var unknownActionButton = document.getElementById('unknownActionButton');
   var timeoutButton = document.getElementById('timeoutButton');
+  var clipboardText = document.getElementById('clipboardText');
+  var clipboardWriteButton = document.getElementById('clipboardWriteButton');
+  var clipboardReadButton = document.getElementById('clipboardReadButton');
+  var clipboardParamErrorButton = document.getElementById('clipboardParamErrorButton');
   var status = document.getElementById('status');
   var result = document.getElementById('result');
   var eventLog = document.getElementById('eventLog');
 
-  if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton || !status || !result || !eventLog) {
+  if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton ||
+    !clipboardText || !clipboardWriteButton || !clipboardReadButton || !clipboardParamErrorButton ||
+    !status || !result || !eventLog) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
   }
@@ -76,6 +82,35 @@
     renderPending('TIMEOUT');
 
     window.myascf.send('ui.showToast', { message: 'timeout test' }, { timeout: 1 })
+      .then(renderResolved)
+      .catch(renderRejected);
+  });
+
+  clipboardWriteButton.addEventListener('click', function () {
+    console.log('[ArkMiniRuntime demo] Sending clipboard write request.');
+    renderPending('system.clipboard.writeText');
+
+    window.myascf.send('system.clipboard.writeText', {
+      text: clipboardText.value || 'hello from MiniAppRuntime'
+    })
+      .then(renderResolved)
+      .catch(renderRejected);
+  });
+
+  clipboardReadButton.addEventListener('click', function () {
+    console.log('[ArkMiniRuntime demo] Sending clipboard read request.');
+    renderPending('system.clipboard.readText');
+
+    window.myascf.send('system.clipboard.readText', {})
+      .then(renderResolved)
+      .catch(renderRejected);
+  });
+
+  clipboardParamErrorButton.addEventListener('click', function () {
+    console.log('[ArkMiniRuntime demo] Sending invalid clipboard write request.');
+    renderPending('CLIPBOARD_PARAM_ERROR');
+
+    window.myascf.send('system.clipboard.writeText', {})
       .then(renderResolved)
       .catch(renderRejected);
   });

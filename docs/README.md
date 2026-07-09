@@ -31,11 +31,12 @@ MyASCF / ArkMiniRuntime 是一个受小程序运行时架构启发的 HarmonyOS 
 - 阶段 04：接入 BridgeDispatcher 和 HandlerRegistry，`ui.showToast` 仍返回 mock handler response。
 - 阶段 05：接入 ToastBiz 和 ToastImp，`ui.showToast` 调用真实 HarmonyOS Toast。
 - 阶段 06：抽出 BridgeCallbackExecutor，并补充 H5 timeout / callback lost 处理。
+- 阶段 07：扩展 Clipboard API，验证新增能力只需局部扩展。
 
 ## 后续阶段计划
 
 1. 补充 debug 面板和 RuntimeLogger 可视化。
-2. 继续扩展第二个 API。
+2. 继续扩展 storage API。
 3. 增加更完整的调用链耗时统计。
 
 ## 面试讲解推荐路径

@@ -9,17 +9,29 @@
 <body>
   <main class="page">
     <section class="hero">
-      <p class="eyebrow">Phase 6 · Callback / Timeout</p>
+      <p class="eyebrow">Phase 7 · Clipboard API</p>
       <h1>MyASCF / ArkMiniRuntime</h1>
       <p class="summary">
-        当前阶段验证 runJavaScript 回调封装、H5 timeout 和 callback lost 处理。
+        当前阶段验证 Clipboard write/read 真实系统能力扩展。
       </p>
-      <div class="buttonGroup">
-        <button id="demoButton" type="button">正常调用 ui.showToast</button>
-        <button id="paramErrorButton" class="secondaryButton" type="button">参数错误测试</button>
-        <button id="unknownActionButton" class="secondaryButton" type="button">未知 action 测试</button>
-        <button id="timeoutButton" class="secondaryButton" type="button">Timeout 测试</button>
-      </div>
+      <section class="apiSection">
+        <h2>Toast API</h2>
+        <div class="buttonGroup">
+          <button id="demoButton" type="button">正常调用 ui.showToast</button>
+          <button id="paramErrorButton" class="secondaryButton" type="button">参数错误测试</button>
+          <button id="unknownActionButton" class="secondaryButton" type="button">未知 action 测试</button>
+          <button id="timeoutButton" class="secondaryButton" type="button">Timeout 测试</button>
+        </div>
+      </section>
+      <section class="apiSection">
+        <h2>Clipboard API</h2>
+        <input id="clipboardText" class="textInput" value="hello from MiniAppRuntime">
+        <div class="buttonGroup">
+          <button id="clipboardWriteButton" type="button">写入剪贴板</button>
+          <button id="clipboardReadButton" class="secondaryButton" type="button">读取剪贴板</button>
+          <button id="clipboardParamErrorButton" class="secondaryButton" type="button">剪贴板参数错误</button>
+        </div>
+      </section>
       <p id="status" class="status">等待 H5 发起调用。</p>
       <pre id="result" class="result">暂无响应</pre>
       <pre id="eventLog" class="eventLog">暂无事件</pre>
