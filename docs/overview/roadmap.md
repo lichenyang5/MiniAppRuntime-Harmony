@@ -18,14 +18,14 @@
 - ToastBiz 校验 `ui.showToast` 参数。
 - ToastImp 调用公开 HarmonyOS Toast 能力。
 - `PARAM_ERROR` 已在 `ui.showToast` 中生效。
+- BridgeCallbackExecutor 统一执行 ArkTS 到 H5 的回调。
+- H5 timeout 与 callback lost 已有基础处理。
 
 ## 后续计划
 
-1. `runJavaScript` 回调治理。
-2. timeout。
-3. callback lost 处理。
-4. Debug 日志与调试面板。
-5. 更多 API 示例。
+1. Debug 日志与调试面板。
+2. 更多 API 示例。
+3. 更完整的调用链耗时统计。
 
 ## 当前尚未实现，后续阶段补充
 

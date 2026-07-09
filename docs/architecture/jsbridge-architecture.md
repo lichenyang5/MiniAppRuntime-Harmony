@@ -16,6 +16,7 @@ H5 window.myascf.send
 -> ToastBiz
 -> ToastImp
 -> promptAction.showToast
+-> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
 -> Promise resolve / reject
@@ -105,7 +106,7 @@ Dispatcher 负责处理 UNKNOWN_ACTION 和 INTERNAL_ERROR。Registry 只负责 a
 
 ## runJavaScript 回调
 
-ArkTS 使用 `WebviewController.runJavaScript` 调用 H5 的全局回调：
+ArkTS 通过 `BridgeCallbackExecutor` 统一调用 H5 的全局回调：
 
 ```js
 window.__myascf_on_native_response__(responseText)
@@ -113,12 +114,22 @@ window.__myascf_on_native_response__(responseText)
 
 为了避免 JSON 字符串破坏 JS 脚本，ArkTS 会把 response 字符串再次 `JSON.stringify` 成安全参数。
 
+BridgeController 不再直接拼接 JS，也不再直接调用 `runJavaScript`。
+
+## Timeout 与 Callback Lost
+
+H5 侧 `window.myascf.send(action, params, options?)` 支持 timeout，默认 5000ms。
+
+调用发出后，H5 会保存 callback 和 timer。收到 response 时清理 timer 并 resolve / reject；如果先超时，则删除 callback 并 reject TIMEOUT。
+
+如果 ArkTS response 迟到，H5 找不到 callback，会记录 CALLBACK_LOST，但不会影响其他请求。
+
 ## 当前尚未实现
 
 - timeout。
-- 完整错误处理。
+- DebugPanel 可视化。
 - 批量 API 注册。
 
 ## 下一步
 
-下一步补充 `runJavaScript` 回调封装、超时控制和 callback lost 处理。
+下一步补充 DebugPanel / RuntimeLogger 可视化，或者继续扩展第二个 API。

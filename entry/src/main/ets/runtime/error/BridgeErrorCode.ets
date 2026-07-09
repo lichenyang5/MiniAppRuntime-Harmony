@@ -4,5 +4,6 @@ export enum BridgeErrorCode {
   PARAM_ERROR = 1002,
   INTERNAL_ERROR = 1003,
   CALLBACK_LOST = 1004,
-  TIMEOUT = 1005
+  TIMEOUT = 1005,
+  PARSE_ERROR = 1006
 }

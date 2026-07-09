@@ -97,3 +97,19 @@ button:active {
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+.eventLog {
+  min-height: 84px;
+  max-height: 160px;
+  margin: 12px 0 0;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #334155;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

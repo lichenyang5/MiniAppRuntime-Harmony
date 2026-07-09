@@ -1,4 +1,8 @@
 (function () {
+  var ERROR_CODE_SUCCESS = 0;
+  var ERROR_CODE_CALLBACK_LOST = 1004;
+  var ERROR_CODE_TIMEOUT = 1005;
+  var DEFAULT_TIMEOUT = 5000;
   var callbacks = new Map();
   var requestSeq = 0;
 
@@ -14,20 +18,56 @@
     return responseText;
   }
 
+  function getTimeout(options) {
+    if (!options || typeof options.timeout !== 'number') {
+      return DEFAULT_TIMEOUT;
+    }
+    if (options.timeout <= 0) {
+      return DEFAULT_TIMEOUT;
+    }
+    return options.timeout;
+  }
+
+  function emitCallbackLost(response) {
+    var detail = {
+      requestId: response && response.requestId ? response.requestId : '',
+      action: response && response.data ? response.data.echoAction : '',
+      code: ERROR_CODE_CALLBACK_LOST,
+      message: 'CALLBACK_LOST: callback not found',
+      data: response || {}
+    };
+
+    console.warn('[myascf] CALLBACK_LOST:', detail);
+
+    if (typeof window.__myascf_on_callback_lost__ === 'function') {
+      window.__myascf_on_callback_lost__(detail);
+    }
+  }
+
   window.__myascf_on_native_response__ = function (responseText) {
     console.log('[myascf] native response:', responseText);
 
-    var response = parseResponse(responseText);
-    var callback = callbacks.get(response.requestId);
-
-    if (!callback) {
-      console.log('[myascf] callback lost:', response.requestId);
+    var response;
+    try {
+      response = parseResponse(responseText);
+    } catch (err) {
+      console.error('[myascf] failed to parse native response:', err);
       return;
     }
 
-    callbacks.delete(response.requestId);
+    var callback = callbacks.get(response.requestId);
 
-    if (response.code === 0) {
+    if (!callback) {
+      emitCallbackLost(response);
+      return;
+    }
+
+    clearTimeout(callback.timer);
+    callbacks.delete(response.requestId);
+    response.duration = Date.now() - callback.createdAt;
+    response.action = callback.action;
+
+    if (response.code === ERROR_CODE_SUCCESS) {
       callback.resolve(response);
       return;
     }
@@ -36,7 +76,7 @@
   };
 
   window.myascf = {
-    send: function (action, params) {
+    send: function (action, params, options) {
       return new Promise(function (resolve, reject) {
         var request = {
           requestId: createRequestId(),
@@ -49,9 +89,32 @@
           return;
         }
 
+        var timeout = getTimeout(options);
+        var createdAt = Date.now();
+        var timer = setTimeout(function () {
+          callbacks.delete(request.requestId);
+
+          var timeoutResponse = {
+            requestId: request.requestId,
+            action: action,
+            code: ERROR_CODE_TIMEOUT,
+            message: 'TIMEOUT: native response timeout',
+            data: {
+              echoAction: action
+            },
+            duration: Date.now() - createdAt
+          };
+
+          console.warn('[myascf] TIMEOUT:', timeoutResponse);
+          reject(timeoutResponse);
+        }, timeout);
+
         callbacks.set(request.requestId, {
           resolve: resolve,
-          reject: reject
+          reject: reject,
+          timer: timer,
+          action: action,
+          createdAt: createdAt
         });
 
         try {
@@ -59,6 +122,7 @@
           console.log('[myascf] send request:', requestText);
           window.MyASCFNative.postMessage(requestText);
         } catch (err) {
+          clearTimeout(timer);
           callbacks.delete(request.requestId);
           reject(err);
         }

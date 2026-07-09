@@ -14,6 +14,7 @@ H5 window.myascf.send
 -> ToastBiz
 -> ToastImp
 -> promptAction.showToast
+-> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
 -> Promise resolve / reject
@@ -31,14 +32,15 @@ H5 window.myascf.send
 - 当前只注册 `ui.showToast` 一个真实 API。
 - ToastBiz 校验 `params.message`。
 - ToastImp 调用公开 HarmonyOS Toast 能力。
+- BridgeCallbackExecutor 统一封装 `runJavaScript` 回调。
+- H5 send 支持 timeout。
+- H5 能识别 callback lost。
 - ArkTS 侧通过 `runJavaScript` 回调 H5。
 
 ## 暂未实现
 
-- timeout。
-- 完整错误处理。
 - 批量 API 注册。
 
 ## 下一步
 
-下一步补充 `runJavaScript` 回调封装、超时控制和 callback lost 处理。
+下一步补充 DebugPanel / RuntimeLogger 可视化，或者继续扩展第二个 API。

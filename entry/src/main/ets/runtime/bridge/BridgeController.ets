@@ -1,17 +1,17 @@
 import { webview } from '@kit.ArkWeb';
+import { BridgeCallbackExecutor } from './BridgeCallbackExecutor';
 import { BridgeDispatcher } from '../dispatcher/BridgeDispatcher';
+import { BridgeErrorCode } from '../error/BridgeErrorCode';
 import { RuntimeLogger } from '../logger/RuntimeLogger';
 import { RuntimeBootstrap } from '../registry/RuntimeBootstrap';
-import { BridgeRequest, BridgeResponse } from '../api/BridgeTypes';
-
-const H5_RESPONSE_CALLBACK = 'window.__myascf_on_native_response__';
+import { BridgeRequest, BridgeResponse, BridgeResponseData } from '../api/BridgeTypes';
 
 export class BridgeController {
-  private controller: webview.WebviewController;
   private dispatcher: BridgeDispatcher = new BridgeDispatcher(RuntimeBootstrap.createRegistry());
+  private callbackExecutor: BridgeCallbackExecutor;
 
   constructor(controller: webview.WebviewController) {
-    this.controller = controller;
+    this.callbackExecutor = new BridgeCallbackExecutor(controller);
   }
 
   handleMessage(message: string): void {
@@ -25,13 +25,25 @@ export class BridgeController {
 
       this.dispatcher.dispatch(request)
         .then((response: BridgeResponse) => {
-          this.sendResponseToH5(response);
+          this.callbackExecutor.sendResponse(response);
         })
         .catch((err: Error) => {
           RuntimeLogger.error(`[BridgeController] dispatcher failed: ${JSON.stringify(err)}`);
+          const response: BridgeResponse = this.createErrorResponse(
+            request.requestId,
+            BridgeErrorCode.INTERNAL_ERROR,
+            'Internal error while dispatching bridge request.'
+          );
+          this.callbackExecutor.sendResponse(response);
         });
     } catch (err) {
       RuntimeLogger.error(`[BridgeController] failed to handle message: ${JSON.stringify(err)}`);
+      const response: BridgeResponse = this.createErrorResponse(
+        this.extractRequestId(message),
+        BridgeErrorCode.PARSE_ERROR,
+        'PARSE_ERROR: invalid bridge request'
+      );
+      this.callbackExecutor.sendResponse(response);
     }
   }
 
@@ -50,19 +62,28 @@ export class BridgeController {
     return JSON.stringify(request.params);
   }
 
-  private sendResponseToH5(response: BridgeResponse): void {
-    const responseText = JSON.stringify(response);
-    const responseArg = JSON.stringify(responseText);
-    const script = `if (${H5_RESPONSE_CALLBACK}) { ${H5_RESPONSE_CALLBACK}(${responseArg}); }`;
+  private extractRequestId(message: string): string {
+    try {
+      const request = JSON.parse(message) as BridgeRequest;
+      if (request.requestId) {
+        return request.requestId;
+      }
+    } catch (err) {
+      RuntimeLogger.warn(`[BridgeController] requestId extraction failed: ${JSON.stringify(err)}`);
+    }
+    return '';
+  }
 
-    RuntimeLogger.info(`[BridgeController] callback script: ${script}`);
-
-    this.controller.runJavaScript(script)
-      .then(() => {
-        RuntimeLogger.info(`[BridgeController] mock response sent: ${responseText}`);
-      })
-      .catch((err: Error) => {
-        RuntimeLogger.error(`[BridgeController] failed to run JavaScript: ${JSON.stringify(err)}`);
-      });
+  private createErrorResponse(requestId: string, code: BridgeErrorCode, message: string): BridgeResponse {
+    const responseData: BridgeResponseData = {
+      echoAction: undefined
+    };
+    const response: BridgeResponse = {
+      requestId: requestId,
+      code: code,
+      message: message,
+      data: responseData
+    };
+    return response;
   }
 }

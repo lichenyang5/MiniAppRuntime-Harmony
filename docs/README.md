@@ -30,13 +30,13 @@ MyASCF / ArkMiniRuntime 是一个受小程序运行时架构启发的 HarmonyOS 
 - 阶段 03：H5 通过 JavaScriptProxy 调到 ArkTS，ArkTS 返回 mock response，H5 Promise resolve。
 - 阶段 04：接入 BridgeDispatcher 和 HandlerRegistry，`ui.showToast` 仍返回 mock handler response。
 - 阶段 05：接入 ToastBiz 和 ToastImp，`ui.showToast` 调用真实 HarmonyOS Toast。
+- 阶段 06：抽出 BridgeCallbackExecutor，并补充 H5 timeout / callback lost 处理。
 
 ## 后续阶段计划
 
-1. 完善 `runJavaScript` 回调封装。
-2. 补充 timeout 控制。
-3. 补充 callback lost 处理。
-4. 补充 debug 面板和常见问题文档。
+1. 补充 debug 面板和 RuntimeLogger 可视化。
+2. 继续扩展第二个 API。
+3. 增加更完整的调用链耗时统计。
 
 ## 面试讲解推荐路径
 
@@ -48,4 +48,5 @@ MyASCF / ArkMiniRuntime 是一个受小程序运行时架构启发的 HarmonyOS 
 4. 讲阶段 03：用 JavaScriptProxy 和 runJavaScript 打通双向通信。
 5. 讲阶段 04：Dispatcher / Registry 解决 action 扩展问题。
 6. 讲阶段 05：Biz/Imp 解决校验和系统能力调用分层。
-7. 讲后续设计：回调治理、超时控制和调试能力。
+7. 讲阶段 06：回调治理、超时控制和 callback lost。
+8. 讲后续设计：调试可视化和更多 API 扩展。

@@ -9,17 +9,20 @@
 <body>
   <main class="page">
     <section class="hero">
-      <p class="eyebrow">Phase 5 · ToastBiz / ToastImp</p>
+      <p class="eyebrow">Phase 6 · Callback / Timeout</p>
       <h1>MyASCF / ArkMiniRuntime</h1>
       <p class="summary">
-        当前阶段验证 ui.showToast 通过 Dispatcher、ToastBiz、ToastImp 调用 HarmonyOS Toast。
+        当前阶段验证 runJavaScript 回调封装、H5 timeout 和 callback lost 处理。
       </p>
       <div class="buttonGroup">
         <button id="demoButton" type="button">正常调用 ui.showToast</button>
         <button id="paramErrorButton" class="secondaryButton" type="button">参数错误测试</button>
+        <button id="unknownActionButton" class="secondaryButton" type="button">未知 action 测试</button>
+        <button id="timeoutButton" class="secondaryButton" type="button">Timeout 测试</button>
       </div>
       <p id="status" class="status">等待 H5 发起调用。</p>
       <pre id="result" class="result">暂无响应</pre>
+      <pre id="eventLog" class="eventLog">暂无事件</pre>
     </section>
   </main>
 
