@@ -37,3 +37,13 @@ CALLBACK_LOST 表示 H5 收到了 response，但 callback map 中已经找不到
 - response 中的 requestId 异常。
 
 当前处理方式是输出 warning 并追加 demo 事件日志，不会影响其他请求。
+
+### DebugPanel 没有记录
+
+检查 `index.html` 是否在 `myascf.js` 之前引入了 `debug-panel.js`。
+
+DebugPanel 是可选能力，即使没有加载，也不能影响 `window.myascf.send` 的 Promise 行为。
+
+### 导出 JSON 没有复制到剪贴板
+
+部分 WebView 环境可能不支持浏览器侧 `navigator.clipboard.writeText`。这种情况下，导出内容仍会显示在页面的 JSON 输出区域，可以手动复制。

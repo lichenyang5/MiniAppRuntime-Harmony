@@ -12,18 +12,24 @@ body {
 
 .page {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
+  display: grid;
+  gap: 16px;
+  align-items: start;
   justify-content: center;
   padding: 32px 20px;
 }
 
-.hero {
+.hero,
+.debugPanel {
   width: min(100%, 520px);
   padding: 28px;
   border: 1px solid #dde3ea;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.debugPanel {
+  padding: 20px;
 }
 
 .eyebrow {
@@ -135,4 +141,105 @@ button:active {
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.debugPanelHeader {
+  display: grid;
+  gap: 12px;
+}
+
+.debugPanelHeader h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.debugActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.debugRecords {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.debug-empty {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.debug-record {
+  border: 1px solid #dbe4ee;
+  border-left-width: 4px;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.debug-record summary {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 6px;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.debug-status {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.debug-action,
+.debug-code,
+.debug-duration,
+.debug-meta {
+  color: #334155;
+  font-size: 12px;
+}
+
+.debug-code,
+.debug-duration {
+  grid-column: span 1;
+}
+
+.debug-record--pending {
+  border-left-color: #64748b;
+}
+
+.debug-record--resolve {
+  border-left-color: #16a34a;
+}
+
+.debug-record--reject,
+.debug-record--timeout,
+.debug-record--callback_lost {
+  border-left-color: #dc2626;
+}
+
+.debug-meta {
+  padding: 0 10px 8px;
+}
+
+.debug-json,
+.debugExportOutput {
+  margin: 0 10px 10px;
+  padding: 10px;
+  overflow: auto;
+  border-radius: 6px;
+  color: #0f172a;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.debugExportOutput:empty {
+  display: none;
 }

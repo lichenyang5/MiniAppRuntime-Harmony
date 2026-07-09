@@ -18,6 +18,7 @@ H5 window.myascf.send
 -> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
+-> H5 DebugPanel
 -> Promise resolve / reject
 ```
 
@@ -37,6 +38,7 @@ H5 window.myascf.send
 - BridgeCallbackExecutor 统一封装 `runJavaScript` 回调。
 - H5 send 支持 timeout。
 - H5 能识别 callback lost。
+- H5 DebugPanel 展示最近 20 条调用记录。
 - ArkTS 侧通过 `runJavaScript` 回调 H5。
 
 ## 暂未实现
@@ -45,4 +47,4 @@ H5 window.myascf.send
 
 ## 下一步
 
-下一步补充 DebugPanel / RuntimeLogger 可视化，或者继续扩展 storage API。
+下一步可以继续扩展 storage API，或者将 runtime 抽取成 HAR 模块。

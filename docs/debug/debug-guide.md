@@ -1,19 +1,52 @@
 # 调试指南
 
-这篇文档解决的问题：记录后续如何调试 ArkWeb、JavaScriptProxy、BridgeController 和 H5 Promise 回调链路。
+这篇文档解决的问题：说明如何使用 H5 DebugPanel、console 和 RuntimeLogger 排查 JSBridge 调用链路。
 
-## 当前状态
+## 当前调试入口
 
-当前尚未实现完整调试面板，后续阶段补充。
+- H5 DebugPanel：页面内展示最近 20 条调用记录。
+- H5 console：查看 `window.myascf.send`、TIMEOUT、CALLBACK_LOST。
+- ArkTS HiLog：查看 BridgeController、Dispatcher、CallbackExecutor 日志。
 
-## 当前可用排查点
+## DebugPanel 能看到什么
 
-- H5 console：查看 `window.myascf.send` 是否发出请求。
-- ArkTS hilog：查看 BridgeController 是否收到原始 JSON。
-- 页面结果区域：查看 mock response 是否展示。
+每条记录展示：
 
-## 后续计划
+- requestId
+- action
+- status
+- code
+- message
+- duration
+- params JSON
+- response JSON
 
-- 增加 Bridge 调用日志面板。
-- 展示 requestId、action、耗时和结果。
-- 展示错误码和错误消息。
+状态包括：
+
+```text
+pending
+resolve
+reject
+timeout
+callback_lost
+```
+
+## 如何验证常见路径
+
+- 正常调用：点击 `ui.showToast`。
+- 参数错误：点击 Toast 参数错误或 Clipboard 参数错误。
+- 未知 action：点击未知 action 测试。
+- timeout：点击 Timeout 测试。
+- callback lost：timeout 后迟到 response 会被记录为 callback_lost。
+
+## RuntimeLogger 对照
+
+ArkTS 侧补充了这些结构化日志方法：
+
+```text
+logBridgeRequest(requestId, action)
+logBridgeResponse(requestId, action, code)
+logBridgeError(requestId, action, code, message)
+```
+
+可以用 requestId 把 H5 DebugPanel 记录和 ArkTS HiLog 对齐。

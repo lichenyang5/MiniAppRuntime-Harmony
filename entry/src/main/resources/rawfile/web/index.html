@@ -36,8 +36,23 @@
       <pre id="result" class="result">暂无响应</pre>
       <pre id="eventLog" class="eventLog">暂无事件</pre>
     </section>
+    <section class="debugPanel">
+      <div class="debugPanelHeader">
+        <div>
+          <p class="eyebrow">JSBridge Debug Panel</p>
+          <h2>Bridge 调用记录</h2>
+        </div>
+        <div class="debugActions">
+          <button id="debugClearButton" class="secondaryButton" type="button">清空</button>
+          <button id="debugExportButton" class="secondaryButton" type="button">导出 JSON</button>
+        </div>
+      </div>
+      <div id="debugRecords" class="debugRecords"></div>
+      <pre id="debugExportOutput" class="debugExportOutput"></pre>
+    </section>
   </main>
 
+  <script src="./js/debug-panel.js"></script>
   <script src="./js/myascf.js"></script>
   <script src="./js/demo.js"></script>
 </body>

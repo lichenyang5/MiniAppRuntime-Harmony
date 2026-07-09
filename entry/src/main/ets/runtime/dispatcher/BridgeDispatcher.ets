@@ -15,6 +15,12 @@ export class BridgeDispatcher {
 
     if (handler === undefined) {
       RuntimeLogger.warn(`[BridgeDispatcher] unknown action: ${request.action}`);
+      RuntimeLogger.logBridgeError(
+        request.requestId,
+        request.action,
+        BridgeErrorCode.UNKNOWN_ACTION,
+        `Unknown action: ${request.action}`
+      );
       return this.createErrorResponse(
         request.requestId,
         BridgeErrorCode.UNKNOWN_ACTION,
@@ -27,6 +33,12 @@ export class BridgeDispatcher {
       return await handler.handle(request);
     } catch (err) {
       RuntimeLogger.error(`[BridgeDispatcher] handler failed: ${JSON.stringify(err)}`);
+      RuntimeLogger.logBridgeError(
+        request.requestId,
+        request.action,
+        BridgeErrorCode.INTERNAL_ERROR,
+        'Internal error while handling bridge request.'
+      );
       return this.createErrorResponse(
         request.requestId,
         BridgeErrorCode.INTERNAL_ERROR,

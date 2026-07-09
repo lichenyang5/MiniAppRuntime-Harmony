@@ -28,6 +28,16 @@
     return options.timeout;
   }
 
+  function safeDebugCall(method, record) {
+    try {
+      if (window.MyASCFDebugPanel && typeof window.MyASCFDebugPanel[method] === 'function') {
+        window.MyASCFDebugPanel[method](record);
+      }
+    } catch (err) {
+      console.warn('[myascf] DebugPanel failed:', err);
+    }
+  }
+
   function emitCallbackLost(response) {
     var detail = {
       requestId: response && response.requestId ? response.requestId : '',
@@ -38,6 +48,15 @@
     };
 
     console.warn('[myascf] CALLBACK_LOST:', detail);
+    safeDebugCall('recordLost', {
+      requestId: detail.requestId,
+      action: detail.action,
+      status: 'callback_lost',
+      code: ERROR_CODE_CALLBACK_LOST,
+      message: detail.message,
+      response: detail,
+      endTime: Date.now()
+    });
 
     if (typeof window.__myascf_on_callback_lost__ === 'function') {
       window.__myascf_on_callback_lost__(detail);
@@ -66,6 +85,17 @@
     callbacks.delete(response.requestId);
     response.duration = Date.now() - callback.createdAt;
     response.action = callback.action;
+    safeDebugCall('recordEnd', {
+      requestId: response.requestId,
+      action: callback.action,
+      status: response.code === ERROR_CODE_SUCCESS ? 'resolve' : 'reject',
+      code: response.code,
+      message: response.message,
+      params: callback.params,
+      response: response,
+      endTime: Date.now(),
+      duration: response.duration
+    });
 
     if (response.code === ERROR_CODE_SUCCESS) {
       callback.resolve(response);
@@ -91,6 +121,13 @@
 
         var timeout = getTimeout(options);
         var createdAt = Date.now();
+        safeDebugCall('recordStart', {
+          requestId: request.requestId,
+          action: action,
+          status: 'pending',
+          params: request.params,
+          startTime: createdAt
+        });
         var timer = setTimeout(function () {
           callbacks.delete(request.requestId);
 
@@ -106,6 +143,17 @@
           };
 
           console.warn('[myascf] TIMEOUT:', timeoutResponse);
+          safeDebugCall('recordError', {
+            requestId: request.requestId,
+            action: action,
+            status: 'timeout',
+            code: ERROR_CODE_TIMEOUT,
+            message: timeoutResponse.message,
+            params: request.params,
+            response: timeoutResponse,
+            endTime: Date.now(),
+            duration: timeoutResponse.duration
+          });
           reject(timeoutResponse);
         }, timeout);
 
@@ -114,6 +162,7 @@
           reject: reject,
           timer: timer,
           action: action,
+          params: request.params,
           createdAt: createdAt
         });
 
@@ -124,6 +173,16 @@
         } catch (err) {
           clearTimeout(timer);
           callbacks.delete(request.requestId);
+          safeDebugCall('recordError', {
+            requestId: request.requestId,
+            action: action,
+            status: 'reject',
+            message: err && err.message ? err.message : 'send failed',
+            params: request.params,
+            response: err,
+            endTime: Date.now(),
+            duration: Date.now() - createdAt
+          });
           reject(err);
         }
       });

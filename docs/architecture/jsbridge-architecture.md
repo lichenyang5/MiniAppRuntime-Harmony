@@ -20,6 +20,7 @@ H5 window.myascf.send
 -> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
+-> H5 DebugPanel recordEnd / recordError / recordLost
 -> Promise resolve / reject
 ```
 
@@ -129,12 +130,26 @@ H5 侧 `window.myascf.send(action, params, options?)` 支持 timeout，默认 50
 
 如果 ArkTS response 迟到，H5 找不到 callback，会记录 CALLBACK_LOST，但不会影响其他请求。
 
+## DebugPanel
+
+H5 Demo 内置轻量 DebugPanel，用于展示最近 20 条 JSBridge 调用。
+
+DebugPanel 不改变 Bridge 请求 / 响应协议，只监听 H5 侧调用生命周期：
+
+```text
+recordStart
+recordEnd
+recordError
+recordLost
+```
+
+它适合 Demo、截图和问题排查；ArkTS 侧仍通过 RuntimeLogger 输出 HiLog。
+
 ## 当前尚未实现
 
-- timeout。
-- DebugPanel 可视化。
 - Storage API。
+- 更完整的 DebugPanel 筛选、搜索和调用链耗时统计。
 
 ## 下一步
 
-下一步补充 DebugPanel / RuntimeLogger 可视化，或者继续扩展第二个 API。
+下一步可以继续扩展 Storage API，或者将 runtime 抽取成 HAR 模块。

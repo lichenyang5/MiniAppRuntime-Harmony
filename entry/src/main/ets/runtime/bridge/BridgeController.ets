@@ -22,6 +22,7 @@ export class BridgeController {
       RuntimeLogger.info(`[BridgeController] requestId: ${request.requestId}`);
       RuntimeLogger.info(`[BridgeController] action: ${request.action}`);
       RuntimeLogger.info(`[BridgeController] params: ${this.stringifyParams(request)}`);
+      RuntimeLogger.logBridgeRequest(request.requestId, request.action);
 
       this.dispatcher.dispatch(request)
         .then((response: BridgeResponse) => {
@@ -43,6 +44,7 @@ export class BridgeController {
         BridgeErrorCode.PARSE_ERROR,
         'PARSE_ERROR: invalid bridge request'
       );
+      RuntimeLogger.logBridgeError(response.requestId, '', response.code, response.message);
       this.callbackExecutor.sendResponse(response);
     }
   }

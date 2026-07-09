@@ -21,11 +21,12 @@
 - BridgeCallbackExecutor 统一执行 ArkTS 到 H5 的回调。
 - H5 timeout 与 callback lost 已有基础处理。
 - Clipboard write/read 已作为第二组真实 API 接入。
+- H5 DebugPanel 已支持调用记录可视化。
 
 ## 后续计划
 
-1. Debug 日志与调试面板。
-2. Storage API 示例。
+1. Storage API 示例。
+2. Runtime 抽取为 HAR 模块。
 3. 更完整的调用链耗时统计。
 
 ## 当前尚未实现，后续阶段补充
@@ -33,5 +34,5 @@
 - API 注册完整生命周期。
 - Biz/Imp 完整模板。
 - UI 组件能力暴露。
-- Debug 面板。
+- Debug 面板筛选、搜索和更完整耗时统计。
 - 完整错误码说明。
