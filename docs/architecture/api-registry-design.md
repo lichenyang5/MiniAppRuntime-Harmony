@@ -1,26 +1,67 @@
 # API 注册设计
 
-这篇文档解决的问题：说明后续 HandlerRegistry 要解决什么问题，以及为什么 API 能力不应该散落在 Web 页面或 BridgeController 中。
+这篇文档解决的问题：说明 HandlerRegistry 如何管理 action 与 handler 的关系，以及为什么 API 能力不应该散落在 Web 页面或 BridgeController 中。
 
 ## 当前状态
 
-当前尚未实现，后续阶段补充。
+当前已经实现最小 Registry：
 
-## 设计目标
+```text
+HandlerRegistry.register(action, handler)
+HandlerRegistry.get(action)
+HandlerRegistry.has(action)
+```
 
-后续 `HandlerRegistry` 会负责：
-
-- 注册 action 与 handler 的对应关系。
-- 查询 action 对应的处理器。
-- 为 Dispatcher 提供明确的 API 查找入口。
-- 避免在 BridgeController 中写大量条件判断。
-
-## 初步方向
-
-第一版只注册一个 action：
+当前只注册一个 action：
 
 ```text
 ui.showToast
 ```
 
-等单个 action 跑通后，再扩展更多 API。
+handler 仍然是 mock handler，不调用 ToastBiz / ToastImp。
+
+## 为什么需要 Registry
+
+如果没有 Registry，BridgeController 或 Dispatcher 很容易写成大量条件判断。Registry 把 action 和 handler 的绑定变成显式注册，后续新增 API 时只需要注册新 handler。
+
+## 职责边界
+
+Registry 只负责：
+
+- 注册 action。
+- 查询 handler。
+- 判断 action 是否存在。
+
+Registry 不负责：
+
+- 解析 JSON。
+- 校验参数。
+- 调用 ArkWeb。
+- 调用 HarmonyOS 系统能力。
+- 回调 H5。
+
+## 当前注册流程
+
+当前通过 `RuntimeBootstrap.createRegistry()` 创建 Registry，并注册 `ui.showToast` mock handler。
+
+```text
+RuntimeBootstrap
+-> HandlerRegistry.register("ui.showToast", ShowToastMockHandler)
+-> BridgeDispatcher.dispatch(request)
+-> HandlerRegistry.get(request.action)
+```
+
+ArkTS 侧统一通过 `ACTION_UI_SHOW_TOAST` 常量引用 action，避免在运行时代码中到处硬编码字符串。
+
+## 后续扩展
+
+后续会把 mock handler 替换成真实分层：
+
+```text
+ui.showToast handler
+-> ToastBiz
+-> ToastImp
+-> promptAction.showToast
+```
+
+更多 API 会等 `ui.showToast` 闭环稳定后再接入。

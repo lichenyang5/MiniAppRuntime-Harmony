@@ -54,13 +54,12 @@ H5 页面
 - ArkWeb 加载本地 H5 页面。
 - H5 `window.myascf.send` 返回 Promise。
 - JavaScriptProxy 接收 H5 JSON 字符串。
-- BridgeController 解析请求并返回 mock response。
+- BridgeController 解析请求并交给 BridgeDispatcher。
+- BridgeDispatcher 通过 HandlerRegistry 找到 `ui.showToast` mock handler。
 - H5 根据 `requestId` resolve Promise。
 
 当前尚未实现：
 
-- BridgeDispatcher
-- HandlerRegistry
 - ToastBiz
 - ToastImp
 - 真实 `promptAction.showToast`

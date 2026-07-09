@@ -9,7 +9,7 @@ export interface BridgeRequest {
 }
 
 export interface BridgeResponseData {
-  echoAction: string;
+  echoAction?: string;
 }
 
 export interface BridgeResponse {
@@ -17,4 +17,8 @@ export interface BridgeResponse {
   code: number;
   message: string;
   data?: BridgeResponseData;
+}
+
+export interface BridgeHandler {
+  handle(request: BridgeRequest): Promise<BridgeResponse>;
 }

@@ -12,17 +12,19 @@
 - H5 通过 JavaScriptProxy 调用 ArkTS。
 - ArkTS 解析请求并返回 mock response。
 - H5 Promise resolve 并展示结果。
+- BridgeDispatcher 统一分发 action。
+- HandlerRegistry 注册并查询 `ui.showToast` mock handler。
+- UNKNOWN_ACTION 和 INTERNAL_ERROR 已有统一响应入口。
 
 ## 后续计划
 
-1. `BridgeDispatcher` 和 `HandlerRegistry`。
-2. `ui.showToast` action 注册。
-3. `ToastBiz` 参数校验。
-4. `ToastImp` 调用公开 HarmonyOS Toast 能力。
-5. 标准错误码和 timeout。
-6. `runJavaScript` 回调治理。
-7. Debug 日志与调试面板。
-8. 更多 API 示例。
+1. `ToastBiz` 参数校验。
+2. `ToastImp` 调用公开 HarmonyOS Toast 能力。
+3. `ui.showToast` 从 mock handler 切换为真实能力。
+4. timeout。
+5. `runJavaScript` 回调治理。
+6. Debug 日志与调试面板。
+7. 更多 API 示例。
 
 ## 当前尚未实现，后续阶段补充
 

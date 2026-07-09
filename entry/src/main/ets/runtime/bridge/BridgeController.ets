@@ -1,12 +1,14 @@
 import { webview } from '@kit.ArkWeb';
-import { BridgeErrorCode } from '../error/BridgeErrorCode';
+import { BridgeDispatcher } from '../dispatcher/BridgeDispatcher';
 import { RuntimeLogger } from '../logger/RuntimeLogger';
-import { BridgeRequest, BridgeResponse, BridgeResponseData } from '../api/BridgeTypes';
+import { RuntimeBootstrap } from '../registry/RuntimeBootstrap';
+import { BridgeRequest, BridgeResponse } from '../api/BridgeTypes';
 
 const H5_RESPONSE_CALLBACK = 'window.__myascf_on_native_response__';
 
 export class BridgeController {
   private controller: webview.WebviewController;
+  private dispatcher: BridgeDispatcher = new BridgeDispatcher(RuntimeBootstrap.createRegistry());
 
   constructor(controller: webview.WebviewController) {
     this.controller = controller;
@@ -21,17 +23,13 @@ export class BridgeController {
       RuntimeLogger.info(`[BridgeController] action: ${request.action}`);
       RuntimeLogger.info(`[BridgeController] params: ${this.stringifyParams(request)}`);
 
-      const responseData: BridgeResponseData = {
-        echoAction: request.action
-      };
-      const response: BridgeResponse = {
-        requestId: request.requestId,
-        code: BridgeErrorCode.SUCCESS,
-        message: 'mock success from ArkTS',
-        data: responseData
-      };
-
-      this.sendResponseToH5(response);
+      this.dispatcher.dispatch(request)
+        .then((response: BridgeResponse) => {
+          this.sendResponseToH5(response);
+        })
+        .catch((err: Error) => {
+          RuntimeLogger.error(`[BridgeController] dispatcher failed: ${JSON.stringify(err)}`);
+        });
     } catch (err) {
       RuntimeLogger.error(`[BridgeController] failed to handle message: ${JSON.stringify(err)}`);
     }

@@ -11,6 +11,9 @@ H5 window.myascf.send
 -> window.MyASCFNative.postMessage
 -> ArkTS JavaScriptProxy.postMessage
 -> BridgeController.handleMessage
+-> BridgeDispatcher.dispatch
+-> HandlerRegistry.get
+-> ui.showToast mock handler
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
 -> Promise resolve / reject
@@ -42,7 +45,7 @@ H5 window.myascf.send
 {
   "requestId": "对应请求 requestId",
   "code": 0,
-  "message": "mock success from ArkTS",
+  "message": "mock handler success from BridgeDispatcher",
   "data": {
     "echoAction": "ui.showToast"
   }
@@ -83,7 +86,19 @@ H5 调用：
 window.MyASCFNative.postMessage(JSON.stringify(request))
 ```
 
-当前 `postMessage` 只把原始字符串交给 `BridgeController`，不做 action 分发。
+当前 `postMessage` 只把原始字符串交给 `BridgeController`，BridgeController 再把标准请求交给 `BridgeDispatcher`。
+
+## Dispatcher 与 Registry
+
+当前已经接入最小分发链路：
+
+```text
+BridgeDispatcher
+-> HandlerRegistry
+-> ui.showToast mock handler
+```
+
+Dispatcher 负责处理 UNKNOWN_ACTION 和 INTERNAL_ERROR。Registry 只负责 action 与 handler 的注册和查询。
 
 ## runJavaScript 回调
 
@@ -97,8 +112,6 @@ window.__myascf_on_native_response__(responseText)
 
 ## 当前尚未实现
 
-- BridgeDispatcher。
-- HandlerRegistry。
 - ToastBiz。
 - ToastImp。
 - `promptAction.showToast`。
@@ -108,4 +121,4 @@ window.__myascf_on_native_response__(responseText)
 
 ## 下一步
 
-下一步接入 `BridgeDispatcher` 和 `HandlerRegistry`，但仍然只注册 `ui.showToast` 一个 action。真实 Toast 能力等 Biz/Imp 阶段再实现。
+下一步接入 `ToastBiz` 和 `ToastImp`，让 `ui.showToast` 从 mock handler 变成真实 HarmonyOS Toast 能力调用。
