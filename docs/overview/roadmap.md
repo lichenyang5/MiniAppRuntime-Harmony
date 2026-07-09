@@ -15,16 +15,17 @@
 - BridgeDispatcher 统一分发 action。
 - HandlerRegistry 注册并查询 `ui.showToast` mock handler。
 - UNKNOWN_ACTION 和 INTERNAL_ERROR 已有统一响应入口。
+- ToastBiz 校验 `ui.showToast` 参数。
+- ToastImp 调用公开 HarmonyOS Toast 能力。
+- `PARAM_ERROR` 已在 `ui.showToast` 中生效。
 
 ## 后续计划
 
-1. `ToastBiz` 参数校验。
-2. `ToastImp` 调用公开 HarmonyOS Toast 能力。
-3. `ui.showToast` 从 mock handler 切换为真实能力。
-4. timeout。
-5. `runJavaScript` 回调治理。
-6. Debug 日志与调试面板。
-7. 更多 API 示例。
+1. `runJavaScript` 回调治理。
+2. timeout。
+3. callback lost 处理。
+4. Debug 日志与调试面板。
+5. 更多 API 示例。
 
 ## 当前尚未实现，后续阶段补充
 

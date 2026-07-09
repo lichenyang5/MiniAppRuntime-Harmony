@@ -1,29 +1,21 @@
 import { ACTION_UI_SHOW_TOAST } from '../api/ActionNames';
-import { BridgeErrorCode } from '../error/BridgeErrorCode';
-import { BridgeHandler, BridgeRequest, BridgeResponse, BridgeResponseData } from '../api/BridgeTypes';
+import { BridgeHandler, BridgeRequest, BridgeResponse } from '../api/BridgeTypes';
+import { ToastBiz } from '../biz/ToastBiz';
+import { ToastImp } from '../imp/ToastImp';
 import { HandlerRegistry } from './HandlerRegistry';
 
-class ShowToastMockHandler implements BridgeHandler {
+class ShowToastHandler implements BridgeHandler {
+  private toastBiz: ToastBiz = new ToastBiz(new ToastImp());
+
   async handle(request: BridgeRequest): Promise<BridgeResponse> {
-    const responseData: BridgeResponseData = {
-      echoAction: ACTION_UI_SHOW_TOAST
-    };
-
-    const response: BridgeResponse = {
-      requestId: request.requestId,
-      code: BridgeErrorCode.SUCCESS,
-      message: 'mock handler success from BridgeDispatcher',
-      data: responseData
-    };
-
-    return response;
+    return await this.toastBiz.handle(request);
   }
 }
 
 export class RuntimeBootstrap {
   static createRegistry(): HandlerRegistry {
     const registry: HandlerRegistry = new HandlerRegistry();
-    registry.register(ACTION_UI_SHOW_TOAST, new ShowToastMockHandler());
+    registry.register(ACTION_UI_SHOW_TOAST, new ShowToastHandler());
     return registry;
   }
 }

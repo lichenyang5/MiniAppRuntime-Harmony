@@ -21,7 +21,7 @@ TIMEOUT        1005
 {
   "requestId": "对应请求 requestId",
   "code": 0,
-  "message": "mock handler success from BridgeDispatcher",
+  "message": "showToast success",
   "data": {
     "echoAction": "ui.showToast"
   }
@@ -43,9 +43,26 @@ TIMEOUT        1005
 
 当前已实现。
 
+## PARAM_ERROR
+
+当 `ToastBiz` 校验参数失败时返回。
+
+```json
+{
+  "requestId": "对应请求 requestId",
+  "code": 1002,
+  "message": "PARAM_ERROR: message is required",
+  "data": {
+    "echoAction": "ui.showToast"
+  }
+}
+```
+
+当前已在 `ui.showToast` 中实现。
+
 ## INTERNAL_ERROR
 
-当 handler 执行过程中抛出异常时返回。
+当 handler 执行过程中抛出异常时，`BridgeDispatcher` 捕获并返回。
 
 ```json
 {
@@ -60,10 +77,9 @@ TIMEOUT        1005
 
 ## 尚未实现的错误
 
-- `PARAM_ERROR`：后续由 ToastBiz 参数校验阶段使用。
 - `CALLBACK_LOST`：后续由回调治理阶段记录。
 - `TIMEOUT`：后续由超时控制阶段实现。
 
 ## ArkTS 类型注意
 
-错误响应中的 `data` 不能使用未声明对象字面量。当前使用显式 `BridgeResponseData` 类型承载空数据。
+错误响应中的 `data` 使用显式 `BridgeResponseData` 类型承载，避免未声明对象字面量。

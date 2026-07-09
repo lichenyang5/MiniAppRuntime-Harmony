@@ -9,12 +9,15 @@
 <body>
   <main class="page">
     <section class="hero">
-      <p class="eyebrow">Phase 2 · ArkWeb Local H5</p>
+      <p class="eyebrow">Phase 5 · ToastBiz / ToastImp</p>
       <h1>MyASCF / ArkMiniRuntime</h1>
       <p class="summary">
-        当前阶段验证 H5 通过 JavaScriptProxy 调用 ArkTS，并接收 ArkTS 返回的 mock response。
+        当前阶段验证 ui.showToast 通过 Dispatcher、ToastBiz、ToastImp 调用 HarmonyOS Toast。
       </p>
-      <button id="demoButton" type="button">调用 ui.showToast</button>
+      <div class="buttonGroup">
+        <button id="demoButton" type="button">正常调用 ui.showToast</button>
+        <button id="paramErrorButton" class="secondaryButton" type="button">参数错误测试</button>
+      </div>
       <p id="status" class="status">等待 H5 发起调用。</p>
       <pre id="result" class="result">暂无响应</pre>
     </section>

@@ -47,6 +47,11 @@ h1 {
   line-height: 1.7;
 }
 
+.buttonGroup {
+  display: grid;
+  gap: 10px;
+}
+
 button {
   width: 100%;
   min-height: 44px;
@@ -60,6 +65,15 @@ button {
 
 button:active {
   background: #1d4ed8;
+}
+
+.secondaryButton {
+  color: #1f2937;
+  background: #e5e7eb;
+}
+
+.secondaryButton:active {
+  background: #d1d5db;
 }
 
 .status {

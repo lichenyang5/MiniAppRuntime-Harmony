@@ -36,7 +36,9 @@ export class BridgeDispatcher {
   }
 
   private createErrorResponse(requestId: string, code: BridgeErrorCode, message: string): BridgeResponse {
-    const responseData: BridgeResponseData = {};
+    const responseData: BridgeResponseData = {
+      echoAction: undefined
+    };
     const response: BridgeResponse = {
       requestId: requestId,
       code: code,

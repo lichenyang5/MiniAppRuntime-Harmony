@@ -11,7 +11,9 @@ H5 window.myascf.send
 -> BridgeController.handleMessage
 -> BridgeDispatcher.dispatch
 -> HandlerRegistry.get
--> ui.showToast mock handler
+-> ToastBiz
+-> ToastImp
+-> promptAction.showToast
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
 -> Promise resolve / reject
@@ -26,18 +28,17 @@ H5 window.myascf.send
 - BridgeController 解析 `BridgeRequest`。
 - BridgeDispatcher 统一分发 action。
 - HandlerRegistry 注册和查询 handler。
-- 当前只注册 `ui.showToast` mock handler。
+- 当前只注册 `ui.showToast` 一个真实 API。
+- ToastBiz 校验 `params.message`。
+- ToastImp 调用公开 HarmonyOS Toast 能力。
 - ArkTS 侧通过 `runJavaScript` 回调 H5。
 
 ## 暂未实现
 
-- ToastBiz。
-- ToastImp。
-- `promptAction.showToast`。
 - timeout。
 - 完整错误处理。
 - 批量 API 注册。
 
 ## 下一步
 
-下一步接入 `ToastBiz` 和 `ToastImp`，让 `ui.showToast` 真正调用公开 HarmonyOS Toast 能力。
+下一步补充 `runJavaScript` 回调封装、超时控制和 callback lost 处理。

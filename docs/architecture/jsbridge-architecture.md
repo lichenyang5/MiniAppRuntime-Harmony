@@ -4,7 +4,7 @@
 
 ## 当前实现状态
 
-当前 JSBridge 只实现到 JavaScriptProxy 最小通信边界：
+当前 JSBridge 已经实现到 `ui.showToast` 真实能力链路：
 
 ```text
 H5 window.myascf.send
@@ -13,7 +13,9 @@ H5 window.myascf.send
 -> BridgeController.handleMessage
 -> BridgeDispatcher.dispatch
 -> HandlerRegistry.get
--> ui.showToast mock handler
+-> ToastBiz
+-> ToastImp
+-> promptAction.showToast
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
 -> Promise resolve / reject
@@ -39,20 +41,20 @@ H5 window.myascf.send
 
 ## ArkTS 响应协议
 
-当前返回 mock response：
+当前 `ui.showToast` 成功响应：
 
 ```json
 {
   "requestId": "对应请求 requestId",
   "code": 0,
-  "message": "mock handler success from BridgeDispatcher",
+  "message": "showToast success",
   "data": {
     "echoAction": "ui.showToast"
   }
 }
 ```
 
-后续真实能力接入后，`data` 会由具体 API handler 返回。
+后续接入更多 API 后，`data` 会由具体 API handler 返回。
 
 ## H5 Callback Map
 
@@ -95,7 +97,8 @@ window.MyASCFNative.postMessage(JSON.stringify(request))
 ```text
 BridgeDispatcher
 -> HandlerRegistry
--> ui.showToast mock handler
+-> ToastBiz
+-> ToastImp
 ```
 
 Dispatcher 负责处理 UNKNOWN_ACTION 和 INTERNAL_ERROR。Registry 只负责 action 与 handler 的注册和查询。
@@ -112,13 +115,10 @@ window.__myascf_on_native_response__(responseText)
 
 ## 当前尚未实现
 
-- ToastBiz。
-- ToastImp。
-- `promptAction.showToast`。
 - timeout。
 - 完整错误处理。
 - 批量 API 注册。
 
 ## 下一步
 
-下一步接入 `ToastBiz` 和 `ToastImp`，让 `ui.showToast` 从 mock handler 变成真实 HarmonyOS Toast 能力调用。
+下一步补充 `runJavaScript` 回调封装、超时控制和 callback lost 处理。
