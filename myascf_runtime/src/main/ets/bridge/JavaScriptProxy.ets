@@ -1,6 +1,7 @@
 import { BridgeController } from './BridgeController';
+import { MyASCFNativeProxy } from '../api/RuntimeTypes';
 
-export class JavaScriptProxy {
+export class JavaScriptProxy implements MyASCFNativeProxy {
   private bridgeController: BridgeController;
 
   constructor(bridgeController: BridgeController) {

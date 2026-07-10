@@ -1,17 +1,16 @@
-import { webview } from '@kit.ArkWeb';
 import { BridgeCallbackExecutor } from './BridgeCallbackExecutor';
 import { BridgeDispatcher } from '../dispatcher/BridgeDispatcher';
 import { BridgeErrorCode } from '../error/BridgeErrorCode';
 import { RuntimeLogger } from '../logger/RuntimeLogger';
-import { RuntimeBootstrap } from '../registry/RuntimeBootstrap';
 import { BridgeRequest, BridgeResponse, BridgeResponseData } from '../api/BridgeTypes';
 
 export class BridgeController {
-  private dispatcher: BridgeDispatcher = new BridgeDispatcher(RuntimeBootstrap.createRegistry());
+  private dispatcher: BridgeDispatcher;
   private callbackExecutor: BridgeCallbackExecutor;
 
-  constructor(controller: webview.WebviewController) {
-    this.callbackExecutor = new BridgeCallbackExecutor(controller);
+  constructor(dispatcher: BridgeDispatcher, callbackExecutor: BridgeCallbackExecutor) {
+    this.dispatcher = dispatcher;
+    this.callbackExecutor = callbackExecutor;
   }
 
   handleMessage(message: string): void {

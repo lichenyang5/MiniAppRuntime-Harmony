@@ -1,21 +1,19 @@
 import { webview } from '@kit.ArkWeb';
-import { BridgeController } from '../runtime/bridge/BridgeController';
-import { JavaScriptProxy } from '../runtime/bridge/JavaScriptProxy';
+import { MyASCFRuntime } from 'myascf_runtime';
 
 @Entry
 @Component
 struct Index {
   private controller: webview.WebviewController = new webview.WebviewController();
-  private bridgeController: BridgeController = new BridgeController(this.controller);
-  private nativeProxy: JavaScriptProxy = new JavaScriptProxy(this.bridgeController);
+  private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller);
 
   build() {
     Column() {
       Web({ src: $rawfile('web/index.html'), controller: this.controller })
         .javaScriptProxy({
-          object: this.nativeProxy,
-          name: 'MyASCFNative',
-          methodList: ['postMessage'],
+          object: this.runtime.getNativeProxy(),
+          name: this.runtime.getProxyName(),
+          methodList: this.runtime.getMethodList(),
           controller: this.controller
         })
         .width('100%')

@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "myascf_runtime",
+    "type": "har",
+    "description": "MyASCF runtime HAR module",
+    "deviceTypes": [
+      "phone"
+    ]
+  }
+}

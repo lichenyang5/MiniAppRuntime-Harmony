@@ -1,140 +1,157 @@
 # JSBridge 架构
 
-这篇文档解决的问题：说明当前 JSBridge 已经实现到哪里、H5 与 ArkTS 如何通信、协议如何设计，以及后续为什么需要 Dispatcher 和 Registry。
+这篇文档解决的问题：说明 H5 与 ArkTS 如何通信、请求响应协议如何设计、为什么要有 Dispatcher / Registry / Biz / Imp / CallbackExecutor，以及 DebugPanel 如何帮助观察链路。
 
-## 当前实现状态
+## 当前链路
 
-当前 JSBridge 已经实现到 `ui.showToast` 真实能力链路：
-
-```text
-H5 window.myascf.send
--> window.MyASCFNative.postMessage
--> ArkTS JavaScriptProxy.postMessage
--> BridgeController.handleMessage
--> BridgeDispatcher.dispatch
--> HandlerRegistry.get
--> ToastBiz
--> ToastImp
--> promptAction.showToast
--> ClipboardBiz / ClipboardImp
--> BridgeCallbackExecutor
--> WebviewController.runJavaScript
--> H5 window.__myascf_on_native_response__
--> H5 DebugPanel recordEnd / recordError / recordLost
--> Promise resolve / reject
+```mermaid
+flowchart TD
+  H5["H5 Demo"] --> Send["window.myascf.send(action, params, options)"]
+  Send --> Request["requestId + callback map"]
+  Request --> Native["window.MyASCFNative.postMessage"]
+  Native --> Proxy["JavaScriptProxy.postMessage"]
+  Proxy --> Controller["BridgeController"]
+  Controller --> Dispatcher["BridgeDispatcher"]
+  Dispatcher --> Registry["HandlerRegistry"]
+  Registry --> Biz["ToastBiz / ClipboardBiz"]
+  Biz --> Imp["ToastImp / ClipboardImp"]
+  Imp --> Kit["HarmonyOS Public Kit"]
+  Biz --> Response["BridgeResponse"]
+  Dispatcher --> Response
+  Response --> Callback["BridgeCallbackExecutor"]
+  Callback --> RunJS["WebviewController.runJavaScript"]
+  RunJS --> H5Callback["window.__myascf_on_native_response__"]
+  H5Callback --> Promise["Promise resolve / reject"]
+  H5Callback --> Debug["DebugPanel"]
 ```
 
-## H5 请求协议
+当前 JSBridge runtime 核心代码已经抽取到 `myascf_runtime` HAR 模块，`entry` 只负责 ArkWeb 容器和 H5 Demo。
+
+entry 侧通过 `MyASCFRuntime` 接入 HAR，不再直接创建 BridgeController、BridgeDispatcher、HandlerRegistry 或 RuntimeBootstrap。
+
+## 请求协议
+
+H5 调用：
+
+```js
+window.myascf.send('ui.showToast', { message: 'hello' })
+```
+
+发送给 ArkTS 的 JSON：
 
 ```json
 {
   "requestId": "string",
   "action": "ui.showToast",
   "params": {
-    "message": "hello from h5"
+    "message": "hello"
   }
 }
 ```
 
-字段说明：
+字段含义：
 
-- `requestId`：H5 生成，用来匹配回调。
-- `action`：能力名称，后续会交给 Dispatcher 分发。
-- `params`：调用参数，后续会交给 Biz 层校验。
+- `requestId`：H5 生成，用于匹配异步回调。
+- `action`：能力名称，例如 `ui.showToast`。
+- `params`：API 参数，由 Biz 层校验。
 
-## ArkTS 响应协议
+## 响应协议
 
-当前 `ui.showToast` 成功响应：
+ArkTS 回调 H5 的 JSON：
 
 ```json
 {
-  "requestId": "对应请求 requestId",
+  "requestId": "string",
   "code": 0,
-  "message": "showToast success",
-  "data": {
-    "echoAction": "ui.showToast"
-  }
+  "message": "success",
+  "data": {}
 }
 ```
 
-后续接入更多 API 后，`data` 会由具体 API handler 返回。
-
-当前 `system.clipboard.readText` 会通过 `data.text` 返回剪贴板文本。
+H5 根据 `requestId` 找到 callback map 中的 Promise callback。如果 `code === 0`，Promise resolve；否则 Promise reject。
 
 ## H5 Callback Map
 
-H5 侧维护 callback map：
+H5 侧维护一个 callback map：
 
 ```js
 var callbacks = new Map();
 ```
 
-每次调用 `window.myascf.send` 时，H5 将 `requestId` 和当前 Promise 的 `resolve / reject` 存起来。ArkTS 回调 H5 后，H5 根据 response 中的 `requestId` 找回 callback。
+每次调用 `send` 时保存：
 
-这个设计支持：
+- requestId
+- resolve
+- reject
+- timer
+- action
+- params
 
-- 并发调用。
-- 异步回调。
-- 后续 timeout。
-- 后续标准错误处理。
+这样可以支持并发调用、异步回调、timeout 和 callback lost。
 
-## JavaScriptProxy
+## 为什么要有 Dispatcher / Registry
 
-ArkTS 通过 `javaScriptProxy` 注入 H5 可访问的对象：
-
-```ts
-name: 'MyASCFNative'
-methodList: ['postMessage']
-```
-
-H5 调用：
-
-```js
-window.MyASCFNative.postMessage(JSON.stringify(request))
-```
-
-当前 `postMessage` 只把原始字符串交给 `BridgeController`，BridgeController 再把标准请求交给 `BridgeDispatcher`。
-
-## Dispatcher 与 Registry
-
-当前已经接入最小分发链路：
+如果直接在 BridgeController 里写：
 
 ```text
-BridgeDispatcher
--> HandlerRegistry
--> ToastBiz
--> ToastImp
--> ClipboardBiz
--> ClipboardImp
+if action == ui.showToast
+else if action == system.clipboard.readText
 ```
 
-Dispatcher 负责处理 UNKNOWN_ACTION 和 INTERNAL_ERROR。Registry 只负责 action 与 handler 的注册和查询。
+API 越多，Controller 越难维护。Dispatcher / Registry 把问题拆开：
 
-## runJavaScript 回调
+- Dispatcher：只负责分发和统一错误处理。
+- Registry：只负责 action 与 handler 的注册、查询。
+- Biz / Imp：只负责具体 API。
 
-ArkTS 通过 `BridgeCallbackExecutor` 统一调用 H5 的全局回调：
+这让新增 API 的成本变成“新增 handler 并注册”，而不是修改通信入口。
+
+## 为什么要有 Biz / Imp
+
+Biz 和 Imp 解决的是“协议校验”和“平台调用”不要混在一起。
+
+```text
+ToastBiz
+-> 校验 message
+-> ToastImp
+-> promptAction.showToast
+```
+
+```text
+ClipboardBiz
+-> 校验 text 或组装 readText 响应
+-> ClipboardImp
+-> pasteboard
+```
+
+Biz 面向 JSBridge 协议，Imp 面向 HarmonyOS 公开 Kit。
+
+## 为什么要有 BridgeCallbackExecutor
+
+ArkTS 返回 H5 需要执行：
 
 ```js
 window.__myascf_on_native_response__(responseText)
 ```
 
-为了避免 JSON 字符串破坏 JS 脚本，ArkTS 会把 response 字符串再次 `JSON.stringify` 成安全参数。
+这个过程涉及 JSON 字符串转义、runJavaScript 调用和异常日志。如果散落在 Controller 或 Biz 中，后续很难统一治理。BridgeCallbackExecutor 让回调出口集中、稳定。
 
-BridgeController 不再直接拼接 JS，也不再直接调用 `runJavaScript`。
+## 错误链路
 
-## Timeout 与 Callback Lost
+当前基础错误包括：
 
-H5 侧 `window.myascf.send(action, params, options?)` 支持 timeout，默认 5000ms。
+- `PARAM_ERROR`
+- `UNKNOWN_ACTION`
+- `INTERNAL_ERROR`
+- `TIMEOUT`
+- `CALLBACK_LOST`
+- `PARSE_ERROR`
 
-调用发出后，H5 会保存 callback 和 timer。收到 response 时清理 timer 并 resolve / reject；如果先超时，则删除 callback 并 reject TIMEOUT。
-
-如果 ArkTS response 迟到，H5 找不到 callback，会记录 CALLBACK_LOST，但不会影响其他请求。
+ArkTS 负责返回标准 `BridgeResponse`，H5 负责 timeout 和 callback lost 的 Promise 行为。
 
 ## DebugPanel
 
-H5 Demo 内置轻量 DebugPanel，用于展示最近 20 条 JSBridge 调用。
-
-DebugPanel 不改变 Bridge 请求 / 响应协议，只监听 H5 侧调用生命周期：
+DebugPanel 记录 H5 侧调用生命周期：
 
 ```text
 recordStart
@@ -143,13 +160,10 @@ recordError
 recordLost
 ```
 
-它适合 Demo、截图和问题排查；ArkTS 侧仍通过 RuntimeLogger 输出 HiLog。
+它展示最近 20 条记录，适合 GitHub 展示、调试截图和面试讲解。DebugPanel 不改变请求/响应协议。
 
 ## 当前尚未实现
 
 - Storage API。
-- 更完整的 DebugPanel 筛选、搜索和调用链耗时统计。
-
-## 下一步
-
-下一步可以继续扩展 Storage API，或者将 runtime 抽取成 HAR 模块。
+- Network API。
+- 更完整的 DebugPanel 搜索、筛选和耗时统计。

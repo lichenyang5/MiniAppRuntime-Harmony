@@ -105,4 +105,4 @@ request-start
 
 ## 下一步计划
 
-下一步可以继续扩展 Storage API，或者将 runtime 抽取成 HAR 模块。
+阶段 09 已经将 runtime 抽取为 `myascf_runtime` HAR 模块。下一步可以继续扩展 Storage API，或者准备 README 项目展示文档和架构图。

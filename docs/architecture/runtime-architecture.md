@@ -1,99 +1,143 @@
 # 运行时架构
 
-这篇文档解决的问题：说明 MyASCF / ArkMiniRuntime 的工程结构、Stage Model 基础、运行时分层，以及每一层为什么这样拆。
+这篇文档解决的问题：说明 MiniAppRuntime-Harmony 的工程结构、HAR 模块化后的职责边界，以及每一层为什么独立存在。
 
-## 当前 HarmonyOS 工程结构
+## 总览
+
+```mermaid
+flowchart TD
+  Entry["entry 示例应用"] --> Web["ArkWeb Container"]
+  Web --> H5["rawfile/web H5 Demo"]
+  Entry --> Har["myascf_runtime HAR"]
+  Har --> Bridge["bridge"]
+  Har --> Dispatcher["dispatcher"]
+  Har --> Registry["registry"]
+  Har --> Api["api"]
+  Har --> Biz["biz"]
+  Har --> Imp["imp"]
+  Har --> Error["error"]
+  Har --> Logger["logger"]
+```
+
+`entry` 负责把 Demo 跑起来，`myascf_runtime` 负责让 JSBridge 调用链路可复用。这样做的好处是：Demo 页面可以变化，但 runtime 核心不需要跟着页面一起散落在应用代码里。
+
+## 当前工程结构
 
 ```text
 ArkMiniRuntime/
-  AppScope/                         # 应用级配置和全局资源
-  build-profile.json5               # 工程级构建、签名、SDK、模块配置
-  hvigor/                           # Hvigor 构建配置
-  oh-package.json5                  # 工程依赖声明
-  entry/                            # 主 entry 模块
-  entry/src/main/module.json5       # 模块声明、Ability、页面、设备类型
-  entry/src/main/ets/               # ArkTS 主源码目录
-  entry/src/main/ets/entryability/  # UIAbility 入口
-  entry/src/main/ets/pages/         # ArkUI 页面目录
-  entry/src/main/resources/         # entry 模块资源目录
-  docs/                             # 项目设计与阶段文档
+  AppScope/
+  build-profile.json5
+  oh-package.json5
+  entry/
+    src/main/ets/entryability/
+    src/main/ets/pages/Index.ets
+    src/main/resources/rawfile/web/
+  myascf_runtime/
+    src/main/ets/bridge/
+    src/main/ets/dispatcher/
+    src/main/ets/registry/
+    src/main/ets/api/
+    src/main/ets/biz/
+    src/main/ets/imp/
+    src/main/ets/error/
+    src/main/ets/logger/
+    src/main/ets/Index.ets
+  docs/
 ```
 
-## Stage Model 检查
+## entry 负责什么
 
-当前项目可以作为 ArkTS Stage Model 工程继续演进：
+`entry` 是示例应用层：
 
-- `entry/build-profile.json5` 包含 `"apiType": "stageMode"`。
-- `entry/src/main/module.json5` 声明 `mainElement` 为 `EntryAbility`。
-- `EntryAbility.ets` 继承 `UIAbility`。
-- `EntryAbility.onWindowStageCreate` 加载 `pages/Index`。
-- `main_pages.json` 注册了 `pages/Index`。
-- `Index.ets` 已经作为 ArkWeb 容器页承载本地 H5。
+- 创建 `webview.WebviewController`。
+- 创建 `MyASCFRuntime` 门面。
+- 通过 ArkWeb 加载 `$rawfile('web/index.html')`。
+- 使用 `runtime.getNativeProxy()`、`runtime.getProxyName()`、`runtime.getMethodList()` 注册 `.javaScriptProxy(...)`。
+- 放置 H5 Demo、按钮和 DebugPanel。
 
-## 核心调用链
+`entry` 不负责 action 分发、不直接校验 API 参数、不直接调用 Toast 或 Clipboard。这样可以避免 Web 页面越来越厚。
 
-目标调用链如下：
+## myascf_runtime 负责什么
+
+`myascf_runtime` 是 HAR runtime 模块：
+
+- `bridge/`：连接 ArkWeb 与 H5，包含 JavaScriptProxy、BridgeController、BridgeCallbackExecutor。
+- `dispatcher/`：统一分发 action，处理 UNKNOWN_ACTION 和内部异常。
+- `registry/`：注册和查询 action handler。
+- `api/`：维护 action 常量和 Bridge 请求/响应协议类型。
+- `biz/`：做参数校验和业务编排。
+- `imp/`：调用公开 HarmonyOS Kit。
+- `error/`：统一错误码和错误对象。
+- `logger/`：统一 ArkTS 侧日志。
+
+## 为什么不能把所有逻辑写在 BridgeController
+
+BridgeController 是通信入口，职责应该是“接收、解析、交给分发器”。如果把 action 判断、参数校验、系统 API 调用和回调拼接都写在这里，会带来几个问题：
+
+- 每新增一个 API 都要改 Controller。
+- Controller 会同时懂通信、业务、系统能力和错误处理。
+- 参数错误、未知 action、内部异常难以统一。
+- H5 回调脚本拼接容易散落，后续维护风险高。
+
+所以当前拆分为 Controller -> Dispatcher -> Registry -> Biz -> Imp -> CallbackExecutor。
+
+在 HAR 对外接入层，entry 不直接组装这些对象，而是通过 `MyASCFRuntime` 完成内部依赖创建。
+
+## 为什么要有 Dispatcher / Registry
+
+Dispatcher 负责“根据 action 找 handler 并执行”，Registry 负责“保存 action 与 handler 的对应关系”。两者分开后：
+
+- action 扩展变成注册行为。
+- UNKNOWN_ACTION 可以统一处理。
+- Controller 不需要知道有哪些 API。
+- 后续可以做白名单、权限、统计或拦截。
+
+## 为什么要有 Biz / Imp
+
+Biz 层负责参数校验和响应结构，Imp 层负责调用平台公开能力。
+
+以 `ui.showToast` 为例：
 
 ```text
-H5 页面
--> window.myascf.send(action, params)
--> JavaScriptProxy
--> BridgeController
--> BridgeDispatcher
--> HandlerRegistry
--> Biz
--> Imp
--> HarmonyOS System API
+ToastBiz
+-> 校验 params.message
+-> ToastImp.showToast
+-> promptAction.showToast
 -> BridgeResponse
--> runJavaScript
--> H5 Promise resolve / reject
 ```
 
-当前已经完成：
+这样做可以避免系统 API 调用和参数协议混在一起，也方便后续为同一个 API 增加更多校验规则。
 
-- ArkWeb 加载本地 H5 页面。
-- H5 `window.myascf.send` 返回 Promise。
-- JavaScriptProxy 接收 H5 JSON 字符串。
-- BridgeController 解析请求并交给 BridgeDispatcher。
-- BridgeDispatcher 通过 HandlerRegistry 找到 `ui.showToast` mock handler。
-- H5 根据 `requestId` resolve Promise。
+## 为什么抽出 BridgeCallbackExecutor
 
-当前尚未实现：
+ArkTS 回调 H5 需要通过 `WebviewController.runJavaScript` 执行脚本，并且要处理 JSON 字符串转义。把它抽成 BridgeCallbackExecutor 后：
 
-- ToastBiz
-- ToastImp
-- 真实 `promptAction.showToast`
+- Controller 不直接拼接 JS。
+- 回调格式集中管理。
+- CALLBACK_LOST 风险可以统一记录。
+- 后续可以增加回调耗时统计。
 
-## 推荐运行时目录
+## DebugPanel 的作用
 
-```text
-entry/src/main/ets/runtime/
-  bridge/        # ArkWeb 与 H5 通信边界
-  dispatcher/    # action 统一分发入口
-  registry/      # API handler 注册和查询
-  api/           # action 常量、请求响应类型、公开协议
-  biz/           # 参数校验和业务编排
-  imp/           # HarmonyOS 能力调用实现
-  error/         # 标准错误码和错误对象
-  logger/        # 日志、调试事件、调用链追踪
-```
+DebugPanel 是 H5 Demo 内的轻量可视化面板，用来展示最近 20 条调用记录，包括 requestId、action、status、code、message、duration、params 和 response。
 
-## 分层约束
+它不改变 JSBridge 协议，只帮助演示和排查链路。
 
-- Web 页面只负责承载 ArkWeb 和连接通信边界。
-- 所有 action 后续必须经过 `BridgeDispatcher`。
-- `HandlerRegistry` 只负责注册和查询。
-- `Biz` 层负责参数校验和业务编排。
-- `Imp` 层负责调用公开 HarmonyOS 系统能力。
-- 错误对象在返回 H5 前必须标准化。
-- 日志统一进入 `logger`，为后续调试面板留出口。
+## 当前已实现
 
-## 为什么这样设计
+- ArkWeb 加载本地 H5。
+- JavaScriptProxy 通信边界。
+- requestId、callback map、Promise、timeout、callback lost。
+- BridgeDispatcher / HandlerRegistry。
+- Toast 和 Clipboard 两组真实 API。
+- BridgeCallbackExecutor。
+- H5 DebugPanel。
+- runtime HAR 模块化。
+- MyASCFRuntime 统一对外入口。
 
-这个拆法适合面试讲解，也方便后续维护：
+## 当前尚未实现
 
-- Web 容器和业务逻辑分离，避免页面越来越厚。
-- JSBridge 协议独立，方便扩展更多 action。
-- Biz/Imp 分层让参数校验和系统 API 调用分开。
-- Registry 让 API 接入变成注册行为，而不是到处写条件判断。
-- Logger 和 Error 独立后，调试面板可以自然接入。
+- Storage API。
+- Network API。
+- Web 容器白名单与错误页。
+- 更完整的 DebugPanel 搜索、筛选和统计。

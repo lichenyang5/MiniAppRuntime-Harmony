@@ -5,6 +5,8 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {}
+  "dependencies": {
+    "myascf_runtime": "file:../myascf_runtime"
+  }
 }
 

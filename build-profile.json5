@@ -51,6 +51,18 @@
           ]
         }
       ]
+    },
+    {
+      "name": "myascf_runtime",
+      "srcPath": "./myascf_runtime",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
     }
   ]
 }

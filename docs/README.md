@@ -2,54 +2,83 @@
 
 这篇文档解决的问题：作为 docs 首页，帮助读者按正确顺序理解这个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架。
 
-## 一句话介绍
+## 文档目录
 
-MyASCF / ArkMiniRuntime 是一个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架，用于探索 ArkWeb 容器、H5 与 ArkTS 通信、API 注册分发、Biz/Imp 分层、UI 组件能力暴露和调试能力。
+- `overview/`：项目定位、当前状态和 Roadmap。
+- `architecture/`：运行时结构、JSBridge 链路、HAR 模块、API 注册和 Biz/Imp 分层设计。
+- `stages/`：按阶段记录每一步为什么做、改了什么、如何验收。
+- `api/`：当前已接入 API 和错误码说明。
+- `debug/`：DebugPanel、RuntimeLogger 和常见问题排查。
+- `assets/`：架构图文本、截图占位和后续展示素材。
 
 ## 推荐阅读顺序
 
 1. `overview/project-introduction.md`
-2. `architecture/runtime-architecture.md`
-3. `architecture/jsbridge-architecture.md`
-4. `stages/02-load-local-h5-with-arkweb.md`
-5. `stages/03-h5-to-arkts-javascript-proxy.md`
-6. 后续再看 Dispatcher、Registry、Biz/Imp、API 和 Debug 文档。
+2. `overview/roadmap.md`
+3. `architecture/runtime-architecture.md`
+4. `architecture/jsbridge-architecture.md`
+5. `architecture/har-module-design.md`
+6. `stages/02-load-local-h5-with-arkweb.md`
+7. `stages/03-h5-to-arkts-javascript-proxy.md`
+8. `stages/04-dispatcher-and-registry.md`
+9. `stages/05-toast-biz-imp.md`
+10. `stages/06-runjavascript-callback.md`
+11. `stages/07-clipboard-api.md`
+12. `stages/08-debug-panel.md`
+13. `stages/09-extract-runtime-to-har.md`
+14. `stages/10-github-showcase.md`
+15. `stages/11-myascf-runtime-facade.md`
 
-## 目录作用
+## 阶段文档解决什么问题
 
-- `overview/`：项目介绍、阶段路线和整体目标。
-- `architecture/`：运行时架构、JSBridge 架构和后续分层设计。
-- `stages/`：按开发阶段记录每一步做了什么、为什么做、如何验收。
-- `api/`：后续记录公开 API 的请求参数、返回结构和错误码。
-- `debug/`：后续记录调试方法、常见问题和排查路径。
+- 阶段 01：项目初始化、目录规划和第一阶段架构目标。
+- 阶段 02：让 ArkWeb 成功加载本地 H5。
+- 阶段 03：打通 H5 到 ArkTS 的 JavaScriptProxy 通信边界。
+- 阶段 04：引入 Dispatcher / Registry，让 action 分发可扩展。
+- 阶段 05：用 ToastBiz / ToastImp 接入第一个真实 API。
+- 阶段 06：抽出 BridgeCallbackExecutor，并处理 timeout / callback lost。
+- 阶段 07：接入 Clipboard API，验证第二个真实 API 的扩展方式。
+- 阶段 08：用 H5 DebugPanel 可视化 JSBridge 调用链路。
+- 阶段 09：把 runtime 抽取为 `myascf_runtime` HAR 模块。
+- 阶段 10：整理 GitHub README、架构图和项目展示文档。
+- 阶段 11：用 `MyASCFRuntime` 封装 HAR 对外入口。
 
-## 当前已完成阶段
+## 如何理解整个框架
 
-- 阶段 01：项目初始化与架构规划。
-- 阶段 02：ArkWeb 加载本地 H5 页面。
-- 阶段 03：H5 通过 JavaScriptProxy 调到 ArkTS，ArkTS 返回 mock response，H5 Promise resolve。
-- 阶段 04：接入 BridgeDispatcher 和 HandlerRegistry，`ui.showToast` 仍返回 mock handler response。
-- 阶段 05：接入 ToastBiz 和 ToastImp，`ui.showToast` 调用真实 HarmonyOS Toast。
-- 阶段 06：抽出 BridgeCallbackExecutor，并补充 H5 timeout / callback lost 处理。
-- 阶段 07：扩展 Clipboard API，验证新增能力只需局部扩展。
-- 阶段 08：实现 H5 DebugPanel，可视化展示 JSBridge 调用记录。
+可以按三层看：
 
-## 后续阶段计划
+1. `entry` 是示例应用，负责启动、ArkWeb 页面和 H5 Demo。
+2. `myascf_runtime` 是框架核心，负责 JSBridge、分发、注册、Biz/Imp、错误码和回调。
+3. `docs` 记录每个阶段的设计取舍，方便复盘和面试讲解。
 
-1. 继续扩展 storage API。
-2. 将 runtime 抽取成 HAR 模块。
-3. 增加更完整的调用链耗时统计。
+核心链路是：
+
+```text
+H5 send
+-> JavaScriptProxy
+-> BridgeController
+-> BridgeDispatcher
+-> HandlerRegistry
+-> Biz
+-> Imp
+-> BridgeCallbackExecutor
+-> H5 Promise
+```
 
 ## 面试讲解推荐路径
 
-可以按这条线讲：
+1. 先讲项目目标：HarmonyOS Web 容器与 JSBridge 框架。
+2. 讲为什么不是普通 WebView Demo：它有 requestId、callback map、Dispatcher、Registry、Biz/Imp、CallbackExecutor。
+3. 讲 ArkWeb 加载本地 H5 和 JavaScriptProxy 通信边界。
+4. 讲 `ui.showToast` 如何从 H5 走到 ArkTS 系统能力。
+5. 讲 Clipboard 证明 API 扩展不是硬编码。
+6. 讲 timeout、callback lost 和标准错误码。
+7. 讲 DebugPanel 如何把链路变成可观察的 Demo。
+8. 讲 HAR 模块化如何让 `entry` 和 runtime 解耦。
+9. 讲 `MyASCFRuntime` 如何降低 Demo 接入成本，并隐藏内部组装细节。
 
-1. 先讲项目目标：为什么要做一个 HarmonyOS Web 容器与 JSBridge 框架。
-2. 再讲最小闭环：H5 发起 action，ArkTS 接收，后续分发到 Biz/Imp。
-3. 讲阶段 02：先把 ArkWeb 和本地 H5 跑通。
-4. 讲阶段 03：用 JavaScriptProxy 和 runJavaScript 打通双向通信。
-5. 讲阶段 04：Dispatcher / Registry 解决 action 扩展问题。
-6. 讲阶段 05：Biz/Imp 解决校验和系统能力调用分层。
-7. 讲阶段 06：回调治理、超时控制和 callback lost。
-8. 讲阶段 08：DebugPanel 如何把 requestId、状态、耗时、params 和 response 可视化。
-9. 讲后续设计：更多 API 扩展、HAR 模块化和更完整的调试能力。
+## 当前状态
+
+当前已完成 ArkWeb 本地 H5、JSBridge 双向通信、Dispatcher / Registry、Toast、Clipboard、错误链路、DebugPanel 和 runtime HAR 模块化。
+
+Storage / Network / 白名单与错误页仍是后续计划。

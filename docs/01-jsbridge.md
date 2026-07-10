@@ -22,6 +22,10 @@ H5 window.myascf.send
 -> Promise resolve / reject
 ```
 
+当前 ArkTS runtime 核心代码已经位于 `myascf_runtime` HAR 模块中，`entry` 只负责 Web 容器页面和 H5 Demo。
+
+entry 通过 `MyASCFRuntime` 接入 HAR，不再直接组装 BridgeController、Dispatcher、Registry 或 RuntimeBootstrap。
+
 ## 已实现
 
 - H5 侧 `window.myascf.send(action, params)` 返回 Promise。
@@ -40,6 +44,9 @@ H5 window.myascf.send
 - H5 能识别 callback lost。
 - H5 DebugPanel 展示最近 20 条调用记录。
 - ArkTS 侧通过 `runJavaScript` 回调 H5。
+- Runtime 核心代码已抽取为 `myascf_runtime` HAR 模块。
+- HAR 对外入口已封装为 `MyASCFRuntime`。
+- GitHub README、架构图和文档导航已整理为公开展示口径。
 
 ## 暂未实现
 
@@ -47,4 +54,4 @@ H5 window.myascf.send
 
 ## 下一步
 
-下一步可以继续扩展 storage API，或者将 runtime 抽取成 HAR 模块。
+下一步可以继续扩展 Storage API / Network API，或者补充真实截图和博客文章。
