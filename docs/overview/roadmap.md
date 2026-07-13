@@ -1,44 +1,35 @@
 # Roadmap
 
-这篇文档解决的问题：说明项目当前真实进度、进行中事项和后续计划，避免 README 或文档夸大能力。
+这篇文档解决什么问题：记录项目真实完成状态和后续计划，避免 README、博客与代码进度不一致。
 
 ## 已完成
 
-- [x] 阶段 01：项目初始化与架构规划。
-- [x] 阶段 02：ArkWeb 加载本地 H5 页面。
-- [x] 阶段 03：H5 通过 JavaScriptProxy 调用 ArkTS，并通过 runJavaScript 返回 H5 Promise。
-- [x] 阶段 04：BridgeDispatcher / HandlerRegistry。
-- [x] 阶段 05：`ui.showToast`，ToastBiz / ToastImp。
-- [x] 阶段 06：BridgeCallbackExecutor、TIMEOUT、CALLBACK_LOST。
-- [x] 阶段 07：`system.clipboard.writeText` / `system.clipboard.readText`。
-- [x] 阶段 08：H5 DebugPanel / RuntimeLogger 可视化调用链路。
-- [x] 阶段 09：runtime 抽取为 `myascf_runtime` HAR 模块。
-- [x] 阶段 10：GitHub README、架构图和展示文档整理。
-- [x] 阶段 11：`MyASCFRuntime` HAR 门面类。
+- [x] ArkWeb 加载本地 H5。
+- [x] H5 -> ArkTS JavaScriptProxy 通信。
+- [x] requestId、Promise 与 callback map。
+- [x] BridgeController、BridgeDispatcher 与 HandlerRegistry。
+- [x] RuntimeBootstrap 与 Biz / Imp 分层。
+- [x] `ui.showToast`。
+- [x] `system.clipboard.writeText` / `readText`。
+- [x] TIMEOUT / CALLBACK_LOST 与统一错误码。
+- [x] H5 DebugPanel。
+- [x] runtime 抽取为 `myascf_runtime` 本地 HAR。
+- [x] `MyASCFRuntime` 门面类。
+- [x] Storage set/get/remove/clear。
+- [x] Web 容器加载进度。
+- [x] URL Guard 与轻量白名单判断。
+- [x] Web 错误状态和重试入口。
+- [x] GitHub README、HAR 指南、架构图和博客草稿整理。
 
-## 当前进行中
+## 待完成
 
-- 项目展示材料持续完善：截图、博客文章、架构图细节。
-- DevEco Studio 环境下的 HAR 构建与真机回归需要在本地 IDE 中继续验证。
-
-## 后续计划
-
-- [ ] Storage API。
+- [ ] 补充真实运行截图。
+- [ ] 发布并根据反馈修订博客。
+- [ ] API 文档自动生成。
 - [ ] Network API。
-- [ ] Web 容器白名单与错误页。
-- [ ] 更完整的 API 文档生成。
-- [ ] DebugPanel 搜索、筛选和耗时统计。
-- [ ] 根 README 增加真实截图。
+- [ ] H5 SDK npm 化。
+- [ ] 处理当前 SDK 的废弃 API 与权限警告。
 
-## 不夸大的边界
+## 边界
 
-- 当前不是生产 SDK。
-- 当前没有实现完整小程序规范。
-- 当前没有实现 Storage / Network / 白名单错误页。
-- 当前 API 数量有限，重点展示 JSBridge 主链路和工程分层。
-## 已完成：Storage API
-
-已接入 `system.storage.setItem/getItem/removeItem/clear`，使用 Preferences 验证有状态 Native 能力扩展。
-## 已完成：Web 容器增强
-
-已加入加载进度、WebLoadState、URL Guard、主页面错误状态与重试能力。
+当前项目用于开源学习和工程实践，不宣称实现完整小程序规范，也不宣称已达到生产 SDK 的安全、兼容性和发布要求。API 数量有限，重点是展示运行时主链路、扩展方式和模块职责。

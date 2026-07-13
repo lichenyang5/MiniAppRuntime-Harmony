@@ -47,6 +47,8 @@ callback_lost
 - 未知 action：点击 Unknown Action，期望 `UNKNOWN_ACTION`。
 - Timeout：点击 Timeout，期望 `timeout`。
 - Clipboard：点击写入和读取按钮，期望 `resolve`，读取结果出现在 response data 中。
+- Storage：按 set/get/remove/clear 顺序验证，get 结果位于 `response.data.value`。
+- URL Guard：点击外链测试按钮，期望容器进入 blocked 并显示重试入口。
 
 ## RuntimeLogger 对照
 
@@ -56,6 +58,11 @@ ArkTS 侧结构化日志方法：
 logBridgeRequest(requestId, action)
 logBridgeResponse(requestId, action, code)
 logBridgeError(requestId, action, code, message)
+logWebLoadBegin(url)
+logWebLoadProgress(url, progress)
+logWebLoadEnd(url)
+logWebLoadError(url, message)
+logWebUrlBlocked(url, reason)
 ```
 
 可以用 requestId 把 H5 DebugPanel 记录和 ArkTS 日志对齐。
@@ -68,3 +75,5 @@ GitHub README 中暂时使用截图占位。后续可以补充：
 - Toast 调用成功。
 - Clipboard readText 返回结果。
 - DebugPanel 展开记录。
+- Storage set/get 结果。
+- Web 加载进度、URL Guard 和错误状态。

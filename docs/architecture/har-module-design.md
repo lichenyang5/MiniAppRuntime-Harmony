@@ -34,6 +34,7 @@ myascf_runtime/
   src/main/ets/imp/
   src/main/ets/error/
   src/main/ets/logger/
+  src/main/ets/container/
 ```
 
 ## 为什么是 HAR
@@ -81,18 +82,20 @@ Web({ src: $rawfile('web/index.html'), controller: this.controller })
 
 `myascf_runtime/oh-package.json5` 的 `main` 指向模块根目录下的 `Index.ets`。根 `Index.ets` 只做包入口转发，实际导出清单放在 `myascf_runtime/src/main/ets/Index.ets`。
 
-`myascf_runtime/src/main/ets/Index.ets` 当前导出：
+`myascf_runtime/src/main/ets/Index.ets` 当前主要导出：
 
 - `MyASCFRuntime`
 - `MyASCFNativeProxy`
 - Bridge 请求/响应类型
 - `BridgeErrorCode`
+- `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus`、`WebLoadState`
+- `RuntimeLogger`
 
 BridgeController、JavaScriptProxy、BridgeDispatcher、HandlerRegistry、RuntimeBootstrap、Biz 和 Imp 当前都保持为 HAR 内部实现，不建议 entry 直接依赖。
 
 ## MyASCFRuntime 门面职责
 
-`MyASCFRuntime` 构造时接收 `webview.WebviewController`，并在 HAR 内部完成：
+`MyASCFRuntime` 构造时接收 `webview.WebviewController` 和 Context，并在 HAR 内部完成：
 
 - 创建 HandlerRegistry。
 - 通过 RuntimeBootstrap 注册内置 API。
@@ -100,6 +103,7 @@ BridgeController、JavaScriptProxy、BridgeDispatcher、HandlerRegistry、Runtim
 - 创建 BridgeCallbackExecutor。
 - 创建 BridgeController。
 - 创建 JavaScriptProxy。
+- 使用 Context 创建 Storage Preferences 实现。
 
 对外只暴露：
 
@@ -131,12 +135,12 @@ getMethodList()
 
 ## 当前状态
 
-HAR 模块结构已经建立，runtime 核心代码已经移动到 `myascf_runtime/src/main/ets`。当前环境没有可直接执行的 hvigor 命令，最终编译与真机回归需要在 DevEco Studio 中完成。
+HAR 模块结构已经建立，runtime 核心代码位于 `myascf_runtime/src/main/ets`。当前项目已使用 DevEco Studio 自带 Hvigor 完成 HAP 构建验证；设备交互仍需在模拟器或真机验收。
 
 ## 后续计划
 
-- 在 DevEco Studio 中验证 HAR 编译。
-- 为更多 API 增加文档和示例。
+- 补充真实运行截图和设备回归记录。
+- 处理当前 SDK 的废弃 API 与权限警告。
 - 如果后续发布为独立库，再补充版本、依赖和发布说明。
 ## Context 与 Storage
 

@@ -1,63 +1,29 @@
 # 项目介绍
 
-这篇文档解决的问题：用通俗语言说明 MiniAppRuntime-Harmony 是什么、为什么做、当前做到哪里，以及公开项目边界是什么。
+这篇文档解决什么问题：用几分钟说明 MiniAppRuntime-Harmony 是什么、为什么做、当前完成了什么以及公开边界。
 
 ## 一句话介绍
 
-MiniAppRuntime-Harmony 是一个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架，用于探索 H5 页面如何通过 ArkWeb 与 ArkTS 通信，并把 Native 能力注册、分发、校验、调用和回调组织成可维护的链路。
+MiniAppRuntime-Harmony 是一个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架。
 
-## 项目定位
+## 为什么做
 
-这个项目不是只把 H5 放进 WebView，而是围绕一个完整调用闭环做工程化拆分：
+ArkWeb 能让应用加载 H5，但一个可维护的运行时还需要解决通信协议、并发回调、action 分发、能力注册、参数校验、平台调用、错误处理和调试观察。本项目用一条最小但完整的链路探索这些问题。
 
 ```text
-H5 页面
--> window.myascf.send(action, params)
--> JavaScriptProxy
--> BridgeController
--> BridgeDispatcher
--> HandlerRegistry
--> Biz
--> Imp
--> HarmonyOS Public Kit
--> BridgeCallbackExecutor
--> H5 Promise resolve / reject
+H5 -> JavaScriptProxy -> BridgeController -> Dispatcher -> Registry
+   -> Biz -> Imp -> HarmonyOS Public Kit
+   -> BridgeCallbackExecutor -> H5 Promise
 ```
 
-## 合规边界
+## 当前完成状态
 
-本项目为个人开源学习与工程实践项目，基于公开 HarmonyOS / ArkTS / ArkWeb 能力实现，不包含任何公司内部源码、内部接口、内部文档或非公开实现。
+项目已经实现本地 H5、Promise JSBridge、requestId/callback map、Timeout/Callback Lost、Dispatcher/Registry、Biz/Imp、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime 门面，以及加载进度、URL Guard 和错误状态页。
 
-## 当前已完成
+## 项目边界
 
-- ArkWeb 加载本地 H5 Demo。
-- H5 通过 Promise 调用 ArkTS。
-- requestId + callback map 管理异步响应。
-- TIMEOUT / CALLBACK_LOST。
-- JavaScriptProxy 通信边界。
-- BridgeController 请求解析。
-- BridgeDispatcher / HandlerRegistry。
-- ToastBiz / ToastImp 调用公开 Toast 能力。
-- ClipboardBiz / ClipboardImp 调用公开剪贴板能力。
-- BridgeCallbackExecutor 统一回调 H5。
-- H5 DebugPanel 展示调用链路。
-- runtime 抽取为 `myascf_runtime` HAR 模块。
-- `MyASCFRuntime` 统一封装 HAR 对外接入。
+这是个人开源学习与工程实践项目，基于公开 HarmonyOS、ArkTS 和 ArkWeb 能力自行实现。当前不是完整小程序规范，也不是生产级安全沙箱；远程内容治理、自动化 API 文档、Network API 和 npm 化 H5 SDK 仍在 Roadmap 中。
 
-## 当前尚未实现
+## 适合如何阅读
 
-- Storage API。
-- Network API。
-- Web 容器白名单与错误页。
-- 更完整的 API 文档生成。
-- 更完整的 DebugPanel 搜索、筛选和统计能力。
-
-## 项目适合展示什么
-
-- HarmonyOS ArkWeb 容器实践。
-- H5 与 ArkTS 双向通信设计。
-- JSBridge 协议设计。
-- Dispatcher / Registry 解耦能力扩展。
-- Biz / Imp 分层处理参数校验和平台能力调用。
-- CallbackExecutor、timeout、callback lost 的异步治理。
-- HAR 模块化和示例应用分离。
+先看运行时架构和 JSBridge 协议，再看 HAR 接入与 Biz/Imp，最后通过阶段文档理解项目如何从本地 H5 演进到可复用模块和 Web 容器增强。

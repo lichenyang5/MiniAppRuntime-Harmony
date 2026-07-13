@@ -37,7 +37,7 @@ PARSE_ERROR    1006
 
 ## PARAM_ERROR
 
-当 `ToastBiz` 校验参数失败时返回。
+当 Toast、Clipboard 或 Storage Biz 参数校验失败时返回。
 
 ```json
 {

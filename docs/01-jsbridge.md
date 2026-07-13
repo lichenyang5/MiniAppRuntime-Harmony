@@ -11,10 +11,9 @@ H5 window.myascf.send
 -> BridgeController.handleMessage
 -> BridgeDispatcher.dispatch
 -> HandlerRegistry.get
--> ToastBiz
--> ToastImp
--> promptAction.showToast
--> ClipboardBiz / ClipboardImp
+-> ToastBiz / ClipboardBiz / StorageBiz
+-> ToastImp / ClipboardImp / StorageImp
+-> HarmonyOS Public Kit
 -> BridgeCallbackExecutor
 -> WebviewController.runJavaScript
 -> H5 window.__myascf_on_native_response__
@@ -35,10 +34,11 @@ entry 通过 `MyASCFRuntime` 接入 HAR，不再直接组装 BridgeController、
 - BridgeController 解析 `BridgeRequest`。
 - BridgeDispatcher 统一分发 action。
 - HandlerRegistry 注册和查询 handler。
-- 当前只注册 `ui.showToast` 一个真实 API。
+- 当前注册 Toast、Clipboard 和 Storage 三组真实 API。
 - ToastBiz 校验 `params.message`。
 - ToastImp 调用公开 HarmonyOS Toast 能力。
 - ClipboardBiz / ClipboardImp 支持 `system.clipboard.writeText` 和 `system.clipboard.readText`。
+- StorageBiz / StorageImp 支持 setItem、getItem、removeItem 和 clear。
 - BridgeCallbackExecutor 统一封装 `runJavaScript` 回调。
 - H5 send 支持 timeout。
 - H5 能识别 callback lost。
@@ -47,11 +47,8 @@ entry 通过 `MyASCFRuntime` 接入 HAR，不再直接组装 BridgeController、
 - Runtime 核心代码已抽取为 `myascf_runtime` HAR 模块。
 - HAR 对外入口已封装为 `MyASCFRuntime`。
 - GitHub README、架构图和文档导航已整理为公开展示口径。
-
-## 暂未实现
-
-- Storage API。
+- Web 容器支持加载进度、URL Guard、错误状态和重试入口。
 
 ## 下一步
 
-下一步可以继续扩展 Storage API / Network API，或者补充真实截图和博客文章。
+下一步优先补充真实截图并发布博客；功能方向可选择 Network API、API 文档生成或 H5 SDK npm 化。

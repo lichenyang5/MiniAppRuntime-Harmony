@@ -74,6 +74,6 @@ window.myascf.send("ui.showToast", { message: "" })
 - 当前 Toast 时长固定为 2000ms。
 - 当前不支持 icon、position 等扩展参数。
 
-## 下一步
+## 调试建议
 
-等 timeout 和 callback lost 处理完善后，再考虑扩展更多 UI API。
+通过 H5 DebugPanel 确认 action、requestId、code 和 duration；如果平台调用抛出异常，Dispatcher 会返回 `INTERNAL_ERROR`。

@@ -13,8 +13,8 @@ flowchart TD
   Proxy --> Controller["BridgeController"]
   Controller --> Dispatcher["BridgeDispatcher"]
   Dispatcher --> Registry["HandlerRegistry"]
-  Registry --> Biz["ToastBiz / ClipboardBiz"]
-  Biz --> Imp["ToastImp / ClipboardImp"]
+  Registry --> Biz["ToastBiz / ClipboardBiz / StorageBiz"]
+  Biz --> Imp["ToastImp / ClipboardImp / StorageImp"]
   Imp --> Kit["HarmonyOS Public Kit"]
   Biz --> Response["BridgeResponse"]
   Dispatcher --> Response
@@ -124,6 +124,13 @@ ClipboardBiz
 -> pasteboard
 ```
 
+```text
+StorageBiz
+-> 校验 key / value 并组装响应
+-> StorageImp
+-> Preferences
+```
+
 Biz 面向 JSBridge 协议，Imp 面向 HarmonyOS 公开 Kit。
 
 ## 为什么要有 BridgeCallbackExecutor
@@ -164,6 +171,6 @@ recordLost
 
 ## 当前尚未实现
 
-- Storage API。
 - Network API。
+- H5 SDK npm 化。
 - 更完整的 DebugPanel 搜索、筛选和耗时统计。

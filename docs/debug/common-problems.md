@@ -2,11 +2,7 @@
 
 这篇文档解决的问题：收集后续开发中常见的 ArkWeb / JSBridge 问题和排查方向。
 
-## 当前状态
-
-当前尚未形成完整问题库，后续阶段补充。
-
-## 已知排查方向
+## 排查方向
 
 ### H5 页面没有显示
 
@@ -54,3 +50,7 @@ DebugPanel 是可选能力，即使没有加载，也不能影响 `window.myascf
 ## 页面加载失败但没有白屏
 
 这是容器错误覆盖层的预期行为。确认日志中的 URL 和公开错误信息，修复后点击“重试首页”。子资源错误只记录，不会替换整个页面。
+
+## Cannot find module 'myascf_runtime'
+
+确认 HAR 的 package name、`entry/oh-package.json5` file dependency、根 `build-profile.json5` modules 和模块根 `Index.ets` 一致。修改后执行依赖同步、Clean 和 Rebuild。

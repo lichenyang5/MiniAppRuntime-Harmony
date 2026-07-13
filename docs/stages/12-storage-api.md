@@ -24,4 +24,4 @@ new MyASCFRuntime(controller, getContext(this))
 - 空 key、缺少 value、非字符串 value 返回 `PARAM_ERROR`。
 - Toast、Clipboard、DebugPanel 和本地 HAR 导入方式保持可用。
 
-当前范围仅包含字符串键值存储。下一步可选择 Network API、Web 容器白名单与错误页，或 API 文档生成。
+当前范围仅包含字符串键值存储。Web 容器加载状态、URL Guard 与错误状态已在后续阶段完成；再下一步可选择 Network API、API 文档生成或 H5 SDK npm 化。

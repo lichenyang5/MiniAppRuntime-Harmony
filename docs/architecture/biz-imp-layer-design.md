@@ -1,10 +1,10 @@
 # Biz / Imp 分层设计
 
-这篇文档解决的问题：说明为什么要把业务校验和 HarmonyOS 系统能力调用拆成 Biz / Imp 两层，并用 Toast 与 Clipboard 展示当前实现。
+这篇文档解决的问题：说明为什么要把协议校验和 HarmonyOS 平台调用拆成 Biz / Imp 两层，并用 Toast、Clipboard 与 Storage 展示扩展方式。
 
 ## 当前状态
 
-当前已有两组真实能力接入 Biz / Imp：
+当前已有三组真实能力接入 Biz / Imp：
 
 ```text
 ui.showToast
@@ -16,6 +16,11 @@ system.clipboard.writeText / readText
 -> ClipboardBiz
 -> ClipboardImp
 -> pasteboard
+
+system.storage.setItem / getItem / removeItem / clear
+-> StorageBiz
+-> StorageImp
+-> Preferences
 ```
 
 ## 分层目标
@@ -60,9 +65,7 @@ pasteboard.getSystemPasteboard().getData(...)
 - Biz 只管业务语义。
 - Imp 只管系统能力。
 
-扩展 Clipboard API 时，主链路不需要大改，说明当前架构已经具备基础扩展能力。
+扩展 Clipboard 和 Storage 时，BridgeController、Dispatcher 与 CallbackExecutor 都不需要大改，说明主链路与具体能力已经解耦。
 ## Storage 分层
-
-这篇文档解决什么问题：解释 Storage 如何继续遵守 Biz/Imp 边界。
 
 `StorageBiz` 负责 key/value 校验和 BridgeResponse；`StorageImp` 负责 Preferences 调用。Context 从 `MyASCFRuntime` 传入，H5、Dispatcher 和 Demo 都不直接依赖 Preferences。

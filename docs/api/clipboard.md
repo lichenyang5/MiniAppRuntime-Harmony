@@ -86,7 +86,7 @@ system.clipboard.readText
 - 支持写入纯文本。
 - 支持读取纯文本。
 - 不支持图片、富文本、多 record 解析。
-- 不实现权限系统。
+- 权限与系统弹窗遵循当前 HarmonyOS SDK 和设备行为，项目不额外实现权限框架。
 
 ## H5 示例
 

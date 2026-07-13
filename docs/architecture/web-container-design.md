@@ -25,3 +25,7 @@
 当前 SDK 已确认支持 `onPageBegin`、`onProgressChange`、`onPageEnd`、`onErrorReceive` 和 `onLoadIntercept`。错误处理只将主框架请求升级为整页错误，避免图片或样式失败导致页面被覆盖。
 
 entry 负责 ArkWeb、rawfile Resource 和 UI；HAR 负责可复用配置、判断、状态类型和日志。Bridge 协议及 Toast、Clipboard、Storage 链路不受影响。
+
+## 当前边界
+
+当前实现提供轻量 URL 判断和错误状态，不包含证书策略、资源完整性校验、下载治理或生产级远程内容安全策略。它用于建立容器边界意识，并为后续远程 H5 管理留下结构。
