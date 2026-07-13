@@ -1,6 +1,7 @@
 # 运行时架构
 
 这篇文档解决的问题：说明 MiniAppRuntime-Harmony 的工程结构、HAR 模块化后的职责边界，以及每一层为什么独立存在。
+![架构图.png](C:\Users\30829\Desktop\ArkMiniRuntime\docs\architecture\架构图.png)
 
 ## 总览
 

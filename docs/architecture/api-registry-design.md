@@ -15,6 +15,7 @@ HandlerRegistry.has(action)
 当前只注册一个 action：
 
 ```text
+
 ui.showToast
 ```
 
