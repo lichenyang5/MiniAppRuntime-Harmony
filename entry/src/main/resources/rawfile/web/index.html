@@ -32,6 +32,18 @@
           <button id="clipboardParamErrorButton" class="secondaryButton" type="button">剪贴板参数错误</button>
         </div>
       </section>
+      <section class="apiSection storageSection">
+        <h2>Storage API</h2>
+        <input id="storageKey" class="textInput" value="username" aria-label="Storage key">
+        <input id="storageValue" class="textInput" value="lichenyang" aria-label="Storage value">
+        <div class="buttonGroup storageButtons">
+          <button id="storageSetButton" type="button">写入 Storage</button>
+          <button id="storageGetButton" class="secondaryButton" type="button">读取 Storage</button>
+          <button id="storageRemoveButton" class="secondaryButton" type="button">删除 Storage</button>
+          <button id="storageClearButton" class="secondaryButton" type="button">清空 Storage</button>
+          <button id="storageParamErrorButton" class="secondaryButton" type="button">Storage 参数错误</button>
+        </div>
+      </section>
       <p id="status" class="status">等待 H5 发起调用。</p>
       <pre id="result" class="result">暂无响应</pre>
       <pre id="eventLog" class="eventLog">暂无事件</pre>

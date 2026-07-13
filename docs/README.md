@@ -82,3 +82,6 @@ H5 send
 当前已完成 ArkWeb 本地 H5、JSBridge 双向通信、Dispatcher / Registry、Toast、Clipboard、错误链路、DebugPanel 和 runtime HAR 模块化。
 
 Storage / Network / 白名单与错误页仍是后续计划。
+## Storage API
+
+第三组真实 API 已完成，参见 [Storage API](api/storage.md) 和 [Stage 12](stages/12-storage-api.md)。

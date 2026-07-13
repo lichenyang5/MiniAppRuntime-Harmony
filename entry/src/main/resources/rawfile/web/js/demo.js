@@ -7,12 +7,21 @@
   var clipboardWriteButton = document.getElementById('clipboardWriteButton');
   var clipboardReadButton = document.getElementById('clipboardReadButton');
   var clipboardParamErrorButton = document.getElementById('clipboardParamErrorButton');
+  var storageKey = document.getElementById('storageKey');
+  var storageValue = document.getElementById('storageValue');
+  var storageSetButton = document.getElementById('storageSetButton');
+  var storageGetButton = document.getElementById('storageGetButton');
+  var storageRemoveButton = document.getElementById('storageRemoveButton');
+  var storageClearButton = document.getElementById('storageClearButton');
+  var storageParamErrorButton = document.getElementById('storageParamErrorButton');
   var status = document.getElementById('status');
   var result = document.getElementById('result');
   var eventLog = document.getElementById('eventLog');
 
   if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton ||
     !clipboardText || !clipboardWriteButton || !clipboardReadButton || !clipboardParamErrorButton ||
+    !storageKey || !storageValue || !storageSetButton || !storageGetButton || !storageRemoveButton ||
+    !storageClearButton || !storageParamErrorButton ||
     !status || !result || !eventLog) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
@@ -113,5 +122,30 @@
     window.myascf.send('system.clipboard.writeText', {})
       .then(renderResolved)
       .catch(renderRejected);
+  });
+
+  function sendStorage(action, params) {
+    renderPending(action);
+    window.myascf.send(action, params).then(renderResolved).catch(renderRejected);
+  }
+
+  storageSetButton.addEventListener('click', function () {
+    sendStorage('system.storage.setItem', { key: storageKey.value, value: storageValue.value });
+  });
+
+  storageGetButton.addEventListener('click', function () {
+    sendStorage('system.storage.getItem', { key: storageKey.value });
+  });
+
+  storageRemoveButton.addEventListener('click', function () {
+    sendStorage('system.storage.removeItem', { key: storageKey.value });
+  });
+
+  storageClearButton.addEventListener('click', function () {
+    sendStorage('system.storage.clear', {});
+  });
+
+  storageParamErrorButton.addEventListener('click', function () {
+    sendStorage('system.storage.setItem', { key: '' });
   });
 })();

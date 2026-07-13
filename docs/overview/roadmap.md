@@ -36,3 +36,6 @@
 - 当前没有实现完整小程序规范。
 - 当前没有实现 Storage / Network / 白名单错误页。
 - 当前 API 数量有限，重点展示 JSBridge 主链路和工程分层。
+## 已完成：Storage API
+
+已接入 `system.storage.setItem/getItem/removeItem/clear`，使用 Preferences 验证有状态 Native 能力扩展。

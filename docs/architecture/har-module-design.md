@@ -62,7 +62,7 @@ entry 侧只需要创建 WebviewController 和 runtime 门面：
 
 ```ts
 private controller: webview.WebviewController = new webview.WebviewController();
-private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller);
+private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(this));
 ```
 
 注册 JavaScriptProxy 时不再手动写 proxy 名称和方法列表：
@@ -138,3 +138,14 @@ HAR 模块结构已经建立，runtime 核心代码已经移动到 `myascf_runti
 - 在 DevEco Studio 中验证 HAR 编译。
 - 为更多 API 增加文档和示例。
 - 如果后续发布为独立库，再补充版本、依赖和发布说明。
+## Context 与 Storage
+
+这篇文档解决什么问题：说明需要 Context 的 Native 能力如何接入 HAR。
+
+Storage 使用 Preferences，因此 Demo 创建门面时传入 `getContext(this)`：
+
+```ts
+private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(this));
+```
+
+门面将 Context 交给 RuntimeBootstrap 和 StorageImp。外部仍只注册 `runtime.getNativeProxy()`，无需创建 StorageBiz、StorageImp 或手动注册 action。

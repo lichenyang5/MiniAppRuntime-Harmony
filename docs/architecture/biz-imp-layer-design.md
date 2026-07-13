@@ -61,3 +61,8 @@ pasteboard.getSystemPasteboard().getData(...)
 - Imp 只管系统能力。
 
 扩展 Clipboard API 时，主链路不需要大改，说明当前架构已经具备基础扩展能力。
+## Storage 分层
+
+这篇文档解决什么问题：解释 Storage 如何继续遵守 Biz/Imp 边界。
+
+`StorageBiz` 负责 key/value 校验和 BridgeResponse；`StorageImp` 负责 Preferences 调用。Context 从 `MyASCFRuntime` 传入，H5、Dispatcher 和 Demo 都不直接依赖 Preferences。

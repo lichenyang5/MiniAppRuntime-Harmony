@@ -31,7 +31,7 @@ import { webview } from '@kit.ArkWeb';
 import { MyASCFRuntime } from 'myascf_runtime';
 
 private controller: webview.WebviewController = new webview.WebviewController();
-private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller);
+private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(this));
 ```
 
 注册到 ArkWeb：

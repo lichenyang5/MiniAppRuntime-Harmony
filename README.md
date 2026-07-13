@@ -85,7 +85,7 @@ import { webview } from '@kit.ArkWeb';
 import { MyASCFRuntime } from 'myascf_runtime';
 
 private controller: webview.WebviewController = new webview.WebviewController();
-private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller);
+private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(this));
 ```
 
 然后把 runtime 暴露给 ArkWeb：
@@ -175,3 +175,19 @@ docs/
 - 通过 DebugPanel 可视化调用链路。
 - 将 runtime 抽取为 HAR 模块，让 `entry` 更像示例应用，`myascf_runtime` 承载框架核心。
 - 通过 `MyASCFRuntime` 封装 HAR 对外入口，降低 Demo 接入成本。
+## Storage API
+
+框架现支持 `system.storage.setItem`、`getItem`、`removeItem`、`clear`。Storage 基于 HarmonyOS Preferences；创建 HAR 门面时需传入 Context：
+
+```ts
+private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(this));
+```
+
+H5 调用示例：
+
+```js
+await window.myascf.send('system.storage.setItem', { key: 'username', value: 'lichenyang' });
+const response = await window.myascf.send('system.storage.getItem', { key: 'username' });
+```
+
+详细协议见 [docs/api/storage.md](docs/api/storage.md)。

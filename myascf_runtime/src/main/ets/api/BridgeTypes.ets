@@ -1,6 +1,8 @@
 export interface BridgeRequestParams {
   message?: string;
   text?: string;
+  key?: string;
+  value?: string;
 }
 
 export interface BridgeRequest {
@@ -12,6 +14,8 @@ export interface BridgeRequest {
 export interface BridgeResponseData {
   echoAction?: string;
   text?: string;
+  key?: string;
+  value?: string;
 }
 
 export interface BridgeResponse {
