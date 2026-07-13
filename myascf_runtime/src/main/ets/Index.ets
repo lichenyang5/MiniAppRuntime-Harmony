@@ -7,3 +7,7 @@ export {
   BridgeResponseData
 } from './api/BridgeTypes';
 export { BridgeErrorCode } from './error/BridgeErrorCode';
+export { WebContainerConfig } from './container/WebContainerConfig';
+export { WebUrlGuard } from './container/WebUrlGuard';
+export { WebLoadStatus, WebLoadState } from './container/WebLoadState';
+export { RuntimeLogger } from './logger/RuntimeLogger';

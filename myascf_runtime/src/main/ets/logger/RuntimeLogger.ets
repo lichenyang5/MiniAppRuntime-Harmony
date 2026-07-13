@@ -27,4 +27,24 @@ export class RuntimeLogger {
   static logBridgeError(requestId: string, action: string, code: number, message: string): void {
     RuntimeLogger.error(`[BridgeError] requestId=${requestId}, action=${action}, code=${code}, message=${message}`);
   }
+
+  static logWebLoadBegin(url: string): void {
+    RuntimeLogger.info(`[WebContainer] load begin: ${url}`);
+  }
+
+  static logWebLoadProgress(url: string, progress: number): void {
+    RuntimeLogger.info(`[WebContainer] load progress: url=${url}, progress=${progress}`);
+  }
+
+  static logWebLoadEnd(url: string): void {
+    RuntimeLogger.info(`[WebContainer] load end: ${url}`);
+  }
+
+  static logWebLoadError(url: string, message: string): void {
+    RuntimeLogger.error(`[WebContainer] load error: url=${url}, message=${message}`);
+  }
+
+  static logWebUrlBlocked(url: string, reason: string): void {
+    RuntimeLogger.warn(`[WebContainer] url blocked: url=${url}, reason=${reason}`);
+  }
 }

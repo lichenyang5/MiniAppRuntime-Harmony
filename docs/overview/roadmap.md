@@ -39,3 +39,6 @@
 ## 已完成：Storage API
 
 已接入 `system.storage.setItem/getItem/removeItem/clear`，使用 Preferences 验证有状态 Native 能力扩展。
+## 已完成：Web 容器增强
+
+已加入加载进度、WebLoadState、URL Guard、主页面错误状态与重试能力。

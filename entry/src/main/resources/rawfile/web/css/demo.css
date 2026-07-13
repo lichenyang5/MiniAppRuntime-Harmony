@@ -57,6 +57,21 @@ h1 {
   margin-top: 18px;
 }
 
+.containerSection {
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.containerMeta {
+  margin: 0 0 10px;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
 .storageSection {
   padding-top: 18px;
   border-top: 1px solid #e5e7eb;

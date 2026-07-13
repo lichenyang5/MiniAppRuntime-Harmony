@@ -149,3 +149,6 @@ private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(t
 ```
 
 门面将 Context 交给 RuntimeBootstrap 和 StorageImp。外部仍只注册 `runtime.getNativeProxy()`，无需创建 StorageBiz、StorageImp 或手动注册 action。
+## Web 容器公共模型
+
+HAR 对外提供 `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus`、`WebLoadState` 和 Web 日志方法。ArkWeb 组件、`$rawfile` 和错误页 UI 仍由 entry 管理，避免 HAR 配置模型耦合页面资源。

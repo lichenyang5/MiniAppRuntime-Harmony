@@ -191,3 +191,8 @@ const response = await window.myascf.send('system.storage.getItem', { key: 'user
 ```
 
 详细协议见 [docs/api/storage.md](docs/api/storage.md)。
+## Web Container
+
+HAR 提供 `WebContainerConfig`、`WebUrlGuard` 和 `WebLoadState`，示例应用展示加载进度、URL 白名单拦截、加载错误状态与重试入口。容器事件统一写入 `RuntimeLogger`，不改变现有 JSBridge 协议。
+
+默认规则允许本地 rawfile；远程 HTTP(S) 页面必须同时命中 scheme 与 host 白名单。详细设计见 [Web Container Design](docs/architecture/web-container-design.md)。

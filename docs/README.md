@@ -85,3 +85,6 @@ Storage / Network / 白名单与错误页仍是后续计划。
 ## Storage API
 
 第三组真实 API 已完成，参见 [Storage API](api/storage.md) 和 [Stage 12](stages/12-storage-api.md)。
+## Web 容器
+
+容器增强设计参见 [Web Container Design](architecture/web-container-design.md) 和 [Stage 13](stages/13-web-container-guard-error-page.md)。

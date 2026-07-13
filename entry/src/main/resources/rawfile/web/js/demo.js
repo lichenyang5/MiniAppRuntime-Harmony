@@ -17,15 +17,23 @@
   var status = document.getElementById('status');
   var result = document.getElementById('result');
   var eventLog = document.getElementById('eventLog');
+  var currentUrl = document.getElementById('currentUrl');
+  var blockedUrlButton = document.getElementById('blockedUrlButton');
 
   if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton ||
     !clipboardText || !clipboardWriteButton || !clipboardReadButton || !clipboardParamErrorButton ||
     !storageKey || !storageValue || !storageSetButton || !storageGetButton || !storageRemoveButton ||
     !storageClearButton || !storageParamErrorButton ||
-    !status || !result || !eventLog) {
+    !status || !result || !eventLog || !currentUrl || !blockedUrlButton) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
   }
+
+  currentUrl.textContent = '当前 URL：' + window.location.href;
+  blockedUrlButton.addEventListener('click', function () {
+    console.log('[ArkMiniRuntime demo] Testing blocked URL.');
+    window.location.href = 'https://blocked.example.com/container-test';
+  });
 
   function appendEvent(label, payload) {
     var line = '[' + new Date().toLocaleTimeString() + '] ' + label + ' ' + JSON.stringify(payload);

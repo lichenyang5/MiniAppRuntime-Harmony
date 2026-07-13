@@ -47,3 +47,10 @@ DebugPanel 是可选能力，即使没有加载，也不能影响 `window.myascf
 ### 导出 JSON 没有复制到剪贴板
 
 部分 WebView 环境可能不支持浏览器侧 `navigator.clipboard.writeText`。这种情况下，导出内容仍会显示在页面的 JSON 输出区域，可以手动复制。
+## 页面被白名单拦截
+
+检查 URL scheme 是否在 `allowedSchemes`，HTTP(S) host 是否在 `allowedHosts`。本地 rawfile 应以 `resource://rawfile/` 形式被 ArkWeb 解析。Debug 日志中的 `[WebContainer] url blocked` 会给出原因。
+
+## 页面加载失败但没有白屏
+
+这是容器错误覆盖层的预期行为。确认日志中的 URL 和公开错误信息，修复后点击“重试首页”。子资源错误只记录，不会替换整个页面。
