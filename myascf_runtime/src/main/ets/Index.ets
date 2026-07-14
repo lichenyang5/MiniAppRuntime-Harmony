@@ -3,6 +3,7 @@ export { MyASCFNativeProxy } from './api/RuntimeTypes';
 export {
   BridgeRequest,
   BridgeRequestParams,
+  ApiSummary,
   BridgeResponse,
   BridgeResponseData
 } from './api/BridgeTypes';
@@ -11,3 +12,10 @@ export { WebContainerConfig } from './container/WebContainerConfig';
 export { WebUrlGuard } from './container/WebUrlGuard';
 export { WebLoadStatus, WebLoadState } from './container/WebLoadState';
 export { RuntimeLogger } from './logger/RuntimeLogger';
+export {
+  ApiCategory,
+  ApiManifestItem,
+  ApiParamMeta,
+  ApiResponseMeta,
+  BUILTIN_API_MANIFEST
+} from './api/ApiManifest';

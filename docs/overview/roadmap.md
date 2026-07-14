@@ -20,6 +20,10 @@
 - [x] URL Guard 与轻量白名单判断。
 - [x] Web 错误状态和重试入口。
 - [x] GitHub README、HAR 指南、架构图和博客草稿整理。
+- [x] API Manifest 能力清单。
+- [x] README 与 docs API 总览表格。
+- [x] API Manifest 能力列表和新增 API 模板。
+- [x] `runtime.getApiList` 动态查询与 DebugPanel 动态能力列表。
 
 ## 待完成
 

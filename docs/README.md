@@ -12,6 +12,8 @@
 6. [Biz / Imp 分层](architecture/biz-imp-layer-design.md)
 7. [Web 容器设计](architecture/web-container-design.md)
 8. [调试指南](debug/debug-guide.md)
+9. [API Manifest 设计](architecture/api-manifest-design.md)
+10. [新增 API 指南](guide/add-new-api.md)
 
 ## 目录作用
 
@@ -29,13 +31,15 @@
 ## API
 
 - [ui.showToast](api/ui-show-toast.md)
+- [API 总览](api/index.md)
+- [Runtime API](api/runtime.md)
 - [Clipboard](api/clipboard.md)
 - [Storage](api/storage.md)
 - [错误码](api/error-code.md)
 
 ## 当前状态
 
-已完成 JSBridge 主链路、真实 Toast/Clipboard/Storage API、DebugPanel、本地 HAR、MyASCFRuntime 门面和轻量 Web 容器增强。真实运行截图、博客发布、API 文档自动生成、Network API 和 H5 SDK npm 化尚未完成。
+已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest 和 `runtime.getApiList` 动态查询。真实运行截图、博客发布、API 文档自动生成、Network API 和 H5 SDK npm 化尚未完成。
 
 ## 面试讲解路径
 

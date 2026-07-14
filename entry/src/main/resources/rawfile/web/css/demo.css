@@ -191,6 +191,86 @@ button:active {
   margin-top: 16px;
 }
 
+.debugApiCatalog {
+  margin-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.debugSectionTitle,
+.debug-api-heading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.debugSectionTitle h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.debugSectionTitle span,
+.debug-api-heading span {
+  color: #64748b;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.debugApiNote {
+  margin: 8px 0 12px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.debugApiLoadButton {
+  margin-bottom: 12px;
+}
+
+.debugApiList {
+  display: grid;
+  gap: 8px;
+}
+
+.debug-api-item {
+  padding: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.debug-api-item code {
+  color: #0f172a;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.debug-api-item p,
+.debug-api-item small {
+  margin: 6px 0 0;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.debug-api-item strong {
+  display: block;
+  margin-top: 6px;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+.debug-api-error {
+  margin: 0;
+  padding: 10px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #b91c1c;
+  background: #fef2f2;
+  font-size: 12px;
+}
+
 .debug-empty {
   margin: 0;
   color: #64748b;

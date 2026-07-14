@@ -2,6 +2,8 @@
 
 这篇文档解决什么问题：说明 H5 如何通过 MyASCF 调用 HarmonyOS Preferences 本地键值存储，以及参数、响应和错误约定。
 
+四个 action 的结构化元信息维护在 HAR `BUILTIN_API_MANIFEST`。
+
 ## Actions
 
 - `system.storage.setItem`：写入字符串值，参数为 `key`、`value`。

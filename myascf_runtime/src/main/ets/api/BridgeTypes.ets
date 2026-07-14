@@ -11,11 +11,21 @@ export interface BridgeRequest {
   params?: BridgeRequestParams;
 }
 
+export interface ApiSummary {
+  action: string;
+  category: string;
+  title: string;
+  description: string;
+  implemented: boolean;
+  paramsText: string;
+}
+
 export interface BridgeResponseData {
   echoAction?: string;
   text?: string;
   key?: string;
   value?: string;
+  apis?: ApiSummary[];
 }
 
 export interface BridgeResponse {

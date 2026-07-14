@@ -19,12 +19,13 @@
   var eventLog = document.getElementById('eventLog');
   var currentUrl = document.getElementById('currentUrl');
   var blockedUrlButton = document.getElementById('blockedUrlButton');
+  var loadApiListButton = document.getElementById('loadApiListButton');
 
   if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton ||
     !clipboardText || !clipboardWriteButton || !clipboardReadButton || !clipboardParamErrorButton ||
     !storageKey || !storageValue || !storageSetButton || !storageGetButton || !storageRemoveButton ||
     !storageClearButton || !storageParamErrorButton ||
-    !status || !result || !eventLog || !currentUrl || !blockedUrlButton) {
+    !status || !result || !eventLog || !currentUrl || !blockedUrlButton || !loadApiListButton) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
   }
@@ -33,6 +34,24 @@
   blockedUrlButton.addEventListener('click', function () {
     console.log('[ArkMiniRuntime demo] Testing blocked URL.');
     window.location.href = 'https://blocked.example.com/container-test';
+  });
+
+  loadApiListButton.addEventListener('click', function () {
+    renderPending('runtime.getApiList');
+    window.myascf.send('runtime.getApiList', {})
+      .then(function (response) {
+        var apis = response && response.data && Array.isArray(response.data.apis) ? response.data.apis : [];
+        if (window.MyASCFDebugPanel && window.MyASCFDebugPanel.setApiList) {
+          window.MyASCFDebugPanel.setApiList(apis);
+        }
+        renderResolved(response);
+      })
+      .catch(function (err) {
+        if (window.MyASCFDebugPanel && window.MyASCFDebugPanel.setApiListError) {
+          window.MyASCFDebugPanel.setApiListError(err && err.message ? err.message : 'API 列表加载失败');
+        }
+        renderRejected(err);
+      });
   });
 
   function appendEvent(label, payload) {

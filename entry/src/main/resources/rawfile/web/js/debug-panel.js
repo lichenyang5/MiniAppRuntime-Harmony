@@ -1,6 +1,9 @@
 (function () {
   var MAX_RECORDS = 20;
   var records = [];
+  var supportedApis = [];
+  var apiListError = '';
+  var apiListLoaded = false;
 
   function clone(value) {
     try {
@@ -56,6 +59,36 @@
 
   function getExportOutput() {
     return document.getElementById('debugExportOutput');
+  }
+
+  function renderApiList() {
+    var container = document.getElementById('debugApiList');
+    if (!container) {
+      return;
+    }
+    if (apiListError) {
+      container.innerHTML = '<p class="debug-api-error">' + escapeHtml(apiListError) + '</p>';
+      return;
+    }
+    if (supportedApis.length === 0) {
+      container.innerHTML = apiListLoaded ?
+        '<p class="debug-empty">runtime 返回的 API 列表为空</p>' :
+        '<p class="debug-empty">点击“加载 API 列表”从 runtime 动态读取</p>';
+      return;
+    }
+    container.innerHTML = supportedApis.map(function (api) {
+      return [
+        '<article class="debug-api-item">',
+        '<div class="debug-api-heading">',
+        '<code>' + escapeHtml(api.action) + '</code>',
+        '<span>' + escapeHtml(api.category) + ' · ' + (api.implemented ? 'implemented' : 'planned') + '</span>',
+        '</div>',
+        '<strong>' + escapeHtml(api.title) + '</strong>',
+        '<p>' + escapeHtml(api.description) + '</p>',
+        '<small>params: ' + escapeHtml(api.paramsText) + '</small>',
+        '</article>'
+      ].join('');
+    }).join('');
   }
 
   function formatJson(value) {
@@ -118,6 +151,18 @@
     recordLost: function (record) {
       upsert(record);
     },
+    setApiList: function (apiList) {
+      supportedApis = Array.isArray(apiList) ? apiList : [];
+      apiListError = '';
+      apiListLoaded = true;
+      renderApiList();
+    },
+    setApiListError: function (message) {
+      supportedApis = [];
+      apiListError = message || 'API 列表加载失败';
+      apiListLoaded = true;
+      renderApiList();
+    },
     clear: function () {
       records = [];
       render();
@@ -155,6 +200,7 @@
       });
     }
 
+    renderApiList();
     render();
   });
 })();

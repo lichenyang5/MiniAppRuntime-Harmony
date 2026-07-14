@@ -1,10 +1,8 @@
 # API 注册设计
 
-这篇文档解决的问题：说明 HandlerRegistry 如何管理 action 与 handler 的关系，以及为什么 API 能力不应该散落在 Web 页面或 BridgeController 中。
+这篇文档解决的问题：说明 HandlerRegistry 如何管理 action 与 handler，以及 ActionNames、ApiManifest 和 RuntimeBootstrap 如何协作。
 
-## 当前状态
-
-当前已经实现最小 Registry：
+## 当前 Registry
 
 ```text
 HandlerRegistry.register(action, handler)
@@ -12,57 +10,29 @@ HandlerRegistry.get(action)
 HandlerRegistry.has(action)
 ```
 
-当前只注册一个 action：
+RuntimeBootstrap 当前注册 7 个 action：Toast 1 个、Clipboard 2 个、Storage 4 个。Dispatcher 查询 Registry，未找到时返回 UNKNOWN_ACTION，handler 异常由 Dispatcher 转换为 INTERNAL_ERROR。
+
+## 三份信息的职责
+
+- `ActionNames`：定义 action 常量，避免 ArkTS 运行时代码硬编码。
+- `ApiManifest`：描述分类、参数、响应、错误、实现类和示例。
+- `RuntimeBootstrap`：创建 handler，并注册到 HandlerRegistry。
+
+Manifest 不负责执行注册。新增 API 时需要同时更新三者，构建和评审时对照检查。
+
+## Registry 不负责什么
+
+Registry 不解析 JSON、不校验参数、不调用 HarmonyOS Kit、不操作 ArkWeb，也不回调 H5。参数校验属于 Biz，平台调用属于 Imp，响应执行属于 BridgeCallbackExecutor。
+
+## 当前注册链路
 
 ```text
-
-ui.showToast
-```
-
-handler 仍然是 mock handler，不调用 ToastBiz / ToastImp。
-
-## 为什么需要 Registry
-
-如果没有 Registry，BridgeController 或 Dispatcher 很容易写成大量条件判断。Registry 把 action 和 handler 的绑定变成显式注册，后续新增 API 时只需要注册新 handler。
-
-## 职责边界
-
-Registry 只负责：
-
-- 注册 action。
-- 查询 handler。
-- 判断 action 是否存在。
-
-Registry 不负责：
-
-- 解析 JSON。
-- 校验参数。
-- 调用 ArkWeb。
-- 调用 HarmonyOS 系统能力。
-- 回调 H5。
-
-## 当前注册流程
-
-当前通过 `RuntimeBootstrap.createRegistry()` 创建 Registry，并注册 `ui.showToast` mock handler。
-
-```text
-RuntimeBootstrap
--> HandlerRegistry.register("ui.showToast", ShowToastMockHandler)
+MyASCFRuntime
+-> RuntimeBootstrap.createRegistry(context)
+-> HandlerRegistry.register(action, handler)
 -> BridgeDispatcher.dispatch(request)
 -> HandlerRegistry.get(request.action)
+-> handler -> Biz -> Imp
 ```
 
-ArkTS 侧统一通过 `ACTION_UI_SHOW_TOAST` 常量引用 action，避免在运行时代码中到处硬编码字符串。
-
-## 后续扩展
-
-后续会把 mock handler 替换成真实分层：
-
-```text
-ui.showToast handler
--> ToastBiz
--> ToastImp
--> promptAction.showToast
-```
-
-更多 API 会等 `ui.showToast` 闭环稳定后再接入。
+能力元信息设计见 [API Manifest](api-manifest-design.md)，扩展步骤见 [新增 API 指南](../guide/add-new-api.md)。

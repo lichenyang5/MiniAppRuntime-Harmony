@@ -65,6 +65,15 @@
           <button id="debugExportButton" class="secondaryButton" type="button">导出 JSON</button>
         </div>
       </div>
+      <section class="debugApiCatalog">
+        <div class="debugSectionTitle">
+          <h3>当前支持的 API</h3>
+          <span>Manifest mirror</span>
+        </div>
+        <p class="debugApiNote">通过 runtime.getApiList 动态读取 HAR 内置 ApiManifest。</p>
+        <button id="loadApiListButton" class="secondaryButton debugApiLoadButton" type="button">加载 API 列表</button>
+        <div id="debugApiList" class="debugApiList"></div>
+      </section>
       <div id="debugRecords" class="debugRecords"></div>
       <pre id="debugExportOutput" class="debugExportOutput"></pre>
     </section>

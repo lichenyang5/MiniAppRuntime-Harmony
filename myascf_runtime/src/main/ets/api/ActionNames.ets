@@ -5,3 +5,4 @@ export const ACTION_SYSTEM_STORAGE_SET_ITEM: string = 'system.storage.setItem';
 export const ACTION_SYSTEM_STORAGE_GET_ITEM: string = 'system.storage.getItem';
 export const ACTION_SYSTEM_STORAGE_REMOVE_ITEM: string = 'system.storage.removeItem';
 export const ACTION_SYSTEM_STORAGE_CLEAR: string = 'system.storage.clear';
+export const ACTION_RUNTIME_GET_API_LIST: string = 'runtime.getApiList';

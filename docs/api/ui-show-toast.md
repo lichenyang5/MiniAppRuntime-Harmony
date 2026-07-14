@@ -2,6 +2,8 @@
 
 这篇文档解决的问题：记录 `ui.showToast` 的请求参数、响应格式、错误处理和当前实现状态。
 
+该 action 的结构化元信息维护在 HAR `BUILTIN_API_MANIFEST`，本页补充详细协议和使用说明。
+
 ## 当前状态
 
 `ui.showToast` 已经从 mock handler 改为真实能力：

@@ -48,7 +48,8 @@ entry 通过 `MyASCFRuntime` 接入 HAR，不再直接组装 BridgeController、
 - HAR 对外入口已封装为 `MyASCFRuntime`。
 - GitHub README、架构图和文档导航已整理为公开展示口径。
 - Web 容器支持加载进度、URL Guard、错误状态和重试入口。
+- HAR 提供 API Manifest，`runtime.getApiList` 让 DebugPanel 动态展示当前 8 个 API。
 
 ## 下一步
 
-下一步优先补充真实截图并发布博客；功能方向可选择 Network API、API 文档生成或 H5 SDK npm 化。
+下一步优先补充真实截图并发布博客；元信息方向可推进 API 文档自动生成。

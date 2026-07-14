@@ -2,6 +2,8 @@
 
 这篇文档解决的问题：记录 JSBridge 统一错误码，方便 H5 侧根据 `code` 做 resolve / reject、timeout 和 callback lost 展示。
 
+每个 action 可能返回的错误名称同时记录在 `BUILTIN_API_MANIFEST`；错误码数值仍以 `BridgeErrorCode.ets` 为准。
+
 ## 当前错误码
 
 ```text

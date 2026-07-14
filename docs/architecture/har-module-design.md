@@ -90,8 +90,11 @@ Web({ src: $rawfile('web/index.html'), controller: this.controller })
 - `BridgeErrorCode`
 - `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus`、`WebLoadState`
 - `RuntimeLogger`
+- `BUILTIN_API_MANIFEST`、`ApiCategory` 和 Manifest 元信息类型
 
 BridgeController、JavaScriptProxy、BridgeDispatcher、HandlerRegistry、RuntimeBootstrap、Biz 和 Imp 当前都保持为 HAR 内部实现，不建议 entry 直接依赖。
+
+API Manifest 是只读公共元信息，可供外部 Demo、文档工具或调试展示读取，但不会替代 RuntimeBootstrap 的 handler 注册。
 
 ## MyASCFRuntime 门面职责
 

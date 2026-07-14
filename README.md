@@ -21,6 +21,7 @@ MiniAppRuntime-Harmony 基于 HarmonyOS、ArkTS 与 ArkWeb，探索 H5 如何以
 - H5 DebugPanel 调用链路展示。
 - `myascf_runtime` 本地 HAR 模块与 `MyASCFRuntime` 门面类。
 - WebLoadState、URL Guard、白名单判断和错误状态页。
+- API Manifest 与 `runtime.getApiList` 动态能力查询。
 
 ## Architecture
 
@@ -135,17 +136,22 @@ struct Index {
 
 Storage 使用 Preferences，因此当前构造函数需要 Context。完整接入步骤见 [新建 Demo 接入 HAR](docs/guide/create-demo-with-har.md)。
 
-## Supported APIs
+## 当前支持的 API
 
-| Action | 说明 | 文档 |
-| --- | --- | --- |
-| `ui.showToast` | 展示 Toast | [ui.showToast](docs/api/ui-show-toast.md) |
-| `system.clipboard.writeText` | 写入纯文本 | [Clipboard](docs/api/clipboard.md) |
-| `system.clipboard.readText` | 读取纯文本 | [Clipboard](docs/api/clipboard.md) |
-| `system.storage.setItem` | 写入字符串键值 | [Storage](docs/api/storage.md) |
-| `system.storage.getItem` | 读取字符串键值 | [Storage](docs/api/storage.md) |
-| `system.storage.removeItem` | 删除键值 | [Storage](docs/api/storage.md) |
-| `system.storage.clear` | 清空项目存储 | [Storage](docs/api/storage.md) |
+| Category | Action | Params | Response | Status |
+| --- | --- | --- | --- | --- |
+| UI | `ui.showToast` | `message: string` | `echoAction` | 已实现 |
+| System | `system.clipboard.writeText` | `text: string` | `echoAction` | 已实现 |
+| System | `system.clipboard.readText` | - | `echoAction, text` | 已实现 |
+| System | `system.storage.setItem` | `key: string, value: string` | `echoAction, key, value` | 已实现 |
+| System | `system.storage.getItem` | `key: string` | `echoAction, key, value` | 已实现 |
+| System | `system.storage.removeItem` | `key: string` | `echoAction, key` | 已实现 |
+| System | `system.storage.clear` | - | `echoAction` | 已实现 |
+| Runtime | `runtime.getApiList` | - | `apis: ApiSummary[]` | 已实现 |
+
+完整元信息由 HAR 内的 `BUILTIN_API_MANIFEST` 维护，文档入口见 [API 总览](docs/api/index.md)。
+
+DebugPanel 通过 `runtime.getApiList` 动态读取该清单，不再维护单独的静态 action 列表。
 
 ```js
 await window.myascf.send('ui.showToast', { message: 'hello from h5' });
@@ -182,6 +188,8 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [HAR 使用指南](docs/guide/har-usage.md)
 - [新建 Demo 接入](docs/guide/create-demo-with-har.md)
 - [调试指南](docs/debug/debug-guide.md)
+- [API Manifest 设计](docs/architecture/api-manifest-design.md)
+- [新增 API 指南](docs/guide/add-new-api.md)
 
 ## Blog Series
 
@@ -212,6 +220,8 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [x] H5 DebugPanel
 - [x] runtime 本地 HAR 模块化与 MyASCFRuntime 门面
 - [x] Web 容器加载进度、URL Guard 和错误状态
+- [x] API Manifest、README API 表格和新增 API 模板
+- [x] runtime.getApiList 动态查询
 - [ ] 补充真实运行截图
 - [ ] 发布博客系列
 - [ ] API 文档自动生成
@@ -225,6 +235,7 @@ docs/                          架构、指南、API、调试、阶段与博客
 - 用 Biz / Imp 区分协议语义和平台调用。
 - 用 CallbackExecutor 集中处理 runJavaScript 回调。
 - 用本地 HAR 和门面类降低新 Demo 的接入成本。
+- 用 ApiManifest 统一描述 action、参数、响应、错误和实现类。
 - 同时覆盖 JSBridge、Web 容器状态、错误治理和调试展示。
 
 面试讲解建议从“为什么不把 action 判断写进 Controller”切入，再依次讲协议、分发注册、Biz/Imp、回调治理、HAR 模块化和容器增强。

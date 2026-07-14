@@ -1,4 +1,5 @@
 import {
+  ACTION_RUNTIME_GET_API_LIST,
   ACTION_SYSTEM_CLIPBOARD_READ_TEXT,
   ACTION_SYSTEM_CLIPBOARD_WRITE_TEXT,
   ACTION_UI_SHOW_TOAST,
@@ -12,6 +13,7 @@ import { BridgeHandler, BridgeRequest, BridgeResponse } from '../api/BridgeTypes
 import { ClipboardBiz } from '../biz/ClipboardBiz';
 import { ToastBiz } from '../biz/ToastBiz';
 import { StorageBiz } from '../biz/StorageBiz';
+import { RuntimeInfoBiz } from '../biz/RuntimeInfoBiz';
 import { ClipboardImp } from '../imp/ClipboardImp';
 import { ToastImp } from '../imp/ToastImp';
 import { StorageImp } from '../imp/StorageImp';
@@ -65,8 +67,17 @@ class StorageClearHandler implements BridgeHandler {
   async handle(request: BridgeRequest): Promise<BridgeResponse> { return await this.storageBiz.clear(request); }
 }
 
+class RuntimeGetApiListHandler implements BridgeHandler {
+  private runtimeInfoBiz: RuntimeInfoBiz = new RuntimeInfoBiz();
+
+  async handle(request: BridgeRequest): Promise<BridgeResponse> {
+    return await this.runtimeInfoBiz.getApiList(request);
+  }
+}
+
 export class RuntimeBootstrap {
   static createRegistry(context: common.Context): HandlerRegistry {
+    // Keep ActionNames, ApiManifest, runtime registration, API docs and H5 API list aligned.
     const registry: HandlerRegistry = new HandlerRegistry();
     const storageBiz: StorageBiz = new StorageBiz(new StorageImp(context));
     registry.register(ACTION_UI_SHOW_TOAST, new ShowToastHandler());
@@ -76,6 +87,7 @@ export class RuntimeBootstrap {
     registry.register(ACTION_SYSTEM_STORAGE_GET_ITEM, new StorageGetItemHandler(storageBiz));
     registry.register(ACTION_SYSTEM_STORAGE_REMOVE_ITEM, new StorageRemoveItemHandler(storageBiz));
     registry.register(ACTION_SYSTEM_STORAGE_CLEAR, new StorageClearHandler(storageBiz));
+    registry.register(ACTION_RUNTIME_GET_API_LIST, new RuntimeGetApiListHandler());
     return registry;
   }
 }

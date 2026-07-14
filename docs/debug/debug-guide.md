@@ -31,6 +31,12 @@ timeout
 callback_lost
 ```
 
+## 当前 API 列表
+
+DebugPanel 顶部提供“加载 API 列表”按钮。点击后调用 `runtime.getApiList`，从 HAR `BUILTIN_API_MANIFEST` 动态读取当前 8 个 action，并展示 category、action、title、description、paramsText 和 implemented。
+
+加载前显示引导空状态，返回空数组时显示空状态，调用失败时显示错误状态。`runtime.getApiList` 本身也会进入调用记录，可用 requestId 对照 ArkTS 日志。
+
 ## 如何按链路排查
 
 1. 先看 DebugPanel 是否出现 `pending` 记录。
