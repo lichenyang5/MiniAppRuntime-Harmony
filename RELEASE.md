@@ -10,8 +10,9 @@
 
 - GitHub 源码：ArkTS HAR、H5 SDK、entry Demo、工具和文档。
 - Local HAR：通过 `file:../myascf_runtime` 接入的 ArkTS runtime。
-- H5 SDK dist：`h5_sdk/dist/myascf.js` 和 `myascf.d.ts`。
+- H5 SDK dist：`h5_sdk/dist/` 中的 IIFE `myascf.js`、ESM `index.esm.js`、`index.d.ts`、`myascf.d.ts` 与生成声明文件。
 - Docs：架构、API、接入、调试、博客草稿和发布说明。
+- Showcase：项目展示、Demo Walkthrough、技术亮点和面试讲解材料。
 
 ## 两个包的发布方向
 
@@ -45,6 +46,15 @@ H5 SDK `0.1.0` 已完成：
 - [x] 检查 LICENSE 与 H5 SDK npm tarball 候选包内容。
 - [ ] 检查公开内容不含内部信息或未经验证的能力声明。
 - [ ] 确认未把准备状态写成已发布状态。
+- [ ] 按 `docs/release/v0.1.0-checklist.md` 完成候选版本验收。
+- [ ] 按 `docs/assets/screenshots/README.md` 补充真实设备与 CI 截图。
+
+## v0.1.0 文档
+
+- [Release Notes](docs/release/v0.1.0-release-notes.md)
+- [候选验收清单](docs/release/v0.1.0-checklist.md)
+- [Demo Walkthrough](docs/showcase/demo-walkthrough.md)
+- [Interview Talk Track](docs/showcase/interview-talk-track.md)
 
 ## GitHub Release Notes 模板
 

@@ -2,6 +2,8 @@
 
 这篇文档解决什么问题：在准备 GitHub Release、H5 SDK 候选包或 HAR 交付前，统一检查代码、生成物、示例、文档和公开边界。
 
+v0.1.0 展示候选版还需同步完成 [版本专属验收清单](../release/v0.1.0-checklist.md)。
+
 ## 自动检查
 
 - [ ] 本次 commit 对应的 GitHub Actions CI 已通过。

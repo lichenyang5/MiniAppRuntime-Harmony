@@ -8,9 +8,11 @@
 - H5 to ArkTS Promise-based JSBridge.
 - Local `myascf_runtime` HAR module.
 - H5 SDK JavaScript dist and TypeScript declarations.
+- H5 SDK IIFE / ESM builds and typed API helper.
 - Toast, Clipboard and Storage APIs.
 - `runtime.getApiList` and API Manifest.
 - H5 DebugPanel and generated API docs.
+- Tests, consistency checks and GitHub Actions CI configuration.
 
 ## Install / Usage
 
@@ -38,6 +40,8 @@ H5 页面通过 `<script src="./js/myascf.js"></script>` 加载 SDK，并调用 
 ## Validation
 
 - H5 SDK tests: `<填写结果>`
+- GitHub Actions: `<填写 workflow 链接与结果>`
+- npm pack dry-run: `<填写文件数量与大小>`
 - HAP build: `<填写结果>`
 - Device / emulator: `<填写环境与结果>`
 
@@ -51,3 +55,5 @@ H5 页面通过 `<script src="./js/myascf.js"></script>` 加载 SDK，并调用 
 ## Notes
 
 This is a personal open-source learning and engineering practice project based on public HarmonyOS, ArkTS and ArkWeb capabilities.
+
+候选版本完整说明见 `docs/release/v0.1.0-release-notes.md`，创建 Release 前必须完成 `docs/release/v0.1.0-checklist.md`。

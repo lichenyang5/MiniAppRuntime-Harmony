@@ -27,6 +27,8 @@
 - [x] HarmonyOS 手工冒烟与发布回归清单。
 - [x] GitHub Actions CI 配置。
 - [x] CI 中执行 H5 SDK build/test 与 npm pack dry-run。
+- [x] v0.1.0 Release Notes、候选验收清单和 Showcase 文档。
+- [x] 稳定截图命名与真实采集清单。
 
 ## 待完成
 

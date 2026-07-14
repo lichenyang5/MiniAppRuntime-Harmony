@@ -18,8 +18,11 @@
 - H5 侧 NATIVE_UNAVAILABLE 与 INVALID_RESPONSE 处理。
 - H5 SDK npm pack dry-run、tarball 内容检查和外部 consumer 示例。
 - H5 SDK IIFE / ESM 双产物、Manifest 类型生成、`sendTyped` 与 nested typed helper。
+- H5 SDK 单元测试、API/生成物/package 一致性检查和 GitHub Actions CI 配置。
+- v0.1.0 Release Notes、候选验收清单、Demo Walkthrough 与面试讲解材料。
 
 ### Notes
 
 - 当前版本用于 GitHub 源码展示、本地 HAR 接入和 H5 SDK dist 验证。
 - H5 SDK 尚未发布到 npm，HAR 尚未发布到 HarmonyOS 包仓库。
+- v0.1.0 tag 和 GitHub Release 尚未创建，真实设备与 CI 截图仍待候选版本验收后补充。

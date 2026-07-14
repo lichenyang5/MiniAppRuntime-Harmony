@@ -2,9 +2,9 @@
 
 ![CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/workflows/ci.yml/badge.svg)
 
-一个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架。
+MiniAppRuntime-Harmony 是一个基于 HarmonyOS、ArkTS 与 ArkWeb 的 Web 容器与 JSBridge 运行时实践项目。项目通过 ArkTS 本地 HAR runtime 与可复用 H5 SDK，实现 H5 请求进入 ArkTS 并回到 Promise 的工程链路。
 
-MiniAppRuntime-Harmony 基于 HarmonyOS、ArkTS 与 ArkWeb，探索 H5 如何以 Promise 形式调用 ArkTS 能力，以及通信、分发、注册、参数校验、平台调用和异步回调如何组成清晰的运行时链路。
+项目受小程序运行时架构启发，重点探索通信、分发、注册、参数校验、平台调用、异步回调和工程化验证如何形成清晰边界。
 
 ## 合规边界
 
@@ -26,6 +26,15 @@ MiniAppRuntime-Harmony 基于 HarmonyOS、ArkTS 与 ArkWeb，探索 H5 如何以
 - API Manifest 与 `runtime.getApiList` 动态能力查询。
 - `h5_sdk` 可复用前端 SDK、TypeScript 源码与类型声明。
 - NATIVE_UNAVAILABLE、INVALID_RESPONSE 等 H5 侧错误治理。
+
+## Quick Links
+
+- [Quick Start](#quick-start)
+- [Runtime Architecture](docs/architecture/runtime-architecture.md)
+- [Demo Walkthrough](docs/showcase/demo-walkthrough.md)
+- [Documentation](docs/README.md)
+- [v0.1.0 Release Notes](docs/release/v0.1.0-release-notes.md)
+- [Candidate Checklist](docs/release/v0.1.0-checklist.md)
 
 ## Architecture
 
@@ -87,9 +96,9 @@ H5 -> window.myascf.send -> JavaScriptProxy -> BridgeController
 
 | Package | Type | Status | Usage |
 | --- | --- | --- | --- |
-| `myascf_runtime` | HarmonyOS ArkTS HAR | `1.0.0` local module metadata | `file:../myascf_runtime` |
-| `h5_sdk` | H5 JavaScript / TypeScript SDK | `0.1.0` dual-build npm pack verified, publish later | IIFE script or ESM import |
 | `entry` | HarmonyOS demo app | demo ready | run in DevEco Studio |
+| `myascf_runtime` | HarmonyOS local HAR | local HAR ready (`1.0.0` module metadata) | `file:../myascf_runtime` |
+| `h5_sdk` | H5 JavaScript / TypeScript SDK | IIFE / ESM / npm pack ready (`0.1.0`) | script or ESM import |
 
 `myascf_runtime` 负责 Native Bridge、分发注册、Biz/Imp、回调、Manifest 和容器公共模型；`h5_sdk` 负责 `window.myascf`、requestId、callback map、timeout 和 Native response；`entry` 负责 ArkWeb、JavaScriptProxy 注入、H5 Demo 与 DebugPanel。HAR 使用 `1.0.0` 是为了满足当前 Hvigor 的模块版本校验，不表示它已正式发布。
 
@@ -97,7 +106,7 @@ H5 -> window.myascf.send -> JavaScriptProxy -> BridgeController
 
 Current candidate version: `v0.1.0`.
 
-项目当前按 GitHub 开源展示版整理。H5 SDK 已具备 npm 包结构，但仍保持 `private: true`，本阶段不执行 npm publish；ArkTS runtime 当前只提供本地 HAR 和 GitHub 示例接入，不声称已经发布到 HarmonyOS 包仓库。详情见 [Release Preparation](RELEASE.md)。
+项目当前按 GitHub 开源展示候选版整理。H5 SDK 已具备 npm 包结构，但仍保持 `private: true`，本阶段不执行 npm publish；ArkTS runtime 当前只提供本地 HAR 和 GitHub 示例接入，不声称已经发布到 HarmonyOS 包仓库。详情见 [Release Preparation](RELEASE.md)、[v0.1.0 Release Notes](docs/release/v0.1.0-release-notes.md) 和 [候选验收清单](docs/release/v0.1.0-checklist.md)。
 
 ## H5 SDK 类型化调用
 
@@ -145,14 +154,29 @@ npm --prefix h5_sdk run check
 
 ## Quick Start
 
-1. 使用 DevEco Studio 打开仓库并执行 HarmonyOS 依赖同步。
-2. 执行 `npm --prefix h5_sdk install` 安装 H5 SDK 的 TypeScript 开发依赖。
-3. 执行 `npm run h5:sync` 构建 SDK，并同步到 rawfile 的 `js/myascf.js`。
-4. Clean 后 Rebuild `entry` 模块。
-5. 在模拟器或真机运行应用。
-6. 使用 H5 页面验证 Toast、Clipboard、Storage、错误处理和 URL Guard。
+1. 使用 DevEco Studio 打开仓库并完成 HarmonyOS/ohpm 依赖同步。
+2. 安装 H5 SDK 依赖并构建、同步 IIFE 到 rawfile：
+
+```bash
+npm --prefix h5_sdk install
+npm run h5:sync
+```
+
+3. Clean 后 Rebuild `entry`，在模拟器或真机运行 Demo。
+4. 验证 Toast、Clipboard、Storage、`runtime.getApiList`、DebugPanel 和 Web 容器状态。
+5. 运行本地质量门禁：
+
+```bash
+npm run check
+```
 
 建议使用与工程配置匹配的 HarmonyOS SDK。Clipboard 读取能力需要根据当前 SDK 要求配置和验证权限。
+
+本地 HAR 通过 `file:../myascf_runtime` 接入；完整接入见 [HAR 使用指南](docs/guide/har-usage.md)。H5 SDK 的 IIFE、ESM 与 typed API 用法分别见 [H5 SDK 指南](docs/guide/h5-sdk-usage.md) 和 [Typed API](docs/guide/typed-api-usage.md)。
+
+## Demo Path
+
+推荐按“启动容器 -> Toast -> Clipboard -> Storage -> API List -> DebugPanel -> 错误场景 -> URL Guard”的顺序演示。逐步操作、预期结果和排查入口见 [Demo Walkthrough](docs/showcase/demo-walkthrough.md)。
 
 ## MyASCFRuntime 接入
 
@@ -253,6 +277,7 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [项目介绍](docs/overview/project-introduction.md)
 - [运行时架构](docs/architecture/runtime-architecture.md)
 - [JSBridge 架构](docs/architecture/jsbridge-architecture.md)
+- [API 总览](docs/api/index.md)
 - [HAR 模块设计](docs/architecture/har-module-design.md)
 - [Web 容器设计](docs/architecture/web-container-design.md)
 - [HAR 使用指南](docs/guide/har-usage.md)
@@ -270,6 +295,11 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [GitHub Actions CI](docs/ci/README.md)
 - [手工冒烟测试](docs/testing/manual-smoke-test.md)
 - [发布回归清单](docs/testing/release-regression-checklist.md)
+- [项目展示](docs/showcase/project-showcase.md)
+- [Demo Walkthrough](docs/showcase/demo-walkthrough.md)
+- [Interview Talk Track](docs/showcase/interview-talk-track.md)
+- [Technical Highlights](docs/showcase/technical-highlights.md)
+- [v0.1.0 Release Notes](docs/release/v0.1.0-release-notes.md)
 
 ## Blog Series
 
@@ -277,18 +307,16 @@ docs/                          架构、指南、API、调试、阶段与博客
 
 ## Screenshots
 
-> TODO：后续补充以下真实运行截图，清单维护在 `docs/assets/screenshots/`。
+当前尚未提交真实运行截图，不使用设计稿或生成图片代替运行证据。稳定文件名、采集内容和隐私检查见 [截图清单](docs/assets/screenshots/README.md)。
 
-- H5 Demo 首页
-- Toast API 调用成功
-- Clipboard write/read 调用成功
-- Storage set/get 调用成功
-- DebugPanel 调用链路
-- Web 加载进度
-- URL Guard 拦截状态
-- Web 错误状态页
+- 待采集：H5 首页与 Toast/Clipboard/Storage 成功结果。
+- 待采集：API List、DebugPanel 成功/错误链路。
+- 待采集：Web loading、URL Guard 和错误重试状态。
+- 待采集：候选 commit 的 GitHub Actions CI 成功结果。
 
 ## Roadmap
+
+### Completed in v0.1.0
 
 - [x] ArkWeb 加载本地 H5
 - [x] H5 -> ArkTS JavaScriptProxy 通信
@@ -302,19 +330,23 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [x] Web 容器加载进度、URL Guard 和错误状态
 - [x] API Manifest、README API 表格和新增 API 模板
 - [x] runtime.getApiList 动态查询
-- [ ] 补充真实运行截图
-- [ ] 发布博客系列
 - [x] Manifest JSON 生成 API Markdown 与 README 表格
 - [x] H5 SDK 抽离、IIFE / ESM 双产物、TypeScript 类型声明与 Demo 同步
 - [x] v0.1.0 包边界、LICENSE、CHANGELOG 与 Release 文档整理
 - [x] H5 SDK npm pack dry-run、tarball 与外部 consumer 验证
 - [x] Manifest JSON 生成 H5 SDK action / params / response 类型
 - [x] H5 SDK sendTyped 与 nested typed helper
-- [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
-- [ ] Network API
 - [x] H5 SDK ESM 构建
 - [x] GitHub Actions CI 配置
 - [x] H5 SDK build/test 与 npm pack dry-run CI 步骤
+- [x] v0.1.0 Release Notes、验收清单与 Showcase 文档
+
+### Next
+
+- [ ] 补充真实运行截图
+- [ ] 发布并根据反馈修订博客系列
+- [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
+- [ ] Network API
 - [ ] 发布 H5 SDK 到 npm
 - [ ] GitHub Release artifact automation
 - [ ] HarmonyOS 工程自动化检查

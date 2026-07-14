@@ -25,6 +25,10 @@
 19. [手工冒烟测试](testing/manual-smoke-test.md)
 20. [发布回归清单](testing/release-regression-checklist.md)
 21. [GitHub Actions CI](ci/README.md)
+22. [Project Showcase](showcase/project-showcase.md)
+23. [Demo Walkthrough](showcase/demo-walkthrough.md)
+24. [Interview Talk Track](showcase/interview-talk-track.md)
+25. [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
 
 ## 目录作用
 
@@ -41,6 +45,7 @@
 | `release/` | 版本计划、npm 检查清单和 GitHub Release 模板 |
 | `testing/` | H5 SDK 单元测试、工程一致性检查、手工冒烟与发布回归 |
 | `ci/` | GitHub Actions 触发条件、自动检查步骤与设备验证边界 |
+| `showcase/` | 项目展示、演示路径、技术亮点和面试讲解材料 |
 
 ## API
 
@@ -63,6 +68,8 @@
 - [H5 SDK npm Checklist](release/npm-publish-checklist.md)
 - [H5 SDK npm Pack 验证](release/npm-pack-verify.md)
 - [GitHub Release Template](release/github-release-template.md)
+- [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
+- [v0.1.0 候选验收清单](release/v0.1.0-checklist.md)
 
 ## 测试与质量
 
@@ -77,7 +84,15 @@ GitHub Actions 配置见 [CI 文档](ci/README.md)。workflow 自动运行 Node 
 
 ## 面试讲解路径
 
-建议按“问题 -> 设计 -> 扩展 -> 工程化”讲解：ArkWeb 与 H5 如何通信，为什么需要 requestId 和 callback map，为什么拆 Dispatcher/Registry/Biz/Imp，如何集中回调与错误处理，最后说明 HAR 门面和 Web 容器增强怎样让项目不止停留在单页 Demo。
+建议按“问题 -> 设计 -> 扩展 -> 工程化”讲解：ArkWeb 与 H5 如何通信，为什么需要 requestId 和 callback map，为什么拆 Dispatcher/Registry/Biz/Imp，如何集中回调与错误处理，最后说明 HAR 门面和 Web 容器增强怎样让项目不止停留在单页 Demo。可直接使用 [Interview Talk Track](showcase/interview-talk-track.md)，现场操作见 [Demo Walkthrough](showcase/demo-walkthrough.md)。
+
+## Showcase
+
+- [Project Showcase](showcase/project-showcase.md)
+- [Demo Walkthrough](showcase/demo-walkthrough.md)
+- [Interview Talk Track](showcase/interview-talk-track.md)
+- [Technical Highlights](showcase/technical-highlights.md)
+- [真实截图采集清单](assets/screenshots/README.md)
 
 ## 公开边界
 

@@ -9,15 +9,16 @@
 - 提供可运行 entry Demo、DebugPanel 和 Web 容器状态展示。
 - 提供 API、架构、接入、调试和 Release 文档。
 - 完成 H5 SDK npm pack 和外部 consumer 本地预检。
+- 提供测试、CI、Showcase、Release Notes 和候选验收清单。
 - 不发布 npm，不发布 HarmonyOS 包。
 
-当前状态：准备中，仍需设备回归和真实截图。
+当前状态：候选展示文档已整理，仍需候选 commit 的 GitHub Actions 结果、设备回归和真实截图。
 
-## v0.2.0：H5 SDK npm 预备版
+## v0.2.0：反馈与发布准备
 
 - 确认 npm 包名和公开命名。
-- 在现有 npm pack 结果上补充 ESM、逐 action 类型和更多浏览器兼容验证。
-- 完善逐 action API 类型和兼容性说明。
+- 在现有 IIFE/ESM、typed API 和 npm pack 结果上补充浏览器兼容验证。
+- 根据 v0.1.0 反馈完善 API 类型、错误语义和兼容性说明。
 - 补充 README 英文摘要与浏览器测试矩阵。
 - 根据实际反馈决定是否移除 `private: true`。
 
