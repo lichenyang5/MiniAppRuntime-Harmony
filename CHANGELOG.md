@@ -16,6 +16,8 @@
 - `myascf_runtime` 本地 HAR 模块与 `MyASCFRuntime` 门面。
 - `h5_sdk` TypeScript 源码、浏览器脚本和类型声明。
 - H5 侧 NATIVE_UNAVAILABLE 与 INVALID_RESPONSE 处理。
+- H5 SDK npm pack dry-run、tarball 内容检查和外部 consumer 示例。
+- H5 SDK IIFE / ESM 双产物、Manifest 类型生成、`sendTyped` 与 nested typed helper。
 
 ### Notes
 

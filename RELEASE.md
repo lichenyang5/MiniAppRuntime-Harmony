@@ -19,6 +19,19 @@ H5 SDK 本质上是普通 JavaScript / TypeScript SDK，可以继续完成 `npm 
 
 `myascf_runtime` 是 HarmonyOS 本地 HAR 模块，不能简单等同于普通 npm 包。当前优先通过本地 file 依赖和 GitHub 示例展示，后续再调研对应的 HarmonyOS 包管理与发布方式。
 
+## npm Pack 本地预检
+
+H5 SDK `0.1.0` 已完成：
+
+- `npm pack --dry-run`。
+- 本地 `.tgz` 生成。
+- tarball 公开文件白名单检查。
+- `examples/sdk-consumer-demo` 本地安装。
+- TypeScript 全局类型编译。
+- 普通浏览器 NATIVE_UNAVAILABLE 验证。
+
+本次预检没有执行 npm publish，H5 SDK 继续保持 `private: true`。
+
 ## 发布前检查
 
 - [ ] 运行 H5 SDK build 和测试。
@@ -29,7 +42,7 @@ H5 SDK 本质上是普通 JavaScript / TypeScript SDK，可以继续完成 `npm 
 - [ ] 回归 timeout、callback lost 和 DebugPanel。
 - [ ] 运行 API 文档生成并检查差异。
 - [ ] 更新 README、CHANGELOG 和版本号。
-- [ ] 检查 LICENSE 与候选包内容。
+- [x] 检查 LICENSE 与 H5 SDK npm tarball 候选包内容。
 - [ ] 检查公开内容不含内部信息或未经验证的能力声明。
 - [ ] 确认未把准备状态写成已发布状态。
 

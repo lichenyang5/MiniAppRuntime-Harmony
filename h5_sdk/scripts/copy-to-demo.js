@@ -1,9 +1,9 @@
-'use strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const fs = require('fs');
-const path = require('path');
-
-const sdkRoot = path.resolve(__dirname, '..');
+const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
+const sdkRoot = path.resolve(scriptDirectory, '..');
 const projectRoot = path.resolve(sdkRoot, '..');
 const sourcePath = path.join(sdkRoot, 'dist', 'myascf.js');
 const targetPath = path.join(

@@ -6,8 +6,15 @@
   "author": "Li Chenyang",
   "scripts": {
     "docs:api": "node tools/generate-api-docs.js",
+    "sdk:types": "node tools/generate-sdk-types.js",
+    "generate": "npm run docs:api && npm run sdk:types",
+    "check:generated": "node tools/check-generated-files.js",
+    "check:api": "node tools/check-api-consistency.js",
+    "check:package": "node tools/check-package-exports.js",
+    "check": "npm run check:generated && npm run check:api && npm run h5:check && npm run check:package",
     "h5:build": "npm --prefix h5_sdk run build",
     "h5:sync": "npm --prefix h5_sdk run build:demo",
-    "h5:test": "npm --prefix h5_sdk run test"
+    "h5:test": "npm --prefix h5_sdk run test",
+    "h5:check": "npm --prefix h5_sdk run check"
   }
 }

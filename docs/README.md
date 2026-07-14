@@ -17,8 +17,13 @@
 11. [生成 API 文档](guide/generate-api-docs.md)
 12. [H5 SDK 设计](architecture/h5-sdk-design.md)
 13. [H5 SDK 使用指南](guide/h5-sdk-usage.md)
-14. [发布前整理指南](guide/release-guide.md)
-15. [Release Plan](release/release-plan.md)
+14. [H5 SDK 类型化 API](guide/typed-api-usage.md)
+15. [发布前整理指南](guide/release-guide.md)
+16. [Release Plan](release/release-plan.md)
+17. [npm Pack 验证](release/npm-pack-verify.md)
+18. [测试与回归](testing/README.md)
+19. [手工冒烟测试](testing/manual-smoke-test.md)
+20. [发布回归清单](testing/release-regression-checklist.md)
 
 ## 目录作用
 
@@ -33,6 +38,7 @@
 | `assets/` | Mermaid 架构图与截图占位目录 |
 | `blogs/` | 8 篇系列博客草稿和发布顺序 |
 | `release/` | 版本计划、npm 检查清单和 GitHub Release 模板 |
+| `testing/` | H5 SDK 单元测试、工程一致性检查、手工冒烟与发布回归 |
 
 ## API
 
@@ -45,7 +51,7 @@
 
 ## 当前状态
 
-已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK 抽离和 v0.1.0 发布前文档。真实运行截图、博客发布、Network API、逐 action 类型、npm pack/publish 和 HAR 发布方式调研尚未完成。
+已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper 和 npm pack 本地验证。真实运行截图、博客发布、Network API、npm publish 和 HAR 发布方式调研尚未完成。
 
 ## Release
 
@@ -53,7 +59,17 @@
 - [发布前整理指南](guide/release-guide.md)
 - [Release Plan](release/release-plan.md)
 - [H5 SDK npm Checklist](release/npm-publish-checklist.md)
+- [H5 SDK npm Pack 验证](release/npm-pack-verify.md)
 - [GitHub Release Template](release/github-release-template.md)
+
+## 测试与质量
+
+- [测试与回归入口](testing/README.md)
+- [H5 SDK 测试指南](testing/h5-sdk-test-guide.md)
+- [HarmonyOS 手工冒烟测试](testing/manual-smoke-test.md)
+- [发布回归清单](testing/release-regression-checklist.md)
+
+根目录执行 `npm run check` 可验证 H5 SDK、API Manifest、生成文档、生成类型和包导出。ArkWeb 与 HarmonyOS Native 行为仍需在 DevEco Studio 中按手工清单验证。
 
 ## 面试讲解路径
 

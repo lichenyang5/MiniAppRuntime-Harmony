@@ -1,81 +1,66 @@
 # H5 SDK 设计
 
-这篇文档解决什么问题：解释为什么抽离 H5 SDK，以及浏览器侧请求生命周期如何与 ArkTS HAR 配合。
+这篇文档解决什么问题：解释浏览器侧 SDK 的职责、双入口设计，以及它如何与 ArkTS HAR 配合。
 
-## 为什么抽离
-
-原始 `myascf.js` 已经具备完整通信能力，但它位于 Demo rawfile 中，容易让通信逻辑与页面按钮、展示代码被视为同一层。抽离后，仓库形成清晰的两端结构：
+## 模块职责
 
 ```text
-h5_sdk                         浏览器调用侧
-myascf_runtime HAR             ArkTS 执行侧
-entry                          集成与演示
+h5_sdk              浏览器请求生命周期与构建产物
+myascf_runtime HAR   ArkTS 解析、分发、Biz/Imp 与平台调用
+entry               ArkWeb 容器、代理注入与演示页面
 ```
 
-`h5_sdk` 当前候选版本为 `0.1.0`，包入口只指向 `dist/myascf.js` 和 `dist/myascf.d.ts`。源码、构建脚本和测试保留在仓库中，但不进入未来 npm 候选包。
+H5 SDK 负责 requestId、callback map、timeout、Native adapter、response 校验与 DebugPanel 通知。它不实现 Toast、Clipboard、Storage，不调用 HarmonyOS Kit，也不负责 Dispatcher、Registry 或容器 URL Guard。
 
-## SDK 负责什么
-
-- 暴露 `window.myascf.send`。
-- 生成 requestId 并维护 callback map。
-- 启动和清理 timeout。
-- 调用 `window.MyASCFNative.postMessage`。
-- 接收 `window.__myascf_on_native_response__`。
-- resolve / reject Promise。
-- 处理 H5 侧错误并通知 DebugPanel。
-
-## SDK 不负责什么
-
-- 不实现 Toast、Clipboard、Storage 等业务。
-- 不调用 HarmonyOS Kit。
-- 不负责 Dispatcher、Registry、Biz/Imp 或 HAR 初始化。
-- 不负责 ArkWeb 加载状态、URL Guard 和错误页。
-- 不改变 BridgeRequest / BridgeResponse 协议。
-
-## requestId
-
-requestId 由时间戳和当前页面内递增序号组成：
+## 双入口
 
 ```text
-myascf_<timestamp>_<sequence>
+src/index.ts      -> dist/index.esm.js -> npm / bundler import
+src/auto-init.ts  -> dist/myascf.js    -> rawfile script
 ```
 
-它不承担安全凭证职责，只用于把异步响应匹配到当前页面中的请求。
+`index.ts` 没有顶层挂载副作用，导入后由使用者选择 `createMyASCF()` 或 `initMyASCF()`。`auto-init.ts` 专门调用 `initMyASCF()`，保证原有 rawfile 页面无需修改。
 
-## callback map
+这种拆分避免了 ESM consumer 仅仅 import 包就自动写入全局对象，同时保持 ArkWeb script 的即插即用行为。
 
-`CallbackStore` 以 requestId 为 key，保存 resolve、reject、timer、action、params 和 createdAt。响应、timeout 或发送失败都会删除记录并清理 timer，避免同一 Promise 被重复结算。
+`createMyASCF()` 不写入全局回调，适合自定义边界；调用方通过公开的 `client.handleNativeResponse()` 把 Native response 交还给该实例。`initMyASCF()` 则自动注册全局回调。
 
-## Timeout 与 Callback Lost
-
-timeout 先删除 callback，再 reject `TIMEOUT`。如果 Native 响应随后到达，SDK 找不到 callback，会记录 `CALLBACK_LOST` 并调用可选的 `window.__myascf_on_callback_lost__`，但不会抛出未捕获异常。
-
-## Native Adapter
-
-`NativeAdapter` 隔离 `window.MyASCFNative` 检查和序列化发送。普通浏览器中代理不存在时返回 `NATIVE_UNAVAILABLE`；请求无法序列化时返回 `INVALID_RESPONSE`，主页面不会直接崩溃。
-
-## Invalid Response
-
-SDK 校验 response 的 requestId、code、message 和 data 结构。可识别 requestId 的非法响应会结束对应 Promise；完全无法识别的输入只记录错误，不影响其他 callback。
-
-## DebugPanel 集成
-
-SDK 通过容错调用连接 DebugPanel：
+## Manifest 生成类型
 
 ```text
-send                 -> recordStart
-response             -> recordEnd
-timeout/send failure -> recordError
-late response        -> recordLost
-invalid response     -> recordError
+tools/api-manifest.json
+-> tools/generate-sdk-types.js
+-> generated/api-types.ts
+-> generated/api-client.ts
+-> client.sendTyped / createTypedApi
 ```
 
-DebugPanel 未加载、方法缺失或内部抛错时，SDK 只输出 warn，Promise 主链路继续执行。
+`sendTyped` 只把受约束的 action 与 params 转发到 `send`。nested helper 由同一个生成器按 action 路径创建，不复制 JSBridge 生命周期逻辑。
 
-## 构建与 Demo 同步
+## Client 生命周期
 
-TypeScript 使用 `outFile` 生成单个 `dist/myascf.js` 和 `dist/myascf.d.ts`。复制脚本把 JS 产物同步到 rawfile 原路径，因此 Demo HTML 和调用代码无需变化。
+1. `send()` 生成 requestId 并保存 callback。
+2. NativeAdapter 调用 `window.MyASCFNative.postMessage`。
+3. ArkTS 完成处理后调用 `window.__myascf_on_native_response__`。
+4. Client 校验 BridgeResponse 并按 requestId 取出 callback。
+5. `code === 0` 时 resolve，其余标准错误响应 reject。
 
-## npm 化方向
+## 构建与类型
 
-当前先保持单文件全局 SDK，适合 ArkWeb rawfile。package 元数据已准备，但仍保持 `private: true`，没有执行 npm publish。后续先做 `npm pack --dry-run`、包名确认和逐 action 类型，再决定是否增加 ES Module 产物或正式发布。
+esbuild 分别输出 IIFE 与 ESM 单文件 bundle；TypeScript 负责严格类型检查和 declaration-only 输出。`package.json` 的 `main`、`module`、`types` 与 `exports` 均指向实际存在的产物。
+
+`dist/index.d.ts` 是 ESM 类型入口。`dist/myascf.d.ts` 只为 IIFE 副作用入口加载全局 Window 声明，不虚构 IIFE 命名导出。包内还包含声明入口依赖的模块声明文件。
+
+## 兼容约束
+
+双产物构建没有改变：
+
+- `window.myascf.send(...)`
+- `window.MyASCFNative`
+- `window.__myascf_on_native_response__`
+- BridgeRequest / BridgeResponse 协议
+- DebugPanel 生命周期钩子
+
+## 当前边界
+
+包保持 `private: true`，只做 `npm pack` 和本地 ESM consumer 预检。H5 类型已经由 JSON Manifest 镜像生成，但 ArkTS Manifest 与 JSON 的单一来源统一仍是后续工作。

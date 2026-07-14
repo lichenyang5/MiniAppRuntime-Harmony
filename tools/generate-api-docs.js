@@ -11,6 +11,7 @@ const readmePath = path.join(rootDir, 'README.md');
 const apiIndexPath = path.join(rootDir, 'docs', 'api', 'index.md');
 const markerStart = '<!-- API_TABLE_START -->';
 const markerEnd = '<!-- API_TABLE_END -->';
+const checkMode = process.argv.includes('--check');
 
 function fail(message) {
   console.error(`[api-docs] ${message}`);
@@ -149,17 +150,38 @@ function replaceGeneratedBlock(filePath, table) {
   }
   const before = content.slice(0, startIndex + markerStart.length);
   const after = content.slice(endIndex);
-  fs.writeFileSync(filePath, `${before}\n${table}\n${after}`, 'utf8');
+  const expected = `${before}\n${table}\n${after}`;
+  if (checkMode) {
+    if (content !== expected) {
+      fail(`generated API table is stale in ${path.relative(rootDir, filePath)}`);
+    }
+    return;
+  }
+  fs.writeFileSync(filePath, expected, 'utf8');
+}
+
+function writeOrCheck(filePath, content) {
+  const relativePath = path.relative(rootDir, filePath);
+  if (checkMode) {
+    if (!fs.existsSync(filePath)) {
+      fail(`generated file is missing: ${relativePath}`);
+    }
+    if (fs.readFileSync(filePath, 'utf8') !== content) {
+      fail(`generated file is stale: ${relativePath}`);
+    }
+    console.log(`[api-docs] checked ${relativePath}`);
+    return;
+  }
+  fs.writeFileSync(filePath, content, 'utf8');
+  console.log(`[api-docs] wrote ${relativePath}`);
 }
 
 const manifest = readManifest();
 validateManifest(manifest);
 const table = createTable(manifest);
-fs.writeFileSync(tablePath, `<!-- AUTO-GENERATED: DO NOT EDIT DIRECTLY -->\n\n${table}\n`, 'utf8');
-fs.writeFileSync(detailsPath, createDetails(manifest), 'utf8');
+writeOrCheck(tablePath, `<!-- AUTO-GENERATED: DO NOT EDIT DIRECTLY -->\n\n${table}\n`);
+writeOrCheck(detailsPath, createDetails(manifest));
 replaceGeneratedBlock(readmePath, table);
 replaceGeneratedBlock(apiIndexPath, table);
-console.log(`[api-docs] generated ${manifest.length} APIs`);
-console.log(`[api-docs] wrote ${path.relative(rootDir, tablePath)}`);
-console.log(`[api-docs] wrote ${path.relative(rootDir, detailsPath)}`);
-console.log('[api-docs] updated README.md and docs/api/index.md');
+console.log(`[api-docs] ${checkMode ? 'verified' : 'generated'} ${manifest.length} APIs`);
+console.log(`[api-docs] ${checkMode ? 'checked' : 'updated'} README.md and docs/api/index.md`);

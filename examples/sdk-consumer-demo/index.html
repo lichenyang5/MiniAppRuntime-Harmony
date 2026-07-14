@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H5 SDK ESM Consumer Demo</title>
+  <style>
+    body { max-width: 720px; margin: 48px auto; padding: 0 20px; font-family: sans-serif; line-height: 1.6; }
+    button { padding: 10px 16px; cursor: pointer; }
+    pre { padding: 16px; background: #f4f5f7; overflow-wrap: anywhere; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>H5 SDK ESM Consumer Demo</h1>
+    <p>该页面通过本地 npm tarball 的 ESM 入口构建。普通浏览器没有 Native 注入，调用会返回 NATIVE_UNAVAILABLE。</p>
+    <button id="toastButton" type="button">Call ui.showToast</button>
+    <button id="storageButton" type="button">Call typed Storage</button>
+    <p id="status">等待调用</p>
+    <pre id="result">暂无结果</pre>
+  </main>
+  <script type="module" src="./js/demo.js"></script>
+</body>
+</html>

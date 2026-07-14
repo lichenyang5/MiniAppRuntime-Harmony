@@ -1,17 +1,12 @@
 # H5 SDK 使用指南
 
-这篇文档解决什么问题：说明 H5 页面如何接入 `miniapp-runtime-harmony-web-sdk`，并通过 Promise 调用 ArkTS runtime。
+这篇文档解决什么问题：说明 H5 页面如何通过 script 或 ESM 两种方式接入 SDK，并调用 ArkTS runtime。
 
-当前 SDK 候选版本为 `0.1.0`，通过仓库 dist 文件接入，尚未发布到 npm。`private: true` 用于防止准备阶段误发布。
+当前候选版本为 `0.1.0`，尚未发布到 npm，仓库内通过 dist 文件或本地 tarball 验证。
 
-## 构建与引入
+## Script 方式
 
-```bash
-npm --prefix h5_sdk install
-npm run h5:sync
-```
-
-同步后，Demo 继续使用原来的脚本路径：
+适用于 ArkWeb rawfile 和无前端构建工具的页面：
 
 ```html
 <script src="./js/debug-panel.js"></script>
@@ -19,19 +14,7 @@ npm run h5:sync
 <script src="./js/demo.js"></script>
 ```
 
-DebugPanel 先加载，SDK 随后注册可选调试钩子，最后由 Demo 发起业务调用。
-
-## send 参数
-
-```ts
-window.myascf.send(action, params?, options?)
-```
-
-- `action`：Native API 名称，例如 `ui.showToast`。
-- `params`：请求参数对象，省略时使用空对象。
-- `options.timeout`：等待 Native 响应的毫秒数；省略或小于等于零时使用 5000ms。
-
-调用示例：
+IIFE 加载后自动挂载 `window.myascf`：
 
 ```js
 const response = await window.myascf.send(
@@ -41,55 +24,85 @@ const response = await window.myascf.send(
 );
 ```
 
-## Promise 返回值
+构建并同步 rawfile：
 
-Native 返回 `code === 0` 时 Promise resolve，其他标准错误响应会 reject：
-
-```js
-try {
-  const response = await window.myascf.send('system.storage.getItem', {
-    key: 'username'
-  });
-  console.log(response.data.value);
-} catch (response) {
-  console.error(response.code, response.message);
-}
+```bash
+npm --prefix h5_sdk install
+npm run h5:sync
 ```
 
-## Timeout
+## ESM 方式
 
-```js
-await window.myascf.send('ui.showToast', {
-  message: 'timeout test'
-}, {
-  timeout: 1000
+适用于 TypeScript 与现代前端工程：
+
+```ts
+import {
+  initMyASCF,
+  type BridgeResponse
+} from 'miniapp-runtime-harmony-web-sdk';
+
+const myascf = initMyASCF();
+const response: BridgeResponse = await myascf.send('ui.showToast', {
+  message: 'hello from esm'
 });
 ```
 
-超过等待时间后，SDK 删除 callback、记录 DebugPanel 错误并以 `TIMEOUT` reject。迟到的 Native 响应会进入 `CALLBACK_LOST`，不会再次改变已结束的 Promise。
+需要自行管理挂载时，可以使用：
 
-## 普通浏览器中的行为
+```ts
+import { createMyASCF } from 'miniapp-runtime-harmony-web-sdk';
 
-`window.MyASCFNative` 由 HarmonyOS ArkWeb 的 JavaScriptProxy 注入。普通浏览器没有该对象，因此 SDK 会以 `NATIVE_UNAVAILABLE` reject，并提示应在 ArkWeb 容器中运行，而不是直接抛出未捕获异常。
+const myascf = createMyASCF();
+// createMyASCF 不会修改 window.myascf。
+window.__myascf_on_native_response__ = (response) => {
+  myascf.handleNativeResponse(response);
+};
+```
 
-## 与 MyASCFNative 的关系
+## 类型化 API
 
-SDK 把 BridgeRequest 序列化后调用：
+```ts
+import { createTypedApi, initMyASCF } from 'miniapp-runtime-harmony-web-sdk';
+
+const client = initMyASCF();
+const api = createTypedApi(client);
+
+await client.sendTyped('ui.showToast', { message: 'hello' });
+const result = await api.system.storage.getItem({ key: 'username' });
+console.log(result.data?.value);
+```
+
+`sendTyped` 和 nested helper 的类型由 `tools/api-manifest.json` 生成，运行时仍复用通用 `send`。完整说明见 [typed API 使用指南](typed-api-usage.md)。
+
+## Native 边界
+
+SDK 通过以下对象把请求发给 ArkWeb JavaScriptProxy：
 
 ```js
 window.MyASCFNative.postMessage(requestText);
 ```
 
-ArkTS 处理完成后，通过 `runJavaScript` 调用：
+ArkTS 通过 `runJavaScript` 调用：
 
 ```js
 window.__myascf_on_native_response__(responseText);
 ```
 
-SDK 根据 response 的 requestId 找回 callback，并完成 Promise。
+SDK 根据 `requestId` 找回 callback，按 `code` resolve 或 reject Promise。普通浏览器没有 `window.MyASCFNative`，因此返回 `NATIVE_UNAVAILABLE` 是预期行为。
 
-## 与 MyASCFRuntime 的关系
+## Timeout 与错误
 
-H5 SDK 是调用侧；HAR 中的 `MyASCFRuntime` 是 Native 侧门面。HarmonyOS 页面创建 `MyASCFRuntime` 并把 `getNativeProxy()` 暴露给 ArkWeb，H5 SDK 不负责 HAR 初始化、Dispatcher 注册或平台能力调用。
+`options.timeout` 默认为 5000ms。超时后 SDK 删除 callback 并 reject `TIMEOUT`；之后到达的响应记为 `CALLBACK_LOST`。格式错误的响应记为 `INVALID_RESPONSE`，不会让页面主链路直接崩溃。
 
-发布前包内容和检查流程见 [npm publish checklist](../release/npm-publish-checklist.md)。
+## 本地 Tarball 验证
+
+```bash
+cd h5_sdk
+npm run pack:local
+
+cd ../examples/sdk-consumer-demo
+npm install
+npm test
+```
+
+consumer 示例通过包名进行真实 ESM import，并验证 package exports 与类型声明。当前不执行 `npm publish`。

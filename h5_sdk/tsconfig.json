@@ -1,22 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "module": "none",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "lib": ["ES2017", "DOM"],
-    "outFile": "dist/myascf.js",
-    "declaration": true,
     "strict": true,
-    "noImplicitAny": true,
-    "noEmitOnError": true,
-    "removeComments": false,
-    "newLine": "lf"
+    "noEmit": true,
+    "skipLibCheck": true
   },
-  "files": [
-    "src/bridge-types.ts",
-    "src/error-code.ts",
-    "src/request-id.ts",
-    "src/callback-store.ts",
-    "src/native-adapter.ts",
-    "src/index.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }

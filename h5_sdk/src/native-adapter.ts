@@ -1,24 +1,28 @@
-namespace MyASCFWebSDK {
-  export class NativeBridgeError extends Error {
-    readonly code: number;
+import type { BridgeRequest } from './bridge-types.js';
+import { ERROR_CODE_NATIVE_UNAVAILABLE } from './error-code.js';
 
-    constructor(code: number, message: string) {
-      super(message);
-      this.name = 'NativeBridgeError';
-      this.code = code;
-    }
+export class NativeBridgeError extends Error {
+  readonly code: number;
+
+  constructor(code: number, message: string) {
+    super(message);
+    this.name = 'NativeBridgeError';
+    this.code = code;
   }
+}
 
-  export class NativeAdapter {
-    postMessage(request: BridgeRequest): void {
-      if (!window.MyASCFNative || typeof window.MyASCFNative.postMessage !== 'function') {
-        throw new NativeBridgeError(
-          ERROR_CODE_NATIVE_UNAVAILABLE,
-          'Native bridge is unavailable. Please run inside HarmonyOS ArkWeb container.'
-        );
-      }
+export class NativeAdapter {
+  constructor(private readonly targetWindow: Window) {}
 
-      window.MyASCFNative.postMessage(JSON.stringify(request));
+  postMessage(request: BridgeRequest): void {
+    const nativeBridge = this.targetWindow.MyASCFNative;
+    if (!nativeBridge || typeof nativeBridge.postMessage !== 'function') {
+      throw new NativeBridgeError(
+        ERROR_CODE_NATIVE_UNAVAILABLE,
+        'Native bridge is unavailable. Please run inside HarmonyOS ArkWeb container.'
+      );
     }
+
+    nativeBridge.postMessage(JSON.stringify(request));
   }
 }

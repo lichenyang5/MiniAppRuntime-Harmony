@@ -1,43 +1,72 @@
 # API Manifest 设计
 
-这篇文档解决的问题：解释为什么运行时注册之外还需要能力元信息，以及 Manifest 如何帮助源码、文档和 DebugPanel 保持一致。
+这篇文档解决什么问题：解释 API 元信息如何服务运行时能力查询、文档生成和 H5 SDK 类型生成，以及当前尚未统一的边界。
 
-## 为什么需要 Manifest
+## Manifest 的作用
 
-API 信息原本分散在 ActionNames、RuntimeBootstrap、Biz/Imp、H5 按钮、README 和 API 文档。新增能力时容易出现代码已注册但文档遗漏，或展示列表与真实参数不一致。ApiManifest 为每个已实现 action 提供结构化说明。
+API 信息分布在 action 常量、RuntimeBootstrap、Biz/Imp、README 和 Demo 中，手工维护容易遗漏。Manifest 为每个 API 描述：
 
-## Manifest 描述什么
+- action 与 category。
+- 标题和说明。
+- params 与 required。
+- response 字段。
+- errors 与 implemented。
+- Biz / Imp 归属和示例。
 
-每项包含 action、category、title、description、params、response、errors、implemented、biz、imp 和 example。它不执行 API，不解析请求，也不调用 ArkWeb、Preferences 或 runJavaScript。
+Manifest 描述能力，但不执行 API，不替代 HandlerRegistry，也不替代 Biz 参数校验。
 
-## 各模块区别
+## 当前两种表示
 
 ```text
-ActionNames       稳定 action 常量
-ApiManifest       action 元信息与能力清单
-RuntimeBootstrap  action 到 handler 的运行时注册
-Biz / Imp         参数语义与平台能力实现
+myascf_runtime ApiManifest   运行时自省，供 runtime.getApiList 使用
+tools/api-manifest.json      生成镜像，供 Node 工具读取
 ```
 
-Manifest 和 RuntimeBootstrap 仍保持职责分离。`runtime.getApiList` 只读取元信息，不根据 Manifest 自动创建 handler。
+当前 JSON 仍需与 ArkTS Manifest 同步维护，尚未实现真正的单一数据源。选择 JSON 作为生成输入，是因为 Node 可以稳定解析结构化数据，不需要脆弱地解析 ArkTS imports、对象或类型语法。
 
-## 如何服务展示与维护
+## 生成链路
 
-- README 根据 Manifest 维度维护当前 API 表格。
-- `docs/api/index.md` 提供可点击的能力总览。
-- RuntimeInfoBiz 把 Manifest 转换为精简 ApiSummary，DebugPanel 动态展示。
-- 新增 API 指南要求所有位置同步更新。
-
-## 后续演进
-
-当前已经提供 `runtime.getApiList` 用于运行时动态展示，并使用 JSON 镜像生成 Markdown：
+文档链路：
 
 ```text
 tools/api-manifest.json
 -> tools/generate-api-docs.js
--> docs/api/generated-api-table.md
--> docs/api/generated-api-manifest.md
--> README / docs/api/index.md
+-> API Markdown 与 README 表格
 ```
 
-选择 JSON 镜像是为了避免用脆弱脚本解析 ArkTS imports、enum 和对象语法。代价是 `ApiManifest.ets` 与 JSON 需要同步维护。后续可以改为单一结构化源，同时生成 ArkTS Manifest、Markdown、H5 类型和 API 文档站点。
+H5 SDK 类型链路：
+
+```text
+tools/api-manifest.json
+-> tools/generate-sdk-types.js
+-> h5_sdk/src/generated/api-types.ts
+-> h5_sdk/src/generated/api-client.ts
+-> IIFE / ESM / d.ts
+```
+
+生成器校验完整元数据、action、参数、响应、错误列表、实现状态、重复字段、类型和 nested helper 路径。字段缺失或类型不支持时退出非 0；只有 `implemented: true` 的 API 会进入 H5 SDK 类型，避免把规划中的 action 暴露为可调用能力。
+
+## 生成的能力
+
+- `ApiAction` 联合类型。
+- `ApiParamsMap`。
+- `ApiResponseDataMap`。
+- `TypedBridgeResponse<T>`。
+- `TypedSendArgs<T>`。
+- `createTypedApi(client)` nested helper。
+
+这些类型增强 H5 开发体验，但运行时仍走既有 `send` 与 Dispatcher 主链路。
+
+## 维护命令
+
+```bash
+npm run docs:api
+npm run sdk:types
+npm run generate
+```
+
+SDK build 会通过 `prebuild` 自动刷新 generated 文件。
+
+## 后续演进
+
+下一阶段可以把 ArkTS Manifest、JSON 镜像、Markdown 和 H5 类型统一到一个结构化来源，并增加“生成后工作树必须无差异”的 CI 检查。当前文档只描述已经落地的 JSON 驱动文档与 H5 类型能力。

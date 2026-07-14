@@ -86,7 +86,7 @@ H5 -> window.myascf.send -> JavaScriptProxy -> BridgeController
 | Package | Type | Status | Usage |
 | --- | --- | --- | --- |
 | `myascf_runtime` | HarmonyOS ArkTS HAR | `1.0.0` local module metadata | `file:../myascf_runtime` |
-| `h5_sdk` | H5 JavaScript / TypeScript SDK | `0.1.0` dist ready, npm preparation | copy `dist/myascf.js` to rawfile |
+| `h5_sdk` | H5 JavaScript / TypeScript SDK | `0.1.0` dual-build npm pack verified, publish later | IIFE script or ESM import |
 | `entry` | HarmonyOS demo app | demo ready | run in DevEco Studio |
 
 `myascf_runtime` 负责 Native Bridge、分发注册、Biz/Imp、回调、Manifest 和容器公共模型；`h5_sdk` 负责 `window.myascf`、requestId、callback map、timeout 和 Native response；`entry` 负责 ArkWeb、JavaScriptProxy 注入、H5 Demo 与 DebugPanel。HAR 使用 `1.0.0` 是为了满足当前 Hvigor 的模块版本校验，不表示它已正式发布。
@@ -96,6 +96,44 @@ H5 -> window.myascf.send -> JavaScriptProxy -> BridgeController
 Current candidate version: `v0.1.0`.
 
 项目当前按 GitHub 开源展示版整理。H5 SDK 已具备 npm 包结构，但仍保持 `private: true`，本阶段不执行 npm publish；ArkTS runtime 当前只提供本地 HAR 和 GitHub 示例接入，不声称已经发布到 HarmonyOS 包仓库。详情见 [Release Preparation](RELEASE.md)。
+
+## H5 SDK 类型化调用
+
+```ts
+import { createTypedApi, initMyASCF } from 'miniapp-runtime-harmony-web-sdk';
+
+const client = initMyASCF();
+const api = createTypedApi(client);
+
+await api.ui.showToast({ message: 'hello' });
+const item = await api.system.storage.getItem({ key: 'username' });
+console.log(item.data?.value);
+```
+
+`ApiAction`、参数 Map、响应 Map 和 nested helper 由 `tools/api-manifest.json` 生成。执行 `npm run sdk:types` 只生成 SDK 类型，执行 `npm run generate` 同时刷新 API 文档与 SDK 类型。底层仍使用现有 `send` 与 JSBridge 协议。
+
+## H5 SDK npm Pack 预检
+
+H5 SDK 已完成 IIFE + ESM 双产物、本地 dry-run、tarball 生成和外部 ESM consumer 安装验证，但没有发布到 npm。
+
+```bash
+cd h5_sdk
+npm run pack:check
+npm run pack:local
+```
+
+生成的 `miniapp-runtime-harmony-web-sdk-0.1.0.tgz` 只用于本地验证并由 Git 忽略。`npm pack` 检查候选包内容，和把包上传到 registry 的 `npm publish` 是两件事。完整步骤见 [npm pack 验证](docs/release/npm-pack-verify.md)。
+
+## Quality Checks
+
+```bash
+npm run check
+npm --prefix h5_sdk run check
+```
+
+自动检查覆盖 H5 SDK IIFE/ESM 构建与单元测试、API Manifest 和 ArkTS 注册关系、生成 API 文档、typed API 类型、package exports 与 npm pack dry-run。HarmonyOS ArkWeb、Native API、权限和设备行为仍需结合 DevEco Studio 执行 [手工 smoke test](docs/testing/manual-smoke-test.md)。
+
+测试说明与发布回归入口见 [docs/testing](docs/testing/README.md)。
 
 ## Local HAR
 
@@ -193,7 +231,7 @@ const storageRes = await window.myascf.send('system.storage.getItem', { key: 'us
 entry/                         可运行 Demo、ArkWeb、rawfile H5
 h5_sdk/                        可复用 H5 JSBridge SDK
   src/                         TypeScript 源码与协议类型
-  dist/                        单文件 JS 和 d.ts 构建产物
+  dist/                        IIFE、ESM 和 d.ts 构建产物
   scripts/                     rawfile 同步脚本
 myascf_runtime/                本地 HAR 框架模块
   src/main/ets/bridge/         通信入口与回调执行
@@ -221,8 +259,10 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [生成 API 文档](docs/guide/generate-api-docs.md)
 - [H5 SDK 设计](docs/architecture/h5-sdk-design.md)
 - [H5 SDK 使用指南](docs/guide/h5-sdk-usage.md)
+- [H5 SDK 类型化 API](docs/guide/typed-api-usage.md)
 - [发布前整理指南](docs/guide/release-guide.md)
 - [Release Plan](docs/release/release-plan.md)
+- [npm Pack 验证](docs/release/npm-pack-verify.md)
 
 ## Blog Series
 
@@ -258,12 +298,14 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [ ] 补充真实运行截图
 - [ ] 发布博客系列
 - [x] Manifest JSON 生成 API Markdown 与 README 表格
-- [x] H5 SDK 抽离、TypeScript 类型声明与 Demo 产物同步
+- [x] H5 SDK 抽离、IIFE / ESM 双产物、TypeScript 类型声明与 Demo 同步
 - [x] v0.1.0 包边界、LICENSE、CHANGELOG 与 Release 文档整理
+- [x] H5 SDK npm pack dry-run、tarball 与外部 consumer 验证
+- [x] Manifest JSON 生成 H5 SDK action / params / response 类型
+- [x] H5 SDK sendTyped 与 nested typed helper
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
-- [ ] API 类型自动生成
 - [ ] Network API
-- [ ] H5 SDK `npm pack` 内容检查
+- [x] H5 SDK ESM 构建
 - [ ] 发布 H5 SDK 到 npm
 - [ ] 调研 HAR 对应的 HarmonyOS 包发布方式
 
