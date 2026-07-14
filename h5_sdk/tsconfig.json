@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "none",
+    "lib": ["ES2017", "DOM"],
+    "outFile": "dist/myascf.js",
+    "declaration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "newLine": "lf"
+  },
+  "files": [
+    "src/bridge-types.ts",
+    "src/error-code.ts",
+    "src/request-id.ts",
+    "src/callback-store.ts",
+    "src/native-adapter.ts",
+    "src/index.ts"
+  ]
+}

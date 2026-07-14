@@ -6,6 +6,8 @@
 
 当 runtime 全部放在 `entry` 中时，它只能服务当前 Demo。抽成 HAR 后，示例应用负责 ArkWeb 和页面，框架模块负责通信、分发、注册、Biz/Imp、错误处理和回调执行，其他 Demo 可以复用同一套链路。
 
+当前 HAR 的 `oh-package.json5` 版本为 `1.0.0`，用于满足 Hvigor 对模块 major 版本的校验。它只通过本地 file dependency 和 GitHub 源码示例使用，版本号不代表已经发布到 HarmonyOS 包仓库。
+
 ## 模块结构
 
 ```text
@@ -64,6 +66,12 @@ Context 用于创建 Preferences，从而支持 Storage API。对外方法只有
 - `getMethodList()`：返回允许 H5 调用的方法列表。
 
 H5 仍统一通过 `window.myascf.send` 调用 Toast、Clipboard 和 Storage，不需要了解 HAR 内部对象。
+
+## 包职责边界
+
+HAR 负责 JavaScriptProxy、BridgeController、Dispatcher、Registry、RuntimeBootstrap、Biz/Imp、CallbackExecutor、ApiManifest 和 Web 容器公共模型。ArkWeb UI、rawfile 页面、Demo 按钮和 DebugPanel 仍由 entry 管理，H5 requestId 与 callback map 由 `h5_sdk` 管理。
+
+当前本地接入不需要 npm 命令，也不应把 HAR 描述为 npm 包。后续发布方式需要结合目标 HarmonyOS SDK 和对应包管理渠道单独调研。
 
 ## 新建 Demo 使用
 

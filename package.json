@@ -1,7 +1,13 @@
 {
   "name": "miniapp-runtime-harmony-tools",
+  "version": "0.1.0",
   "private": true,
+  "description": "Local tooling for the MiniAppRuntime-Harmony open-source demo",
+  "author": "Li Chenyang",
   "scripts": {
-    "docs:api": "node tools/generate-api-docs.js"
+    "docs:api": "node tools/generate-api-docs.js",
+    "h5:build": "npm --prefix h5_sdk run build",
+    "h5:sync": "npm --prefix h5_sdk run build:demo",
+    "h5:test": "npm --prefix h5_sdk run test"
   }
 }

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A lightweight HarmonyOS Web container runtime and JSBridge library.",
   "main": "Index.ets",
-  "author": "",
-  "license": "",
+  "author": "Li Chenyang",
+  "license": "MIT",
   "dependencies": {}
 }

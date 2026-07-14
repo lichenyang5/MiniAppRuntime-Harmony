@@ -15,6 +15,10 @@
 9. [API Manifest 设计](architecture/api-manifest-design.md)
 10. [新增 API 指南](guide/add-new-api.md)
 11. [生成 API 文档](guide/generate-api-docs.md)
+12. [H5 SDK 设计](architecture/h5-sdk-design.md)
+13. [H5 SDK 使用指南](guide/h5-sdk-usage.md)
+14. [发布前整理指南](guide/release-guide.md)
+15. [Release Plan](release/release-plan.md)
 
 ## 目录作用
 
@@ -22,12 +26,13 @@
 | --- | --- |
 | `overview/` | 项目定位、真实进度和后续计划 |
 | `architecture/` | runtime、JSBridge、HAR、Biz/Imp 和 WebContainer 设计 |
-| `guide/` | 本地 HAR 使用和新建 Demo 接入步骤 |
+| `guide/` | HAR、H5 SDK、文档生成和新建 Demo 接入步骤 |
 | `api/` | 已实现 action 的参数、响应和错误约定 |
 | `debug/` | DebugPanel、RuntimeLogger 和常见问题 |
 | `stages/` | 从初始化到 Web 容器增强的阶段记录 |
 | `assets/` | Mermaid 架构图与截图占位目录 |
 | `blogs/` | 8 篇系列博客草稿和发布顺序 |
+| `release/` | 版本计划、npm 检查清单和 GitHub Release 模板 |
 
 ## API
 
@@ -40,7 +45,15 @@
 
 ## 当前状态
 
-已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest 和 `runtime.getApiList` 动态查询。真实运行截图、博客发布、API 文档自动生成、Network API 和 H5 SDK npm 化尚未完成。
+已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK 抽离和 v0.1.0 发布前文档。真实运行截图、博客发布、Network API、逐 action 类型、npm pack/publish 和 HAR 发布方式调研尚未完成。
+
+## Release
+
+- [Release Preparation](../RELEASE.md)
+- [发布前整理指南](guide/release-guide.md)
+- [Release Plan](release/release-plan.md)
+- [H5 SDK npm Checklist](release/npm-publish-checklist.md)
+- [GitHub Release Template](release/github-release-template.md)
 
 ## 面试讲解路径
 

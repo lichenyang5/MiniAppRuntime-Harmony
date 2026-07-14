@@ -1,0 +1,7 @@
+src/
+scripts/
+tests/
+tsconfig.json
+package-lock.json
+*.log
+.DS_Store

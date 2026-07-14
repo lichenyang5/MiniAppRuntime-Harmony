@@ -25,14 +25,19 @@
 - [x] API Manifest 能力列表和新增 API 模板。
 - [x] `runtime.getApiList` 动态查询与 DebugPanel 动态能力列表。
 - [x] Manifest JSON 生成 API Markdown 与 README 表格。
+- [x] H5 SDK 抽离、TypeScript 类型声明与 rawfile 产物同步。
+- [x] v0.1.0 版本、LICENSE、CHANGELOG 和 Release 文档整理。
 
 ## 待完成
 
 - [ ] 补充真实运行截图。
 - [ ] 发布并根据反馈修订博客。
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型。
+- [ ] H5 SDK `npm pack` 内容检查。
+- [ ] 发布 H5 SDK 到 npm。
+- [ ] 调研 HAR 对应的 HarmonyOS 包发布方式。
+- [ ] 从 API Manifest 自动生成逐 action 类型。
 - [ ] Network API。
-- [ ] H5 SDK npm 化。
 - [ ] 处理当前 SDK 的废弃 API 与权限警告。
 
 ## 边界

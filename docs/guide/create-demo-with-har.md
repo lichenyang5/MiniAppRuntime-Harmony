@@ -29,7 +29,11 @@
 
 ## 3. 准备 H5
 
-在 `entry/src/main/resources/rawfile/web/` 放置 `index.html` 与 H5 SDK。H5 侧需要提供 `window.myascf.send` 和 Native response callback；可直接参考当前仓库的 rawfile Demo。
+在 `entry/src/main/resources/rawfile/web/` 放置 `index.html` 与 H5 SDK。当前推荐把 `h5_sdk/dist/myascf.js` 复制到 `rawfile/web/js/myascf.js`，不要在 Demo 中重新维护一份 Bridge 实现。
+
+```html
+<script src="./js/myascf.js"></script>
+```
 
 ## 4. 接入页面
 
@@ -84,7 +88,9 @@ const storageRes = await window.myascf.send('system.storage.getItem', {
 
 ## 6. 同步和构建
 
-执行依赖安装或同步，然后依次执行 Sync Project、Clean Project 和 Rebuild Project。运行后先验证本地 H5，再验证 Toast、Clipboard 和 Storage。
+先执行 `npm --prefix h5_sdk install` 与 `npm run h5:sync` 生成并同步 H5 SDK。然后执行 HarmonyOS 依赖同步、Sync Project、Clean Project 和 Rebuild Project。运行后先验证本地 H5，再验证 Toast、Clipboard 和 Storage。
+
+HAR 当前是本地源码模块，不需要从 npm 或 HarmonyOS 包仓库下载。
 
 ## 7. 排查顺序
 

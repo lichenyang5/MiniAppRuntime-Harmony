@@ -6,7 +6,8 @@
 
 ```mermaid
 flowchart TD
-  H5["H5 Demo"] --> Send["window.myascf.send(action, params, options)"]
+  H5["H5 Demo"] --> SDK["miniapp-runtime-harmony-web-sdk"]
+  SDK --> Send["window.myascf.send(action, params, options)"]
   Send --> Request["requestId + callback map"]
   Request --> Native["window.MyASCFNative.postMessage"]
   Native --> Proxy["JavaScriptProxy.postMessage"]
@@ -25,7 +26,7 @@ flowchart TD
   H5Callback --> Debug["DebugPanel"]
 ```
 
-当前 JSBridge runtime 核心代码已经抽取到 `myascf_runtime` HAR 模块，`entry` 只负责 ArkWeb 容器和 H5 Demo。
+当前 ArkTS runtime 核心代码位于 `myascf_runtime` HAR，H5 调用侧位于 `h5_sdk`，`entry` 只负责 ArkWeb 容器、SDK 产物集成和 H5 Demo。
 
 entry 侧通过 `MyASCFRuntime` 接入 HAR，不再直接创建 BridgeController、BridgeDispatcher、HandlerRegistry 或 RuntimeBootstrap。
 
@@ -88,6 +89,8 @@ var callbacks = new Map();
 - params
 
 这样可以支持并发调用、异步回调、timeout 和 callback lost。
+
+上述能力现由 `h5_sdk` 的 TypeScript 源码维护，rawfile 中的 `myascf.js` 是构建后同步产物。设计细节见 [H5 SDK 设计](h5-sdk-design.md)。
 
 ## 为什么要有 Dispatcher / Registry
 
@@ -173,4 +176,5 @@ recordLost
 
 - Network API。
 - H5 SDK npm 化。
+- 从 API Manifest 自动生成逐 action 类型。
 - 更完整的 DebugPanel 搜索、筛选和耗时统计。

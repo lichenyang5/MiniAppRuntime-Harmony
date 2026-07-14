@@ -22,12 +22,15 @@ MiniAppRuntime-Harmony 基于 HarmonyOS、ArkTS 与 ArkWeb，探索 H5 如何以
 - `myascf_runtime` 本地 HAR 模块与 `MyASCFRuntime` 门面类。
 - WebLoadState、URL Guard、白名单判断和错误状态页。
 - API Manifest 与 `runtime.getApiList` 动态能力查询。
+- `h5_sdk` 可复用前端 SDK、TypeScript 源码与类型声明。
+- NATIVE_UNAVAILABLE、INVALID_RESPONSE 等 H5 侧错误治理。
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-  H5["H5 Demo"] --> Send["window.myascf.send"]
+  H5["H5 Demo"] --> SDK["h5_sdk / web SDK"]
+  SDK --> Send["window.myascf.send"]
   Send --> Native["window.MyASCFNative.postMessage"]
   Native --> JSP["JavaScriptProxy"]
   JSP --> BC["BridgeController"]
@@ -39,7 +42,7 @@ flowchart TD
   BD --> Resp["BridgeResponse"]
   Resp --> CB["BridgeCallbackExecutor"]
   CB --> RunJS["runJavaScript"]
-  RunJS --> Callback["H5 Callback Map"]
+  RunJS --> Callback["H5 SDK Callback Map"]
   Callback --> Promise["Promise resolve / reject"]
 ```
 
@@ -78,17 +81,34 @@ H5 -> window.myascf.send -> JavaScriptProxy -> BridgeController
 
 新增 API 不需要修改 BridgeController 主链路，只需定义 action、实现 Biz/Imp，并在 RuntimeBootstrap 注册 handler。
 
+## Packages
+
+| Package | Type | Status | Usage |
+| --- | --- | --- | --- |
+| `myascf_runtime` | HarmonyOS ArkTS HAR | `1.0.0` local module metadata | `file:../myascf_runtime` |
+| `h5_sdk` | H5 JavaScript / TypeScript SDK | `0.1.0` dist ready, npm preparation | copy `dist/myascf.js` to rawfile |
+| `entry` | HarmonyOS demo app | demo ready | run in DevEco Studio |
+
+`myascf_runtime` 负责 Native Bridge、分发注册、Biz/Imp、回调、Manifest 和容器公共模型；`h5_sdk` 负责 `window.myascf`、requestId、callback map、timeout 和 Native response；`entry` 负责 ArkWeb、JavaScriptProxy 注入、H5 Demo 与 DebugPanel。HAR 使用 `1.0.0` 是为了满足当前 Hvigor 的模块版本校验，不表示它已正式发布。
+
+## Release Status
+
+Current candidate version: `v0.1.0`.
+
+项目当前按 GitHub 开源展示版整理。H5 SDK 已具备 npm 包结构，但仍保持 `private: true`，本阶段不执行 npm publish；ArkTS runtime 当前只提供本地 HAR 和 GitHub 示例接入，不声称已经发布到 HarmonyOS 包仓库。详情见 [Release Preparation](RELEASE.md)。
+
 ## Local HAR
 
 `entry` 是可运行示例，负责 ArkWeb、H5 Demo 和容器 UI；`myascf_runtime` 是本地 HAR，负责 JSBridge 主链路、API 注册、平台能力封装和容器公共模型。`MyASCFRuntime` 在 HAR 内组装 Registry、Dispatcher、CallbackExecutor、Controller 和 Native Proxy。
 
 ## Quick Start
 
-1. 使用 DevEco Studio 打开仓库。
-2. 执行依赖同步。
-3. Clean 后 Rebuild `entry` 模块。
-4. 在模拟器或真机运行应用。
-5. 使用 H5 页面验证 Toast、Clipboard、Storage、错误处理和 URL Guard。
+1. 使用 DevEco Studio 打开仓库并执行 HarmonyOS 依赖同步。
+2. 执行 `npm --prefix h5_sdk install` 安装 H5 SDK 的 TypeScript 开发依赖。
+3. 执行 `npm run h5:sync` 构建 SDK，并同步到 rawfile 的 `js/myascf.js`。
+4. Clean 后 Rebuild `entry` 模块。
+5. 在模拟器或真机运行应用。
+6. 使用 H5 页面验证 Toast、Clipboard、Storage、错误处理和 URL Guard。
 
 建议使用与工程配置匹配的 HarmonyOS SDK。Clipboard 读取能力需要根据当前 SDK 要求配置和验证权限。
 
@@ -171,6 +191,10 @@ const storageRes = await window.myascf.send('system.storage.getItem', { key: 'us
 
 ```text
 entry/                         可运行 Demo、ArkWeb、rawfile H5
+h5_sdk/                        可复用 H5 JSBridge SDK
+  src/                         TypeScript 源码与协议类型
+  dist/                        单文件 JS 和 d.ts 构建产物
+  scripts/                     rawfile 同步脚本
 myascf_runtime/                本地 HAR 框架模块
   src/main/ets/bridge/         通信入口与回调执行
   src/main/ets/dispatcher/     action 分发
@@ -195,6 +219,10 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [API Manifest 设计](docs/architecture/api-manifest-design.md)
 - [新增 API 指南](docs/guide/add-new-api.md)
 - [生成 API 文档](docs/guide/generate-api-docs.md)
+- [H5 SDK 设计](docs/architecture/h5-sdk-design.md)
+- [H5 SDK 使用指南](docs/guide/h5-sdk-usage.md)
+- [发布前整理指南](docs/guide/release-guide.md)
+- [Release Plan](docs/release/release-plan.md)
 
 ## Blog Series
 
@@ -230,9 +258,14 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [ ] 补充真实运行截图
 - [ ] 发布博客系列
 - [x] Manifest JSON 生成 API Markdown 与 README 表格
+- [x] H5 SDK 抽离、TypeScript 类型声明与 Demo 产物同步
+- [x] v0.1.0 包边界、LICENSE、CHANGELOG 与 Release 文档整理
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
+- [ ] API 类型自动生成
 - [ ] Network API
-- [ ] H5 SDK npm 化
+- [ ] H5 SDK `npm pack` 内容检查
+- [ ] 发布 H5 SDK 到 npm
+- [ ] 调研 HAR 对应的 HarmonyOS 包发布方式
 
 ## Highlights
 
@@ -242,10 +275,11 @@ docs/                          架构、指南、API、调试、阶段与博客
 - 用 CallbackExecutor 集中处理 runJavaScript 回调。
 - 用本地 HAR 和门面类降低新 Demo 的接入成本。
 - 用 ApiManifest 统一描述 action、参数、响应、错误和实现类。
+- 用独立 H5 SDK 管理浏览器侧 requestId、callback、timeout 和 Native 适配。
 - 同时覆盖 JSBridge、Web 容器状态、错误治理和调试展示。
 
 面试讲解建议从“为什么不把 action 判断写进 Controller”切入，再依次讲协议、分发注册、Biz/Imp、回调治理、HAR 模块化和容器增强。
 
 ## License
 
-当前仓库尚未提交独立 LICENSE 文件。在明确开源许可证前，请将代码用于学习、评审和交流；后续应补充正式许可证文件。
+项目使用 [MIT License](LICENSE)。当前发布准备状态、候选发布物和限制见 [RELEASE.md](RELEASE.md)。

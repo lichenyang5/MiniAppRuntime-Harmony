@@ -138,13 +138,15 @@ getMethodList()
 
 ## 当前状态
 
-HAR 模块结构已经建立，runtime 核心代码位于 `myascf_runtime/src/main/ets`。当前项目已使用 DevEco Studio 自带 Hvigor 完成 HAP 构建验证；设备交互仍需在模拟器或真机验收。
+HAR 模块结构已经建立，`oh-package.json5` 使用 `1.0.0` 本地模块元数据，runtime 核心代码位于 `myascf_runtime/src/main/ets`。当前 Hvigor 的模块版本校验要求 major 从 1 开始，因此 HAR 与根项目/H5 SDK 不共用 `0.1.0` 版本号。该元数据不代表正式发布。当前项目已完成 HAP 构建验证；设备交互仍需在模拟器或真机验收。
+
+本阶段只支持本地 `file:../myascf_runtime` 依赖。HAR 没有发布到 npm，也没有发布到 HarmonyOS 包仓库；未来发布方式需要独立调研，不能直接套用 H5 SDK 的 npm 流程。
 
 ## 后续计划
 
 - 补充真实运行截图和设备回归记录。
 - 处理当前 SDK 的废弃 API 与权限警告。
-- 如果后续发布为独立库，再补充版本、依赖和发布说明。
+- 调研目标 HarmonyOS SDK 对应的 HAR 包管理和发布方式。
 ## Context 与 Storage
 
 这篇文档解决什么问题：说明需要 Context 的 Native 能力如何接入 HAR。

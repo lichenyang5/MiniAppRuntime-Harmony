@@ -1,0 +1,33 @@
+{
+  "name": "miniapp-runtime-harmony-web-sdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "H5 JavaScript SDK for the MiniAppRuntime-Harmony JSBridge demo.",
+  "author": "Li Chenyang",
+  "main": "dist/myascf.js",
+  "types": "dist/myascf.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "copy:demo": "node scripts/copy-to-demo.js",
+    "build:demo": "npm run build && npm run copy:demo",
+    "test": "node --test tests/sdk.test.js",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "harmonyos",
+    "arkweb",
+    "jsbridge",
+    "h5",
+    "webview"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "5.7.2"
+  }
+}

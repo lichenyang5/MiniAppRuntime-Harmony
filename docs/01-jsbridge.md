@@ -50,7 +50,10 @@ entry 通过 `MyASCFRuntime` 接入 HAR，不再直接组装 BridgeController、
 - Web 容器支持加载进度、URL Guard、错误状态和重试入口。
 - HAR 提供 API Manifest，`runtime.getApiList` 让 DebugPanel 动态展示当前 8 个 API。
 - `tools/api-manifest.json` 可生成 API Markdown，并同步更新 README 与 API 总览表格。
+- H5 侧通信能力已抽取到 `h5_sdk`，TypeScript 构建产物同步到 Demo rawfile 原路径。
+- SDK 继续支持 requestId、callback map、timeout、CALLBACK_LOST 和 DebugPanel 生命周期记录。
+- 根项目与 `h5_sdk` 候选版本为 0.1.0；`myascf_runtime` 使用符合当前 Hvigor 校验的 1.0.0 本地模块元数据。HAR 保持本地依赖，H5 SDK 保持 private 准备状态。
 
 ## 下一步
 
-下一步优先补充真实截图并发布博客；元信息方向可推进从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型。
+下一步优先补充真实截图并发布博客；SDK 方向可推进 npm 化和从 API Manifest 生成逐 action 类型。

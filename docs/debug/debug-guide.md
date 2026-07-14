@@ -29,7 +29,10 @@ resolve
 reject
 timeout
 callback_lost
+invalid_response
 ```
+
+H5 SDK 在 DebugPanel 存在时容错调用这些记录方法；面板缺失或自身报错不会阻断 Promise。普通浏览器中的 `NATIVE_UNAVAILABLE`、响应解析失败的 `INVALID_RESPONSE` 也会进入 `recordError`。
 
 ## 当前 API 列表
 
@@ -45,6 +48,7 @@ DebugPanel 顶部提供“加载 API 列表”按钮。点击后调用 `runtime.
 4. 如果返回 reject，查看 code 和 message。
 5. 如果 timeout，检查 ArkTS 是否在 timeout 时间内回调 H5。
 6. 如果 callback_lost，通常说明 response 迟到或页面刷新后 callback map 已丢失。
+7. 如果 invalid_response，检查 ArkTS 回调字符串是否是合法 JSON，并核对 requestId、code、message 和 data 类型。
 
 ## 常见验证路径
 

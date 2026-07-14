@@ -22,7 +22,7 @@ H5 -> JavaScriptProxy -> BridgeController -> Dispatcher -> Registry
 
 ## 项目边界
 
-这是个人开源学习与工程实践项目，基于公开 HarmonyOS、ArkTS 和 ArkWeb 能力自行实现。当前不是完整小程序规范，也不是生产级安全沙箱；远程内容治理、自动化 API 文档、Network API 和 npm 化 H5 SDK 仍在 Roadmap 中。
+这是个人开源学习与工程实践项目，基于公开 HarmonyOS、ArkTS 和 ArkWeb 能力自行实现。当前不是完整小程序规范，也不是生产级安全沙箱；远程内容治理、Network API、逐 action 类型和 H5 SDK npm 发布仍在 Roadmap 中。
 
 ## 适合如何阅读
 
