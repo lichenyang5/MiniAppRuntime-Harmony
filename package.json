@@ -1,0 +1,7 @@
+{
+  "name": "miniapp-runtime-harmony-tools",
+  "private": true,
+  "scripts": {
+    "docs:api": "node tools/generate-api-docs.js"
+  }
+}

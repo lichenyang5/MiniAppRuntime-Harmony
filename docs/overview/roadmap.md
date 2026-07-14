@@ -24,12 +24,13 @@
 - [x] README 与 docs API 总览表格。
 - [x] API Manifest 能力列表和新增 API 模板。
 - [x] `runtime.getApiList` 动态查询与 DebugPanel 动态能力列表。
+- [x] Manifest JSON 生成 API Markdown 与 README 表格。
 
 ## 待完成
 
 - [ ] 补充真实运行截图。
 - [ ] 发布并根据反馈修订博客。
-- [ ] API 文档自动生成。
+- [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型。
 - [ ] Network API。
 - [ ] H5 SDK npm 化。
 - [ ] 处理当前 SDK 的废弃 API 与权限警告。

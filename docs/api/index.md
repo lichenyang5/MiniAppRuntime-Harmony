@@ -4,18 +4,35 @@
 
 ## 当前支持
 
-| Category | Action | Params | Response | Status | 文档 |
-| --- | --- | --- | --- | --- | --- |
-| UI | `ui.showToast` | `message: string` | `echoAction` | 已实现 | [Toast](ui-show-toast.md) |
-| System | `system.clipboard.writeText` | `text: string` | `echoAction` | 已实现 | [Clipboard](clipboard.md) |
-| System | `system.clipboard.readText` | - | `echoAction, text` | 已实现 | [Clipboard](clipboard.md) |
-| System | `system.storage.setItem` | `key: string, value: string` | `echoAction, key, value` | 已实现 | [Storage](storage.md) |
-| System | `system.storage.getItem` | `key: string` | `echoAction, key, value` | 已实现 | [Storage](storage.md) |
-| System | `system.storage.removeItem` | `key: string` | `echoAction, key` | 已实现 | [Storage](storage.md) |
-| System | `system.storage.clear` | - | `echoAction` | 已实现 | [Storage](storage.md) |
-| Runtime | `runtime.getApiList` | - | `echoAction, apis: ApiSummary[]` | 已实现 | [Runtime](runtime.md) |
+<!-- API_TABLE_START -->
+| Category | Action | Params | Response | Status |
+| --- | --- | --- | --- | --- |
+| runtime | `runtime.getApiList` | - | `apis: ApiSummary[]` | ✅ |
+| ui | `ui.showToast` | `message: string` | `echoAction: string` | ✅ |
+| system | `system.clipboard.writeText` | `text: string` | `echoAction: string` | ✅ |
+| system | `system.clipboard.readText` | - | `echoAction: string, text: string` | ✅ |
+| system | `system.storage.setItem` | `key: string, value: string` | `echoAction: string, key: string, value: string` | ✅ |
+| system | `system.storage.getItem` | `key: string` | `echoAction: string, key: string, value: string` | ✅ |
+| system | `system.storage.removeItem` | `key: string` | `echoAction: string, key: string` | ✅ |
+| system | `system.storage.clear` | - | `echoAction: string` | ✅ |
+<!-- API_TABLE_END -->
 
 统一错误说明见 [错误码](error-code.md)。
+
+## 自动生成内容
+
+- [API 表格](generated-api-table.md)
+- [API Manifest 展开说明](generated-api-manifest.md)
+
+运行 `npm run docs:api` 或 `node tools/generate-api-docs.js` 重新生成。标记区块和两个 generated 文件不建议手动修改。
+
+## 手写 API 文档
+
+- [ui.showToast](ui-show-toast.md)
+- [Clipboard](clipboard.md)
+- [Storage](storage.md)
+- [Runtime](runtime.md)
+- [错误码](error-code.md)
 
 ## API 元信息来源
 

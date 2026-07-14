@@ -14,6 +14,7 @@
 8. [调试指南](debug/debug-guide.md)
 9. [API Manifest 设计](architecture/api-manifest-design.md)
 10. [新增 API 指南](guide/add-new-api.md)
+11. [生成 API 文档](guide/generate-api-docs.md)
 
 ## 目录作用
 
