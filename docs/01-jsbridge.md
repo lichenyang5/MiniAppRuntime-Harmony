@@ -63,3 +63,5 @@ npm run check
 ```
 
 自动化测试通过只代表浏览器侧协议和静态工程关系通过。ArkWeb 注入、`runJavaScript`、Toast、Clipboard、Storage、DebugPanel 与 Web 容器状态仍按 [手工冒烟测试](testing/manual-smoke-test.md) 在 DevEco Studio 中验证。
+
+仓库已增加 `.github/workflows/ci.yml`，在 push 和 pull request 时运行生成物检查、Manifest 对齐、H5 SDK build/test、pack dry-run 与 package exports 检查。CI 不修改 JSBridge 协议，也不替代 ArkWeb 真机链路验证。

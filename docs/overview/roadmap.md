@@ -25,6 +25,8 @@
 - [x] API 文档和 typed API 生成物过期检查。
 - [x] H5 SDK package exports 与 npm pack dry-run 检查。
 - [x] HarmonyOS 手工冒烟与发布回归清单。
+- [x] GitHub Actions CI 配置。
+- [x] CI 中执行 H5 SDK build/test 与 npm pack dry-run。
 
 ## 待完成
 
@@ -35,8 +37,10 @@
 - [ ] 调研 HAR 对应的 HarmonyOS 包发布方式。
 - [ ] Network API。
 - [ ] 处理当前 SDK 的废弃 API 与权限警告。
-- [ ] GitHub Actions CI。
 - [ ] ArkTS runtime 自动化测试。
+- [ ] GitHub Release artifact automation。
+- [ ] 带人工审批的 npm publish。
+- [ ] HarmonyOS 工程自动化检查。
 
 ## 边界
 

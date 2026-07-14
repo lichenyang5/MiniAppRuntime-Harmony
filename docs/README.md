@@ -24,6 +24,7 @@
 18. [测试与回归](testing/README.md)
 19. [手工冒烟测试](testing/manual-smoke-test.md)
 20. [发布回归清单](testing/release-regression-checklist.md)
+21. [GitHub Actions CI](ci/README.md)
 
 ## 目录作用
 
@@ -39,6 +40,7 @@
 | `blogs/` | 8 篇系列博客草稿和发布顺序 |
 | `release/` | 版本计划、npm 检查清单和 GitHub Release 模板 |
 | `testing/` | H5 SDK 单元测试、工程一致性检查、手工冒烟与发布回归 |
+| `ci/` | GitHub Actions 触发条件、自动检查步骤与设备验证边界 |
 
 ## API
 
@@ -70,6 +72,8 @@
 - [发布回归清单](testing/release-regression-checklist.md)
 
 根目录执行 `npm run check` 可验证 H5 SDK、API Manifest、生成文档、生成类型和包导出。ArkWeb 与 HarmonyOS Native 行为仍需在 DevEco Studio 中按手工清单验证。
+
+GitHub Actions 配置见 [CI 文档](ci/README.md)。workflow 自动运行 Node 工具链检查，但不替代 HAP 构建和设备冒烟。
 
 ## 面试讲解路径
 

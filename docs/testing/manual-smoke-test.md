@@ -2,6 +2,8 @@
 
 这篇文档解决什么问题：提供一份可重复执行的真机或模拟器检查清单，验证 Node 自动测试无法覆盖的 ArkWeb、HAR 与 HarmonyOS Native 链路。
 
+GitHub Actions 只覆盖 H5 SDK 和 Node 工具链。即使 CI 通过，ArkWeb、HarmonyOS Kit、权限和设备 UI 仍必须按本文手工验证。
+
 ## 测试记录
 
 - 日期：`__________`

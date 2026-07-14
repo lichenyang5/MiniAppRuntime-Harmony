@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Node checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: h5_sdk/package-lock.json
+
+      - name: Install H5 SDK dependencies
+        working-directory: h5_sdk
+        run: npm ci
+
+      - name: Check generated docs and types
+        run: npm run check:generated
+
+      - name: Check API Manifest consistency
+        run: npm run check:api
+
+      - name: Build H5 SDK
+        working-directory: h5_sdk
+        run: npm run build
+
+      - name: Test H5 SDK
+        working-directory: h5_sdk
+        run: npm run test:unit
+
+      - name: Preview npm package
+        working-directory: h5_sdk
+        run: npm run pack:dry-run
+
+      - name: Check package exports
+        run: npm run check:package
+
+      - name: Write summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## MiniAppRuntime-Harmony CI"
+            echo
+            echo "This workflow checks generated files, API registration, H5 SDK build and tests, and npm package entries."
+            echo
+            echo "HarmonyOS HAP and device behavior remain part of the manual smoke test."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -33,6 +33,6 @@ npm run check
 
 Node 测试可以模拟 `window.MyASCFNative` 与 Native 响应，但不能替代 ArkWeb、HarmonyOS Kit、权限和设备行为验证。Toast、Clipboard、Storage、URL Guard、错误页与 DebugPanel 的真实链路仍以手工冒烟结果为准。
 
-## CI 预留
+## GitHub Actions
 
-本阶段不新增 GitHub Actions。后续可增加 `.github/workflows/check.yml`，在受支持的 Node 环境运行 `npm run check`；ArkTS/HAP 构建和设备冒烟仍需单独配置 HarmonyOS 构建环境。
+仓库已配置 `.github/workflows/ci.yml`，在 push 到 `main`/`master` 和 pull request 时自动运行生成物、Manifest、H5 SDK build/test、pack dry-run 与 package exports 检查。详细步骤见 [CI 文档](../ci/README.md)。ArkTS/HAP 构建和设备冒烟仍需单独的 HarmonyOS 环境。

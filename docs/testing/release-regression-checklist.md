@@ -4,6 +4,8 @@
 
 ## 自动检查
 
+- [ ] 本次 commit 对应的 GitHub Actions CI 已通过。
+- [ ] 已确认 CI 通过不等于真机功能通过，并继续执行完整 manual smoke test。
 - [ ] 根目录执行 `npm run check` 成功。
 - [ ] `npm run check:generated` 确认文档和类型生成物未过期。
 - [ ] `npm run check:api` 确认 Manifest、ActionNames、ApiManifest 与 RuntimeBootstrap 对齐。

@@ -1,5 +1,7 @@
 # MiniAppRuntime-Harmony
 
+![CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/workflows/ci.yml/badge.svg)
+
 一个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架。
 
 MiniAppRuntime-Harmony 基于 HarmonyOS、ArkTS 与 ArkWeb，探索 H5 如何以 Promise 形式调用 ArkTS 能力，以及通信、分发、注册、参数校验、平台调用和异步回调如何组成清晰的运行时链路。
@@ -124,7 +126,7 @@ npm run pack:local
 
 生成的 `miniapp-runtime-harmony-web-sdk-0.1.0.tgz` 只用于本地验证并由 Git 忽略。`npm pack` 检查候选包内容，和把包上传到 registry 的 `npm publish` 是两件事。完整步骤见 [npm pack 验证](docs/release/npm-pack-verify.md)。
 
-## Quality Checks
+## CI / Quality
 
 ```bash
 npm run check
@@ -133,7 +135,9 @@ npm --prefix h5_sdk run check
 
 自动检查覆盖 H5 SDK IIFE/ESM 构建与单元测试、API Manifest 和 ArkTS 注册关系、生成 API 文档、typed API 类型、package exports 与 npm pack dry-run。HarmonyOS ArkWeb、Native API、权限和设备行为仍需结合 DevEco Studio 执行 [手工 smoke test](docs/testing/manual-smoke-test.md)。
 
-测试说明与发布回归入口见 [docs/testing](docs/testing/README.md)。
+仓库已配置 GitHub Actions，在 push 到 `main`/`master` 和 pull request 时运行生成物检查、Manifest 一致性、H5 SDK build/test、package exports 与 npm pack dry-run。配置推送后可在 Actions 页面查看真实结果；CI 通过不等同于 HarmonyOS 真机链路通过。
+
+测试说明与发布回归入口见 [docs/testing](docs/testing/README.md)，workflow 边界见 [CI 文档](docs/ci/README.md)。
 
 ## Local HAR
 
@@ -263,6 +267,9 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [发布前整理指南](docs/guide/release-guide.md)
 - [Release Plan](docs/release/release-plan.md)
 - [npm Pack 验证](docs/release/npm-pack-verify.md)
+- [GitHub Actions CI](docs/ci/README.md)
+- [手工冒烟测试](docs/testing/manual-smoke-test.md)
+- [发布回归清单](docs/testing/release-regression-checklist.md)
 
 ## Blog Series
 
@@ -306,7 +313,11 @@ docs/                          架构、指南、API、调试、阶段与博客
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
 - [ ] Network API
 - [x] H5 SDK ESM 构建
+- [x] GitHub Actions CI 配置
+- [x] H5 SDK build/test 与 npm pack dry-run CI 步骤
 - [ ] 发布 H5 SDK 到 npm
+- [ ] GitHub Release artifact automation
+- [ ] HarmonyOS 工程自动化检查
 - [ ] 调研 HAR 对应的 HarmonyOS 包发布方式
 
 ## Highlights
