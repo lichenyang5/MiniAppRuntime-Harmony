@@ -67,3 +67,5 @@ npm run check
 仓库已增加 `.github/workflows/ci.yml`，在 push 和 pull request 时运行生成物检查、Manifest 对齐、H5 SDK build/test、pack dry-run 与 package exports 检查。CI 不修改 JSBridge 协议，也不替代 ArkWeb 真机链路验证。
 
 v0.1.0 的完整链路演示和面试讲解分别维护在 [Demo Walkthrough](showcase/demo-walkthrough.md) 与 [Interview Talk Track](showcase/interview-talk-track.md)，两者只描述当前已实现协议和公开能力。
+
+源码回读入口见 [Source Code Walkthrough](learning/source-code-walkthrough.md)、[Runtime Source Map](learning/runtime-source-map.md) 和 [H5 SDK Source Map](learning/h5-sdk-source-map.md)。这些文档只解释现有主链路，没有改变 JSBridge 协议或新增 API。

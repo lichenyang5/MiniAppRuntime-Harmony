@@ -28,11 +28,14 @@
 - [x] GitHub Actions CI 配置。
 - [x] CI 中执行 H5 SDK build/test 与 npm pack dry-run。
 - [x] v0.1.0 Release Notes、候选验收清单和 Showcase 文档。
-- [x] 稳定截图命名与真实采集清单。
+- [x] 稳定截图命名、真实采集清单与 7 张现有证据图片归档。
+- [x] v0.1.0 源码回读地图与面试自测材料。
 
 ## 待完成
 
-- [ ] 补充真实运行截图。
+- [ ] 补充 Clipboard、Web loading、URL Guard/错误页 3 类真实运行截图。
+- [ ] 清理或本地化公开仓库中的签名材料配置。
+- [ ] 补全候选版本的设备、SDK、日期和 CI 链接验收记录。
 - [ ] 发布并根据反馈修订博客。
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型。
 - [ ] 发布 H5 SDK 到 npm。

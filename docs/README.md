@@ -29,6 +29,11 @@
 23. [Demo Walkthrough](showcase/demo-walkthrough.md)
 24. [Interview Talk Track](showcase/interview-talk-track.md)
 25. [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
+26. [源码调用链导读](learning/source-code-walkthrough.md)
+27. [ArkTS Runtime Source Map](learning/runtime-source-map.md)
+28. [H5 SDK Source Map](learning/h5-sdk-source-map.md)
+29. [我现在对项目的理解](learning/what-i-understand-now.md)
+30. [v0.1.0 Self-check Report](release/v0.1.0-self-check-report.md)
 
 ## 目录作用
 
@@ -40,7 +45,8 @@
 | `api/` | 已实现 action 的参数、响应和错误约定 |
 | `debug/` | DebugPanel、RuntimeLogger 和常见问题 |
 | `stages/` | 从初始化到 Web 容器增强的阶段记录 |
-| `assets/` | Mermaid 架构图与截图占位目录 |
+| `assets/` | Mermaid 架构图与真实截图证据目录 |
+| `learning/` | 源码回读、双端源码地图和个人理解复盘 |
 | `blogs/` | 8 篇系列博客草稿和发布顺序 |
 | `release/` | 版本计划、npm 检查清单和 GitHub Release 模板 |
 | `testing/` | H5 SDK 单元测试、工程一致性检查、手工冒烟与发布回归 |
@@ -58,7 +64,7 @@
 
 ## 当前状态
 
-已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper 和 npm pack 本地验证。真实运行截图、博客发布、Network API、npm publish 和 HAR 发布方式调研尚未完成。
+已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper 和 npm pack 本地验证。当前已有 7 张真实证据图片，Clipboard 独立结果、Web loading 和 URL Guard/错误页仍待补；博客发布、Network API、npm publish 和 HAR 发布方式调研尚未完成。
 
 ## Release
 
@@ -70,6 +76,7 @@
 - [GitHub Release Template](release/github-release-template.md)
 - [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
 - [v0.1.0 候选验收清单](release/v0.1.0-checklist.md)
+- [v0.1.0 自检报告](release/v0.1.0-self-check-report.md)
 
 ## 测试与质量
 

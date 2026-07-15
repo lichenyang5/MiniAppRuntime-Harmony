@@ -12,6 +12,8 @@ npm run check
 
 随后在 DevEco Studio 中 Sync、Clean、Rebuild `entry`，使用模拟器或真机运行。Clipboard 权限行为以目标 SDK 和设备为准。
 
+当前截图证据及缺口见 [Screenshot Evidence](../assets/screenshots/README.md)。缺少截图的步骤仍应现场操作，不把源码存在当作运行通过。
+
 ## 1. 启动 entry Demo
 
 **操作：**运行 `entry` 模块。
@@ -87,3 +89,5 @@ npm run check
 ## 演示收尾
 
 展示 [架构图](../assets/diagrams/runtime-architecture.md)、[API 总览](../api/index.md) 与 [测试边界](../testing/README.md)，明确 CI 通过不替代设备验证。
+
+最后打开 [v0.1.0 自检报告](../release/v0.1.0-self-check-report.md)，主动说明已验证项、待补截图和发布边界。

@@ -1,32 +1,37 @@
-# 截图清单
+# Screenshot Evidence
 
-这篇文档解决什么问题：规定 v0.1.0 GitHub 展示版需要采集的真实截图、稳定文件名和验收重点，避免 README 引用不存在或未经验证的图片。
+这篇文档解决什么问题：记录 v0.1.0 展示版已有的真实截图、仍需补拍的场景，以及不适合用静态图片证明的能力。
 
-## 当前状态
+## 已完成
 
-当前仓库尚未提交以下运行截图，全部标记为“待真实采集”。请在 DevEco Studio、模拟器/真机或 GitHub Actions 页面中完成实际操作后截图，不使用设计稿、合成图或生成图片代替运行证据。
-
-| 文件名 | 展示内容 | 状态 |
+| File | What it proves | Note |
 | --- | --- | --- |
-| `01-home-page.png` | H5 Demo 首页、操作区域和页面结构 | 待真实采集 |
-| `02-toast-api.png` | `ui.showToast` 调用后的系统 Toast | 待真实采集 |
-| `03-clipboard-api.png` | Clipboard 写入、读取及 H5 响应 | 待真实采集 |
-| `04-storage-api.png` | Storage set/get/remove/clear 的结果 | 待真实采集 |
-| `05-runtime-api-list.png` | `runtime.getApiList` 返回的内置 API 列表 | 待真实采集 |
-| `06-debug-panel-success.png` | DebugPanel 成功调用记录和 requestId | 待真实采集 |
-| `07-debug-panel-error.png` | UNKNOWN_ACTION、PARAM_ERROR 或 TIMEOUT 记录 | 待真实采集 |
-| `08-web-load-state.png` | Web 容器 loading/progress/success 状态 | 待真实采集 |
-| `09-url-guard-error-page.png` | URL Guard blocked 或加载错误重试页 | 待真实采集 |
-| `10-ci-passed.png` | GitHub Actions `CI` workflow 真实成功结果 | 待首次线上 CI 通过后采集 |
+| [01-home-page.jpeg](01-home-page.jpeg) | ArkWeb 已加载本地 H5 首页，页面包含容器、Toast 与 Clipboard 操作区域 | 画面顶部含开发调试触摸信息，发布展示时可考虑重拍更干净版本 |
+| [02-toast-api.jpeg](02-toast-api.jpeg) | `ui.showToast` 触发了系统 Toast | 同时可见 H5 Demo 操作区 |
+| [04-storage-api.jpeg](04-storage-api.jpeg) | `system.storage.setItem` Promise resolve，并显示 requestId、action 与 data | 只直接证明 setItem 场景 |
+| [05-runtime-api-list.jpeg](05-runtime-api-list.jpeg) | DebugPanel 展示成功调用记录 | 画面可见 Toast、Clipboard、Storage 的 resolve 记录 |
+| [06-debug-panel-success.jpeg](06-debug-panel-success.jpeg) | `runtime.getApiList` 返回 API Manifest 摘要 | 文件名保留稳定，实际画面重点是 API 列表响应内容 |
+| [07-debug-panel-error.jpeg](07-debug-panel-error.jpeg) | DebugPanel 展示 PARAM_ERROR 与 UNKNOWN_ACTION 等 reject 记录 | 可见错误 code 和 action |
+| [10-ci-passed.png](10-ci-passed.png) | GitHub 页面显示 commit `f957db3` 的 1/1 检查通过 | 属于历史候选 commit 截图，不代表本轮文档修改后的在线 CI 状态 |
 
-## 采集要求
+## 待补充
 
-- 使用当前候选 commit，记录设备、HarmonyOS SDK 和 DevEco Studio 版本。
-- 截图只保留项目界面和必要调试信息，移除账号、路径、通知和其他隐私内容。
-- API 截图应同时展示操作入口与结果，DebugPanel 截图应保留 action、状态和 requestId。
-- CI 截图必须来自仓库真实 Actions 页面，不根据本地结果提前制作。
-- 图片建议使用 PNG，保持原始比例，不拉伸，不添加会遮挡结果的装饰。
+| Recommended name | Scene | Acceptance point |
+| --- | --- | --- |
+| `03-clipboard-api.png` | Clipboard write/read 独立结果 | 同屏显示写入文本、读取结果和 Promise 状态 |
+| `08-web-load-state.png` | Web loading/progress 状态 | 清楚显示非瞬时加载进度或受控测试状态 |
+| `09-url-guard-error-page.png` | URL Guard blocked 与错误页重试 | 显示拦截 URL、状态文案和重试入口 |
 
-## README 接入
+补拍后先检查通知、账号、设备标识、本机路径和其他隐私信息，再加入 README。
 
-完成采集后，将图片放入本目录并逐项更新状态。根 README 在至少具备首页、成功链路、错误链路和 CI 四类真实截图后，再添加图片预览；当前只链接本清单。
+## 不适合截图
+
+- callback map 是否删除：应由单元测试和源码说明证明。
+- timeout timer 是否清理：应由 H5 SDK 测试证明。
+- Manifest 与注册关系是否一致：应由 `npm run check:api` 证明。
+- package exports 和 npm 包白名单：应由 package 检查与 `npm pack --dry-run` 证明。
+- “所有设备都兼容”或“生产可用”：当前没有足够证据，也不应通过单张截图声称。
+
+## 命名规则
+
+已有 `.jpeg` 文件保持稳定，不为统一扩展名而制造无意义历史变更。新截图使用上表中的固定 `.png` 名称；README 只引用仓库中真实存在的图片。

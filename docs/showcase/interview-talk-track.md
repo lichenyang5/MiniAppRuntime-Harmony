@@ -82,3 +82,53 @@ CI 覆盖 generated 文件、API 注册关系、H5 build/test、pack 和 package
 ### 11. 和生产级框架还有什么差距？
 
 还缺更系统的安全模型、远程内容治理、兼容性矩阵、设备自动化、性能指标、版本兼容策略、发布渠道和长期维护验证。项目实现并解释了当前架构链路与工程方法，但设备兼容性、安全和长期运行仍需更完整验证。
+
+## 自测版问题
+
+下面的问题用于脱稿练习。先独立回答，再对照标准回答；能够说出职责边界比背文件名更重要。
+
+### 1. 不看文档，能不能画出完整调用链？
+
+标准回答：`window.myascf.send` 创建 requestId 和 callback，经 `MyASCFNative.postMessage` 进入 JavaScriptProxy，再到 Controller、Dispatcher、Registry、Biz、Imp。BridgeResponse 由 CallbackExecutor 通过 `runJavaScript` 返回 H5，全局 callback 按 requestId 找回 Promise 并 resolve/reject。
+
+### 2. 能不能说明 SDK 和 HAR 的区别？
+
+标准回答：H5 SDK 是浏览器侧 JSBridge 客户端，管理请求生命周期；HAR 是 ArkTS runtime，管理分发、业务校验和 HarmonyOS 能力。Demo 只是把两者接起来并展示结果。
+
+### 3. 能不能说明 JavaScriptProxy 和 runJavaScript 的方向？
+
+标准回答：JavaScriptProxy 是 H5 到 ArkTS 的入口；`runJavaScript` 是 ArkTS 到 H5 的响应出口。前者接收请求字符串，后者调用 H5 全局 response callback。
+
+### 4. 能不能说明 requestId 为什么必要？
+
+标准回答：跨端请求可能并发和乱序返回，不能依赖调用顺序。requestId 把 response 与 callback map 中的 Promise、timer、action 和调试记录关联起来。
+
+### 5. 能不能说明 timeout 和 CALLBACK_LOST 的区别？
+
+标准回答：timeout 是 H5 在等待期限到达时主动删除 callback 并 reject；CALLBACK_LOST 是 response 到达时 callback 已不存在，常见于 timeout 后的晚到响应。前者是等待超时，后者是响应无法关联。
+
+### 6. 能不能说明 RuntimeBootstrap 和 HandlerRegistry 的区别？
+
+标准回答：RuntimeBootstrap 负责启动时创建 Biz/Imp 和注册内置 action；HandlerRegistry 只是保存 action 到 handler 的映射并提供查询。一个负责装配，一个负责存储关系。
+
+### 7. 能不能说明 Biz 和 Imp 为什么分层？
+
+标准回答：Biz 管参数规则、错误码和 BridgeResponse 语义；Imp 管公开 HarmonyOS Kit 调用。这样协议变化不会污染系统实现，平台差异也不会进入 Controller。
+
+### 8. 能不能说明 ApiManifest 和 RuntimeBootstrap 的关系？
+
+标准回答：ApiManifest 描述“应该有哪些能力及其元数据”，RuntimeBootstrap 决定“运行时实际注册哪些 handler”。二者必须一致，但 Manifest 本身不会自动完成注册。
+
+### 9. 能不能说明 typed API 是怎么从 Manifest 生成的？
+
+标准回答：Node 工具读取 `tools/api-manifest.json`，生成 action union、参数/响应映射和 nested `createTypedApi`。生成 helper 最终调用 `sendTyped`，`sendTyped` 再复用原有 `send`，没有第二套协议。
+
+### 10. 能不能说明 CI 覆盖什么、不覆盖什么？
+
+标准回答：CI 覆盖生成物、Manifest/注册关系、H5 build/test、package exports 和 npm pack dry-run；不覆盖 HAP、ArkWeb 真机通信、系统权限、Toast UI 与设备兼容，这些属于 DevEco Studio 手工冒烟。
+
+## 演练合格标准
+
+- 3 分钟内画出双向调用链，并能指出 H5/ArkTS 边界。
+- 任意抽一个文件，能说明输入、输出和“不应该做什么”。
+- 能主动说明当前未发布 npm、HAR 仍是本地包、截图和设备回归仍有缺口。

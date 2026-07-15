@@ -154,20 +154,30 @@ npm --prefix h5_sdk run check
 
 ## Quick Start
 
-1. 使用 DevEco Studio 打开仓库并完成 HarmonyOS/ohpm 依赖同步。
-2. 安装 H5 SDK 依赖并构建、同步 IIFE 到 rawfile：
+1. 使用 DevEco Studio 打开仓库根目录 `ArkMiniRuntime`，执行 ohpm 依赖同步。`entry` 通过 `file:../myascf_runtime` 使用本地 HAR。
+2. 首次安装 H5 SDK 依赖：
 
 ```bash
 npm --prefix h5_sdk install
-npm run h5:sync
 ```
 
-3. Clean 后 Rebuild `entry`，在模拟器或真机运行 Demo。
-4. 验证 Toast、Clipboard、Storage、`runtime.getApiList`、DebugPanel 和 Web 容器状态。
-5. 运行本地质量门禁：
+3. 构建 H5 SDK，并把 IIFE 产物同步到 entry rawfile。下面两种写法等价：
+
+```bash
+npm run h5:sync
+# 或
+npm --prefix h5_sdk run build
+npm --prefix h5_sdk run copy:demo
+```
+
+4. 在 DevEco Studio 中 Sync Project，随后 Clean、Rebuild `entry`，在模拟器或真机运行 Demo。
+5. 验证 Toast、Clipboard、Storage、`runtime.getApiList`、DebugPanel 和 Web 容器状态。
+6. 运行本地质量门禁与包内容预检：
 
 ```bash
 npm run check
+npm --prefix h5_sdk run check
+npm --prefix h5_sdk run pack:dry-run
 ```
 
 建议使用与工程配置匹配的 HarmonyOS SDK。Clipboard 读取能力需要根据当前 SDK 要求配置和验证权限。
@@ -307,12 +317,17 @@ docs/                          架构、指南、API、调试、阶段与博客
 
 ## Screenshots
 
-当前尚未提交真实运行截图，不使用设计稿或生成图片代替运行证据。稳定文件名、采集内容和隐私检查见 [截图清单](docs/assets/screenshots/README.md)。
+仓库当前包含 6 张真实运行截图和 1 张 GitHub CI 截图；仍缺 Clipboard 独立结果、Web 加载状态和 URL Guard/错误页截图。完整证据边界见 [截图清单](docs/assets/screenshots/README.md)。
 
-- 待采集：H5 首页与 Toast/Clipboard/Storage 成功结果。
-- 待采集：API List、DebugPanel 成功/错误链路。
-- 待采集：Web loading、URL Guard 和错误重试状态。
-- 待采集：候选 commit 的 GitHub Actions CI 成功结果。
+| Home / Web Container | Toast | Storage |
+| --- | --- | --- |
+| ![ArkWeb local H5](docs/assets/screenshots/01-home-page.jpeg) | ![Toast API](docs/assets/screenshots/02-toast-api.jpeg) | ![Storage API](docs/assets/screenshots/04-storage-api.jpeg) |
+
+| Debug success records | API list response | Debug errors |
+| --- | --- | --- |
+| ![DebugPanel success records](docs/assets/screenshots/05-runtime-api-list.jpeg) | ![runtime.getApiList response](docs/assets/screenshots/06-debug-panel-success.jpeg) | ![DebugPanel error records](docs/assets/screenshots/07-debug-panel-error.jpeg) |
+
+![GitHub Actions evidence](docs/assets/screenshots/10-ci-passed.png)
 
 ## Roadmap
 
@@ -343,7 +358,9 @@ docs/                          架构、指南、API、调试、阶段与博客
 
 ### Next
 
-- [ ] 补充真实运行截图
+- [ ] 补充 Clipboard、Web loading 和 URL Guard/错误页 3 类真实截图
+- [ ] 清理公开仓库中的本机签名材料配置
+- [ ] 完成 v0.1.0 源码讲解演练与设备回归记录
 - [ ] 发布并根据反馈修订博客系列
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
 - [ ] Network API
