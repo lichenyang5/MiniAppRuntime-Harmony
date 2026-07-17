@@ -30,22 +30,50 @@
 - [x] v0.1.0 Release Notes、候选验收清单和 Showcase 文档。
 - [x] 稳定截图命名、真实采集清单与 7 张现有证据图片归档。
 - [x] v0.1.0 源码回读地图与面试自测材料。
+- [x] v0.2.0 `network.request` 垂直能力链路。
+- [x] Network 参数校验、错误映射、typed API 与 DebugPanel 摘要。
 
 ## 待完成
 
 - [ ] 补充 Clipboard、Web loading、URL Guard/错误页 3 类真实运行截图。
-- [ ] 清理或本地化公开仓库中的签名材料配置。
+- [ ] 立即轮换已进入远端历史的签名凭据，并从当前文件与 Git 历史中移除签名材料。
 - [ ] 补全候选版本的设备、SDK、日期和 CI 链接验收记录。
 - [ ] 发布并根据反馈修订博客。
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型。
 - [ ] 发布 H5 SDK 到 npm。
 - [ ] 调研 HAR 对应的 HarmonyOS 包发布方式。
-- [ ] Network API。
 - [ ] 处理当前 SDK 的废弃 API 与权限警告。
 - [ ] ArkTS runtime 自动化测试。
 - [ ] GitHub Release artifact automation。
 - [ ] 带人工审批的 npm publish。
 - [ ] HarmonyOS 工程自动化检查。
+
+## v0.1.0 Release
+
+- [x] README showcase。
+- [x] Release Notes、Self-check Report、Publish Record 和 GitHub Release 模板。
+- [x] `9de3f82` 的 GitHub Actions CI。
+- [x] 综合掘金文章草稿与发布清单。
+- [ ] 轮换或吊销已暴露签名凭据，并清理当前文件与 Git 历史。
+- [ ] 重新执行最终发布 commit 的自动检查、CI 和手工 smoke test。
+- [ ] 发布掘金文章并回填真实链接。
+- [ ] 由项目作者手动创建 `v0.1.0` tag 和 GitHub Release。
+- [ ] 补齐 Clipboard、Web loading、URL Guard/错误页截图。
+
+截图缺口不影响继续展示源码和文档，但签名凭据处置是 tag 与 Release 的阻塞条件。
+
+## v0.2.0
+
+- [x] `network.request`。
+- [x] Network parameter validation。
+- [x] Network error mapping。
+- [x] Typed network API。
+- [x] Network DebugPanel record redaction。
+- [ ] Download / upload。
+- [ ] WebSocket。
+- [ ] Advanced domain and certificate policy。
+
+v0.2.0 只证明现有运行时可承载一条复杂异步 API，不代表已经形成完整生产网络框架。
 
 ## 边界
 

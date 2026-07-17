@@ -39,4 +39,4 @@ node tools/generate-api-docs.js
 
 ## 当前限制
 
-JSON 与 ArkTS Manifest 仍是两份数据，脚本只校验 JSON 内部完整性，暂时不会解析 ArkTS。后续可以从单一结构化源同时生成 ArkTS Manifest、Markdown 和 H5 类型声明。
+JSON 与 ArkTS Manifest 仍是两份数据。生成脚本读取 JSON；`tools/check-api-consistency.js` 会解析 ActionNames、ArkTS ApiManifest 与 RuntimeBootstrap 的源码文本并检查 action 对齐，但它不是 ArkTS 语法分析器，也不能消除双份数据维护。后续可以从单一结构化源同时生成 ArkTS Manifest、Markdown 和 H5 类型声明。

@@ -2,6 +2,22 @@
 
 这份文件记录 MiniAppRuntime-Harmony 的公开功能变化。项目当前处于个人开源学习与工程实践阶段。
 
+## [0.2.0] - Unreleased
+
+### Added
+
+- `network.request` ArkTS Runtime 垂直能力链路。
+- HTTP/HTTPS URL、method、headers、body、network timeout 与 responseType 校验。
+- `NetworkBiz` / `NetworkImp` 分层、网络错误码和 HTTP 状态码返回策略。
+- Manifest 生成的 `api.network.request` typed helper 与 Network 类型。
+- Network Demo、DebugPanel 摘要与敏感日志脱敏。
+- Network 自动测试、手工 smoke test、架构与使用文档。
+
+### Notes
+
+- H5 SDK 不直接执行 HTTP，当前仍不发布 npm/ohpm。
+- v0.2.0 不包含 download/upload、WebSocket、Cookie 管理、重试或生产级证书策略。
+
 ## [0.1.0] - Unreleased
 
 ### Added
@@ -20,9 +36,12 @@
 - H5 SDK IIFE / ESM 双产物、Manifest 类型生成、`sendTyped` 与 nested typed helper。
 - H5 SDK 单元测试、API/生成物/package 一致性检查和 GitHub Actions CI 配置。
 - v0.1.0 Release Notes、候选验收清单、Demo Walkthrough 与面试讲解材料。
+- 源码回读地图、GitHub Release 模板、综合文章草稿与手动发布记录。
 
 ### Notes
 
 - 当前版本用于 GitHub 源码展示、本地 HAR 接入和 H5 SDK dist 验证。
 - H5 SDK 尚未发布到 npm，HAR 尚未发布到 HarmonyOS 包仓库。
-- v0.1.0 tag 和 GitHub Release 尚未创建，真实设备与 CI 截图仍待候选版本验收后补充。
+- `9de3f82` 的 GitHub Actions 已通过，但最终发布 commit 尚未产生。
+- v0.1.0 tag、GitHub Release 和技术文章尚未发布。
+- 签名凭据轮换/吊销及仓库历史清理是创建 Release 前的阻塞项。

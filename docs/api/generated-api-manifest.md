@@ -260,3 +260,43 @@ window.myascf.send("system.storage.removeItem", { key: "username" })
 ```js
 window.myascf.send("system.storage.clear", {})
 ```
+
+## network.request
+
+- Title: Network Request
+- Category: `network`
+- Status: Implemented
+- Biz: `NetworkBiz`
+- Imp: `NetworkImp`
+
+Send an HTTP or HTTPS request through the ArkTS runtime.
+
+### Params
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `url` | `string` | Yes | Absolute HTTP or HTTPS URL. |
+| `method` | `NetworkMethod` | No | GET, POST, PUT or DELETE. |
+| `headers` | `NetworkHeaders` | No | String request headers. |
+| `body` | `string` | No | Request body for non-GET methods. |
+| `timeout` | `number` | No | Native request timeout in milliseconds. |
+| `responseType` | `NetworkResponseType` | No | text or json. |
+
+### Response
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `statusCode` | `number` | HTTP status code. |
+| `headers` | `NetworkHeaders` | HTTP response headers. |
+| `body` | `NetworkBody` | Text or parsed JSON response body. |
+| `duration` | `number` | Native request duration in milliseconds. |
+
+### Errors
+
+`PARAM_ERROR`, `NETWORK_INVALID_URL`, `NETWORK_UNSUPPORTED_PROTOCOL`, `NETWORK_TIMEOUT`, `NETWORK_REQUEST_FAILED`, `NETWORK_INVALID_RESPONSE`, `TIMEOUT`, `CALLBACK_LOST`
+
+### Example
+
+```js
+window.myascf.send("network.request", { url: "https://example.com", method: "GET" })
+```

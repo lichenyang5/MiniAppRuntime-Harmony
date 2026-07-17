@@ -3,6 +3,12 @@ export interface BridgeRequestParams {
   text?: string;
   key?: string;
   value?: string;
+  url?: string;
+  method?: string;
+  headers?: Object;
+  body?: string;
+  timeout?: number;
+  responseType?: string;
 }
 
 export interface BridgeRequest {
@@ -26,6 +32,10 @@ export interface BridgeResponseData {
   key?: string;
   value?: string;
   apis?: ApiSummary[];
+  statusCode?: number;
+  headers?: Object;
+  body?: string | Object;
+  duration?: number;
 }
 
 export interface BridgeResponse {

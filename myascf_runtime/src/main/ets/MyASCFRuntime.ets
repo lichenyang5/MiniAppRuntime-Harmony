@@ -7,6 +7,7 @@ import { HandlerRegistry } from './registry/HandlerRegistry';
 import { RuntimeBootstrap } from './registry/RuntimeBootstrap';
 import { MyASCFNativeProxy } from './api/RuntimeTypes';
 import { common } from '@kit.AbilityKit';
+import { NetworkPolicy } from './types/NetworkTypes';
 
 const PROXY_NAME = 'MyASCFNative';
 
@@ -14,8 +15,8 @@ export class MyASCFRuntime {
   private nativeProxy: JavaScriptProxy;
   private methodList: string[] = ['postMessage'];
 
-  constructor(controller: webview.WebviewController, context: common.Context) {
-    const registry: HandlerRegistry = RuntimeBootstrap.createRegistry(context);
+  constructor(controller: webview.WebviewController, context: common.Context, networkPolicy?: NetworkPolicy) {
+    const registry: HandlerRegistry = RuntimeBootstrap.createRegistry(context, networkPolicy);
     const dispatcher: BridgeDispatcher = new BridgeDispatcher(registry);
     const callbackExecutor: BridgeCallbackExecutor = new BridgeCallbackExecutor(controller);
     const bridgeController: BridgeController = new BridgeController(dispatcher, callbackExecutor);

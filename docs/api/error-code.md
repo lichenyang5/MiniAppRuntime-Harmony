@@ -14,6 +14,11 @@ INTERNAL_ERROR 1003
 CALLBACK_LOST  1004
 TIMEOUT        1005
 PARSE_ERROR    1006
+NETWORK_INVALID_URL          1101
+NETWORK_UNSUPPORTED_PROTOCOL 1102
+NETWORK_TIMEOUT              1103
+NETWORK_REQUEST_FAILED       1104
+NETWORK_INVALID_RESPONSE     1105
 ```
 
 ## SUCCESS
@@ -87,3 +92,7 @@ window.myascf.send("ui.showToast", { message: "hello" }, { timeout: 1000 })
 ## ArkTS 类型注意
 
 错误响应中的 `data` 使用显式 `BridgeResponseData` 类型承载，避免未声明对象字面量。
+
+## Network Errors
+
+`NETWORK_TIMEOUT` 表示 ArkTS HTTP 请求超时；`TIMEOUT` 表示 H5 SDK 等待整个 Native 回调超时，两者不是同一个计时器。HTTP `4xx/5xx` 不属于这些 Bridge 错误，仍以 `SUCCESS` 返回并通过 `data.statusCode` 表达。

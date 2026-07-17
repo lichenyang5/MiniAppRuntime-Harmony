@@ -1,20 +1,29 @@
 # MiniAppRuntime-Harmony v0.1.0
 
-> 本模板用于未来 GitHub Release。发布前请删除未完成内容，并填写真实验证环境。
+> 本模板用于项目作者手动创建 GitHub Release。发布前必须完成安全门禁，并删除所有尖括号占位内容。
+
+## Positioning
+
+v0.1.0 is a GitHub showcase release for a HarmonyOS Web container and JSBridge runtime practice project.
+
+This project is based on public HarmonyOS, ArkTS and ArkWeb capabilities. The repository contains independently written source code, examples and documentation for this project.
 
 ## Highlights
 
-- ArkWeb local H5 container and load states.
-- H5 to ArkTS Promise-based JSBridge.
-- Local `myascf_runtime` HAR module.
-- H5 SDK JavaScript dist and TypeScript declarations.
-- H5 SDK IIFE / ESM builds and typed API helper.
-- Toast, Clipboard and Storage APIs.
-- `runtime.getApiList` and API Manifest.
-- H5 DebugPanel and generated API docs.
-- Tests, consistency checks and GitHub Actions CI configuration.
+- ArkWeb local H5 container with loading, blocked and error states.
+- H5 SDK with `window.myascf.send(action, params, options?)`.
+- requestId, callback map, Promise, timeout and callback lost handling.
+- JavaScriptProxy based H5-to-ArkTS request boundary.
+- BridgeController, BridgeDispatcher, HandlerRegistry and RuntimeBootstrap.
+- Biz/Imp layers and BridgeCallbackExecutor.
+- Toast, Clipboard, Storage and `runtime.getApiList` APIs.
+- ApiManifest, generated API docs and typed API helper.
+- Local `myascf_runtime` HAR module with `MyASCFRuntime` facade.
+- H5 SDK IIFE/ESM builds and TypeScript declarations.
+- DebugPanel, Node tests, consistency checks and GitHub Actions CI.
+- Release, source walkthrough and manual smoke test documentation.
 
-## Install / Usage
+## Usage
 
 ### Local HAR
 
@@ -26,7 +35,7 @@
 }
 ```
 
-在根 `build-profile.json5` 注册模块，然后从 `myascf_runtime` 导入 `MyASCFRuntime`。
+Register the module in the project build profile, then import `MyASCFRuntime` from `myascf_runtime`. See the [HAR usage guide](https://github.com/lichenyang5/MiniAppRuntime-Harmony/blob/main/docs/guide/create-demo-with-har.md).
 
 ### H5 SDK
 
@@ -35,25 +44,41 @@ npm --prefix h5_sdk install
 npm run h5:sync
 ```
 
-H5 页面通过 `<script src="./js/myascf.js"></script>` 加载 SDK，并调用 `window.myascf.send(...)`。
+The rawfile Demo loads the IIFE output and calls `window.myascf.send(...)`. ESM and typed API usage are documented in the [H5 SDK guide](https://github.com/lichenyang5/MiniAppRuntime-Harmony/blob/main/docs/guide/h5-sdk-usage.md).
 
-## Validation
+## Verification
 
-- H5 SDK tests: `<填写结果>`
-- GitHub Actions: `<填写 workflow 链接与结果>`
-- npm pack dry-run: `<填写文件数量与大小>`
-- HAP build: `<填写结果>`
-- Device / emulator: `<填写环境与结果>`
+- Root checks: `<commit and result>`
+- H5 SDK checks: `<test count and result>`
+- npm pack dry-run: `<file count and size>`
+- GitHub Actions: `<workflow URL and result>`
+- HAP build: `<DevEco Studio / SDK / result>`
+- Device or emulator: `<device / system / manual smoke result>`
+
+GitHub Actions checks generated files, registration consistency, H5 SDK build/tests and package entries. It does not replace ArkWeb, permission or device smoke testing.
+
+## Not Included
+
+- No npm publish yet.
+- No ohpm publish yet; the HAR is a local dependency.
+- No CLI, Network API or Device API yet.
+- No production-grade security sandbox or full compatibility guarantee.
 
 ## Known Limitations
 
-- H5 SDK 尚未发布到 npm。
-- HAR 当前仅提供本地依赖方式。
-- Clipboard 权限和部分公开 API 的 SDK 警告仍需结合目标设备验证。
-- 当前项目不宣称完整小程序规范或生产发布保障。
+- Clipboard permission behavior and SDK warnings require target-device verification.
+- Some recommended screenshots and the complete manual regression record may still need completion.
+- ArkTS Manifest and the JSON generation source are currently synchronized mirrors rather than one generated source.
 
-## Notes
+## Security Gate
 
-This is a personal open-source learning and engineering practice project based on public HarmonyOS, ArkTS and ArkWeb capabilities.
+Do not publish this Release until exposed signing credentials have been rotated or revoked and removed from the current repository and Git history. Confirm the cleaned commit and its CI result before creating the tag.
 
-候选版本完整说明见 `docs/release/v0.1.0-release-notes.md`，创建 Release 前必须完成 `docs/release/v0.1.0-checklist.md`。
+## Links
+
+- [README](https://github.com/lichenyang5/MiniAppRuntime-Harmony#readme)
+- [Release Notes](https://github.com/lichenyang5/MiniAppRuntime-Harmony/blob/main/docs/release/v0.1.0-release-notes.md)
+- [Manual Smoke Test](https://github.com/lichenyang5/MiniAppRuntime-Harmony/blob/main/docs/testing/manual-smoke-test.md)
+- [Article Draft](https://github.com/lichenyang5/MiniAppRuntime-Harmony/blob/main/docs/articles/juejin-h5-sdk-runtime-framework-design.md)
+
+This Release must be created manually. The project does not automate tagging, npm publishing or ohpm publishing in v0.1.0.

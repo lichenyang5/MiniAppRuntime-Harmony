@@ -12,7 +12,7 @@
 | [05-runtime-api-list.jpeg](05-runtime-api-list.jpeg) | DebugPanel 展示成功调用记录 | 画面可见 Toast、Clipboard、Storage 的 resolve 记录 |
 | [06-debug-panel-success.jpeg](06-debug-panel-success.jpeg) | `runtime.getApiList` 返回 API Manifest 摘要 | 文件名保留稳定，实际画面重点是 API 列表响应内容 |
 | [07-debug-panel-error.jpeg](07-debug-panel-error.jpeg) | DebugPanel 展示 PARAM_ERROR 与 UNKNOWN_ACTION 等 reject 记录 | 可见错误 code 和 action |
-| [10-ci-passed.png](10-ci-passed.png) | GitHub 页面显示 commit `f957db3` 的 1/1 检查通过 | 属于历史候选 commit 截图，不代表本轮文档修改后的在线 CI 状态 |
+| [10-ci-passed.png](10-ci-passed.png) | GitHub 页面显示 commit `f957db3` 的 1/1 检查通过 | 属于历史候选 commit 截图且含公开账号名；完成最终隐私复核前不嵌入根 README |
 
 ## 待补充
 
@@ -22,7 +22,7 @@
 | `08-web-load-state.png` | Web loading/progress 状态 | 清楚显示非瞬时加载进度或受控测试状态 |
 | `09-url-guard-error-page.png` | URL Guard blocked 与错误页重试 | 显示拦截 URL、状态文案和重试入口 |
 
-补拍后先检查通知、账号、设备标识、本机路径和其他隐私信息，再加入 README。
+补拍后先检查通知、账号、设备标识、本机路径和其他隐私信息，再加入 README。已有图片也必须执行同样的最终复核。
 
 ## 不适合截图
 

@@ -158,7 +158,7 @@ export class MyASCFClient implements MyASCF {
       });
 
       try {
-        console.log('[myascf] send request:', JSON.stringify(request));
+        console.log('[myascf] send request:', request.requestId, request.action);
         this.nativeAdapter.postMessage(request);
       } catch (error) {
         const callback: CallbackRecord | undefined = this.callbacks.take(request.requestId);
@@ -203,7 +203,7 @@ export class MyASCFClient implements MyASCF {
   }
 
   handleNativeResponse(responseInput: string | BridgeResponse): void {
-    console.log('[myascf] native response:', responseInput);
+    console.log('[myascf] native response received');
 
     let response: BridgeResponse;
     try {
@@ -293,7 +293,7 @@ export class MyASCFClient implements MyASCF {
     );
     detail.data = { echoAction: action, nativeResponse: response };
 
-    console.warn('[myascf] CALLBACK_LOST:', detail);
+    console.warn('[myascf] CALLBACK_LOST:', detail.requestId, detail.action, detail.code);
     this.debugAdapter.record('recordLost', {
       requestId: detail.requestId,
       action,

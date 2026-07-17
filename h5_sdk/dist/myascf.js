@@ -1,9 +1,26 @@
 "use strict";
 var MyASCFWebSDK = (() => {
   var __defProp = Object.defineProperty;
+  var __defProps = Object.defineProperties;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
   var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __getOwnPropSymbols = Object.getOwnPropertySymbols;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __propIsEnum = Object.prototype.propertyIsEnumerable;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __spreadValues = (a, b) => {
+    for (var prop in b || (b = {}))
+      if (__hasOwnProp.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    if (__getOwnPropSymbols)
+      for (var prop of __getOwnPropSymbols(b)) {
+        if (__propIsEnum.call(b, prop))
+          __defNormalProp(a, prop, b[prop]);
+      }
+    return a;
+  };
+  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   var __export = (target, all) => {
     for (var name in all)
       __defProp(target, name, { get: all[name], enumerable: true });
@@ -61,13 +78,78 @@ var MyASCFWebSDK = (() => {
         const panel = this.targetWindow.MyASCFDebugPanel;
         const handler = panel && panel[method];
         if (typeof handler === "function") {
-          handler.call(panel, record);
+          handler.call(panel, sanitizeDebugRecord(record));
         }
       } catch (error) {
         console.warn("[myascf] DebugPanel failed:", error);
       }
     }
   };
+  function stripUrlQuery(value) {
+    if (typeof value !== "string") {
+      return value;
+    }
+    try {
+      const parsed = new URL(value);
+      parsed.username = "";
+      parsed.password = "";
+      parsed.search = "";
+      parsed.hash = "";
+      return parsed.toString().replace(/\/$/, parsed.pathname === "/" ? "/" : "");
+    } catch (error) {
+      const queryIndex = value.indexOf("?");
+      const fragmentIndex = value.indexOf("#");
+      const indexes = [queryIndex, fragmentIndex].filter((index) => index >= 0);
+      const endIndex = indexes.length === 0 ? value.length : Math.min(...indexes);
+      return value.slice(0, endIndex);
+    }
+  }
+  function sanitizeNetworkParams(params) {
+    if (!params || typeof params !== "object" || Array.isArray(params)) {
+      return params;
+    }
+    const source = params;
+    const headers = source.headers && typeof source.headers === "object" && !Array.isArray(source.headers) ? source.headers : void 0;
+    return {
+      url: stripUrlQuery(source.url),
+      method: source.method,
+      timeout: source.timeout,
+      responseType: source.responseType,
+      headerNames: headers ? Object.keys(headers) : [],
+      bodyLength: typeof source.body === "string" ? source.body.length : 0
+    };
+  }
+  function sanitizeNetworkResponse(response) {
+    var _a;
+    if (!response || typeof response !== "object" || Array.isArray(response)) {
+      return response;
+    }
+    const source = response;
+    const data = source.data && typeof source.data === "object" && !Array.isArray(source.data) ? source.data : void 0;
+    if (!data) {
+      return response;
+    }
+    const bodyText = typeof data.body === "string" ? data.body : JSON.stringify((_a = data.body) != null ? _a : "");
+    const headers = data.headers && typeof data.headers === "object" && !Array.isArray(data.headers) ? data.headers : void 0;
+    return __spreadProps(__spreadValues({}, source), {
+      data: {
+        echoAction: data.echoAction,
+        statusCode: data.statusCode,
+        duration: data.duration,
+        headerNames: headers ? Object.keys(headers) : [],
+        bodyLength: bodyText.length
+      }
+    });
+  }
+  function sanitizeDebugRecord(record) {
+    if (record.action !== "network.request") {
+      return record;
+    }
+    return __spreadProps(__spreadValues({}, record), {
+      params: sanitizeNetworkParams(record.params),
+      response: sanitizeNetworkResponse(record.response)
+    });
+  }
 
   // src/error-code.ts
   var ERROR_CODE_SUCCESS = 0;
@@ -215,7 +297,7 @@ var MyASCFWebSDK = (() => {
           createdAt
         });
         try {
-          console.log("[myascf] send request:", JSON.stringify(request));
+          console.log("[myascf] send request:", request.requestId, request.action);
           this.nativeAdapter.postMessage(request);
         } catch (error) {
           const callback = this.callbacks.take(request.requestId);
@@ -252,7 +334,7 @@ var MyASCFWebSDK = (() => {
       return this.send(action, params, options);
     }
     handleNativeResponse(responseInput) {
-      console.log("[myascf] native response:", responseInput);
+      console.log("[myascf] native response received");
       let response;
       try {
         response = parseResponse(responseInput);
@@ -325,7 +407,7 @@ var MyASCFWebSDK = (() => {
         "CALLBACK_LOST: callback not found"
       );
       detail.data = { echoAction: action, nativeResponse: response };
-      console.warn("[myascf] CALLBACK_LOST:", detail);
+      console.warn("[myascf] CALLBACK_LOST:", detail.requestId, detail.action, detail.code);
       this.debugAdapter.record("recordLost", {
         requestId: detail.requestId,
         action,
@@ -361,6 +443,9 @@ var MyASCFWebSDK = (() => {
           removeItem: (params, options) => client.sendTyped("system.storage.removeItem", params, options),
           clear: (options) => client.sendTyped("system.storage.clear", void 0, options)
         }
+      },
+      network: {
+        request: (params, options) => client.sendTyped("network.request", params, options)
       }
     };
   }

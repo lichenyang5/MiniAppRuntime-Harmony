@@ -32,6 +32,10 @@ export function createTypedApi(client: MyASCF) {
           client.sendTyped("system.storage.clear", undefined, options),
       },
     },
+    network: {
+      request: (params: ApiParamsMap["network.request"], options?: MyASCFSendOptions): Promise<TypedBridgeResponse<"network.request">> =>
+        client.sendTyped("network.request", params, options),
+    },
   };
 }
 

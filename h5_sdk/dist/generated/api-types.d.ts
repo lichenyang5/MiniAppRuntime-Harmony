@@ -1,5 +1,9 @@
 import type { ApiSummary, BridgeResponse, MyASCFSendOptions } from '../bridge-types.js';
-export type ApiAction = "runtime.getApiList" | "ui.showToast" | "system.clipboard.writeText" | "system.clipboard.readText" | "system.storage.setItem" | "system.storage.getItem" | "system.storage.removeItem" | "system.storage.clear";
+export type NetworkMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export type NetworkHeaders = Record<string, string>;
+export type NetworkResponseType = 'text' | 'json';
+export type NetworkBody = string | Record<string, unknown> | unknown[];
+export type ApiAction = "runtime.getApiList" | "ui.showToast" | "system.clipboard.writeText" | "system.clipboard.readText" | "system.storage.setItem" | "system.storage.getItem" | "system.storage.removeItem" | "system.storage.clear" | "network.request";
 export interface ApiParamsMap {
     "runtime.getApiList": undefined;
     "ui.showToast": {
@@ -20,6 +24,14 @@ export interface ApiParamsMap {
         key: string;
     };
     "system.storage.clear": undefined;
+    "network.request": {
+        url: string;
+        method?: NetworkMethod;
+        headers?: NetworkHeaders;
+        body?: string;
+        timeout?: number;
+        responseType?: NetworkResponseType;
+    };
 }
 export interface ApiResponseDataMap {
     "runtime.getApiList": {
@@ -51,6 +63,12 @@ export interface ApiResponseDataMap {
     };
     "system.storage.clear": {
         echoAction?: string;
+    };
+    "network.request": {
+        statusCode?: number;
+        headers?: NetworkHeaders;
+        body?: NetworkBody;
+        duration?: number;
     };
 }
 export type TypedBridgeResponse<T extends ApiAction> = Omit<BridgeResponse, 'data'> & {

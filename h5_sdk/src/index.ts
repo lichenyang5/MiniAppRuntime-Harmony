@@ -25,6 +25,10 @@ export type {
   ApiAction,
   ApiParamsMap,
   ApiResponseDataMap,
+  NetworkBody,
+  NetworkHeaders,
+  NetworkMethod,
+  NetworkResponseType,
   TypedBridgeResponse,
   TypedSendArgs
 } from './generated/api-types.js';

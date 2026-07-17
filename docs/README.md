@@ -18,22 +18,27 @@
 12. [H5 SDK 设计](architecture/h5-sdk-design.md)
 13. [H5 SDK 使用指南](guide/h5-sdk-usage.md)
 14. [H5 SDK 类型化 API](guide/typed-api-usage.md)
-15. [发布前整理指南](guide/release-guide.md)
-16. [Release Plan](release/release-plan.md)
-17. [npm Pack 验证](release/npm-pack-verify.md)
-18. [测试与回归](testing/README.md)
-19. [手工冒烟测试](testing/manual-smoke-test.md)
-20. [发布回归清单](testing/release-regression-checklist.md)
-21. [GitHub Actions CI](ci/README.md)
-22. [Project Showcase](showcase/project-showcase.md)
-23. [Demo Walkthrough](showcase/demo-walkthrough.md)
-24. [Interview Talk Track](showcase/interview-talk-track.md)
-25. [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
-26. [源码调用链导读](learning/source-code-walkthrough.md)
-27. [ArkTS Runtime Source Map](learning/runtime-source-map.md)
-28. [H5 SDK Source Map](learning/h5-sdk-source-map.md)
-29. [我现在对项目的理解](learning/what-i-understand-now.md)
-30. [v0.1.0 Self-check Report](release/v0.1.0-self-check-report.md)
+15. [Network API 设计](architecture/network-api-design.md)
+16. [Network Request 使用指南](guide/network-request-usage.md)
+17. [发布前整理指南](guide/release-guide.md)
+18. [Release Plan](release/release-plan.md)
+19. [npm Pack 验证](release/npm-pack-verify.md)
+20. [测试与回归](testing/README.md)
+21. [手工冒烟测试](testing/manual-smoke-test.md)
+22. [发布回归清单](testing/release-regression-checklist.md)
+23. [GitHub Actions CI](ci/README.md)
+24. [Project Showcase](showcase/project-showcase.md)
+25. [Demo Walkthrough](showcase/demo-walkthrough.md)
+26. [Interview Talk Track](showcase/interview-talk-track.md)
+27. [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
+28. [源码调用链导读](learning/source-code-walkthrough.md)
+29. [ArkTS Runtime Source Map](learning/runtime-source-map.md)
+30. [H5 SDK Source Map](learning/h5-sdk-source-map.md)
+31. [我现在对项目的理解](learning/what-i-understand-now.md)
+32. [v0.1.0 Self-check Report](release/v0.1.0-self-check-report.md)
+33. [v0.1.0 Publish Record](release/v0.1.0-publish-record.md)
+34. [综合文章草稿](articles/juejin-h5-sdk-runtime-framework-design.md)
+35. [文章发布清单](articles/publish-checklist.md)
 
 ## 目录作用
 
@@ -48,6 +53,7 @@
 | `assets/` | Mermaid 架构图与真实截图证据目录 |
 | `learning/` | 源码回读、双端源码地图和个人理解复盘 |
 | `blogs/` | 8 篇系列博客草稿和发布顺序 |
+| `articles/` | 准备对外发布的文章成稿、状态与链接回填清单 |
 | `release/` | 版本计划、npm 检查清单和 GitHub Release 模板 |
 | `testing/` | H5 SDK 单元测试、工程一致性检查、手工冒烟与发布回归 |
 | `ci/` | GitHub Actions 触发条件、自动检查步骤与设备验证边界 |
@@ -60,11 +66,12 @@
 - [Runtime API](api/runtime.md)
 - [Clipboard](api/clipboard.md)
 - [Storage](api/storage.md)
+- [network.request](api/network-request.md)
 - [错误码](api/error-code.md)
 
 ## 当前状态
 
-已完成 JSBridge 主链路、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper 和 npm pack 本地验证。当前已有 7 张真实证据图片，Clipboard 独立结果、Web loading 和 URL Guard/错误页仍待补；博客发布、Network API、npm publish 和 HAR 发布方式调研尚未完成。
+已完成 JSBridge 主链路、Toast/Clipboard/Storage、`network.request`、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper 和 npm pack 本地验证。综合文章草稿与发布清单已整理，但尚未在掘金发布。当前已有 7 张真实证据图片，Clipboard 独立结果、Web loading 和 URL Guard/错误页仍待补；签名凭据清理、npm publish 和 HAR 发布方式调研尚未完成。
 
 ## Release
 
@@ -77,6 +84,13 @@
 - [v0.1.0 Release Notes](release/v0.1.0-release-notes.md)
 - [v0.1.0 候选验收清单](release/v0.1.0-checklist.md)
 - [v0.1.0 自检报告](release/v0.1.0-self-check-report.md)
+- [v0.1.0 手动发布记录](release/v0.1.0-publish-record.md)
+
+## Articles
+
+- [文章状态总览](articles/README.md)
+- [H5 SDK 如何配合 ArkTS Runtime](articles/juejin-h5-sdk-runtime-framework-design.md)（Draft）
+- [文章发布清单](articles/publish-checklist.md)
 
 ## 测试与质量
 

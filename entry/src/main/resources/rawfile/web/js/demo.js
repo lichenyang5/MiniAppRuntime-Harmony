@@ -20,12 +20,20 @@
   var currentUrl = document.getElementById('currentUrl');
   var blockedUrlButton = document.getElementById('blockedUrlButton');
   var loadApiListButton = document.getElementById('loadApiListButton');
+  var networkUrl = document.getElementById('networkUrl');
+  var networkMethod = document.getElementById('networkMethod');
+  var networkResponseType = document.getElementById('networkResponseType');
+  var networkBody = document.getElementById('networkBody');
+  var networkSendButton = document.getElementById('networkSendButton');
+  var networkResponse = document.getElementById('networkResponse');
 
   if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton ||
     !clipboardText || !clipboardWriteButton || !clipboardReadButton || !clipboardParamErrorButton ||
     !storageKey || !storageValue || !storageSetButton || !storageGetButton || !storageRemoveButton ||
     !storageClearButton || !storageParamErrorButton ||
-    !status || !result || !eventLog || !currentUrl || !blockedUrlButton || !loadApiListButton) {
+    !status || !result || !eventLog || !currentUrl || !blockedUrlButton || !loadApiListButton ||
+    !networkUrl || !networkMethod || !networkResponseType || !networkBody ||
+    !networkSendButton || !networkResponse) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
   }
@@ -174,5 +182,53 @@
 
   storageParamErrorButton.addEventListener('click', function () {
     sendStorage('system.storage.setItem', { key: '' });
+  });
+
+  function summarizeNetworkResponse(response) {
+    var data = response && response.data ? response.data : {};
+    var headerNames = data.headers && typeof data.headers === 'object' ? Object.keys(data.headers) : [];
+    var bodyText = typeof data.body === 'string' ? data.body : JSON.stringify(data.body, null, 2);
+    return {
+      requestId: response && response.requestId,
+      code: response && response.code,
+      message: response && response.message,
+      statusCode: data.statusCode,
+      duration: data.duration,
+      headerNames: headerNames,
+      bodyPreview: (bodyText || '').slice(0, 1200)
+    };
+  }
+
+  networkSendButton.addEventListener('click', function () {
+    var nativeTimeout = 10000;
+    var method = networkMethod.value;
+    var params = {
+      url: networkUrl.value,
+      method: method,
+      timeout: nativeTimeout,
+      responseType: networkResponseType.value,
+      headers: { Accept: 'application/json' }
+    };
+    if (method !== 'GET' && networkBody.value) {
+      params.body = networkBody.value;
+      params.headers['Content-Type'] = 'application/json';
+    }
+
+    renderPending('network.request');
+    networkResponse.textContent = 'pending...';
+    window.myascf.send('network.request', params, { timeout: nativeTimeout + 2000 })
+      .then(function (response) {
+        var summary = summarizeNetworkResponse(response);
+        networkResponse.textContent = JSON.stringify(summary, null, 2);
+        renderResolved(summary);
+      })
+      .catch(function (error) {
+        networkResponse.textContent = JSON.stringify({
+          requestId: error && error.requestId,
+          code: error && error.code,
+          message: error && error.message
+        }, null, 2);
+        renderRejected(error);
+      });
   });
 })();

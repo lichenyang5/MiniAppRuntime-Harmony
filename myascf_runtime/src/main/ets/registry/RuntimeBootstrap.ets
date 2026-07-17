@@ -6,7 +6,8 @@ import {
   ACTION_SYSTEM_STORAGE_SET_ITEM,
   ACTION_SYSTEM_STORAGE_GET_ITEM,
   ACTION_SYSTEM_STORAGE_REMOVE_ITEM,
-  ACTION_SYSTEM_STORAGE_CLEAR
+  ACTION_SYSTEM_STORAGE_CLEAR,
+  ACTION_NETWORK_REQUEST
 } from '../api/ActionNames';
 import { common } from '@kit.AbilityKit';
 import { BridgeHandler, BridgeRequest, BridgeResponse } from '../api/BridgeTypes';
@@ -17,6 +18,9 @@ import { RuntimeInfoBiz } from '../biz/RuntimeInfoBiz';
 import { ClipboardImp } from '../imp/ClipboardImp';
 import { ToastImp } from '../imp/ToastImp';
 import { StorageImp } from '../imp/StorageImp';
+import { NetworkBiz } from '../biz/NetworkBiz';
+import { NetworkImp } from '../imp/NetworkImp';
+import { NetworkPolicy } from '../types/NetworkTypes';
 import { HandlerRegistry } from './HandlerRegistry';
 
 class ShowToastHandler implements BridgeHandler {
@@ -75,8 +79,20 @@ class RuntimeGetApiListHandler implements BridgeHandler {
   }
 }
 
+class NetworkRequestHandler implements BridgeHandler {
+  private networkBiz: NetworkBiz;
+
+  constructor(networkBiz: NetworkBiz) {
+    this.networkBiz = networkBiz;
+  }
+
+  async handle(request: BridgeRequest): Promise<BridgeResponse> {
+    return await this.networkBiz.handle(request);
+  }
+}
+
 export class RuntimeBootstrap {
-  static createRegistry(context: common.Context): HandlerRegistry {
+  static createRegistry(context: common.Context, networkPolicy?: NetworkPolicy): HandlerRegistry {
     // Keep ActionNames, ApiManifest, runtime registration, API docs and H5 API list aligned.
     const registry: HandlerRegistry = new HandlerRegistry();
     const storageBiz: StorageBiz = new StorageBiz(new StorageImp(context));
@@ -88,6 +104,7 @@ export class RuntimeBootstrap {
     registry.register(ACTION_SYSTEM_STORAGE_REMOVE_ITEM, new StorageRemoveItemHandler(storageBiz));
     registry.register(ACTION_SYSTEM_STORAGE_CLEAR, new StorageClearHandler(storageBiz));
     registry.register(ACTION_RUNTIME_GET_API_LIST, new RuntimeGetApiListHandler());
+    registry.register(ACTION_NETWORK_REQUEST, new NetworkRequestHandler(new NetworkBiz(new NetworkImp(), networkPolicy)));
     return registry;
   }
 }

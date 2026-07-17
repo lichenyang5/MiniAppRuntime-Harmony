@@ -82,6 +82,14 @@ const api = createTypedApi(client);
 await client.sendTyped('ui.showToast', { message: 'hello' });
 const item = await api.system.storage.getItem({ key: 'username' });
 console.log(item.data?.value);
+
+const network = await api.network.request({
+  url: 'https://example.com/api/user',
+  method: 'GET',
+  timeout: 10000,
+  responseType: 'json'
+}, { timeout: 12000 });
+console.log(network.data?.statusCode);
 ```
 
 重新生成：
@@ -143,9 +151,11 @@ npm test
 npm run check
 ```
 
-当前使用 Node 原生 test runner，直接测试 IIFE 与 ESM 构建产物。用例覆盖 requestId、请求协议、成功与错误响应、timeout、callback lost、Native 不可用、非法响应、DebugPanel 安全调用、`sendTyped` 和 `createTypedApi`。
+当前使用 Node 原生 test runner，直接测试 IIFE 与 ESM 构建产物。用例覆盖 requestId、请求协议、成功与错误响应、timeout、callback lost、Native 不可用、非法响应、DebugPanel 安全调用、`sendTyped`、`createTypedApi` 和 `network.request` 的双 timeout 参数与脱敏记录。
 
-`npm test` 会先重建产物，避免测试旧 `dist`。`npm run check` 还会先检查 generated 文件是否过期，再运行 13 个测试并执行无 lifecycle 副作用的 `npm pack --dry-run`。完整说明见 [H5 SDK 测试指南](../docs/testing/h5-sdk-test-guide.md)。
+`npm test` 会先重建产物，避免测试旧 `dist`。`npm run check` 还会先检查 generated 文件是否过期，再运行 16 个测试并执行无 lifecycle 副作用的 `npm pack --dry-run`。完整说明见 [H5 SDK 测试指南](../docs/testing/h5-sdk-test-guide.md)。
+
+H5 SDK 不直接发起 HTTP；`network.request` 由 ArkTS Runtime 执行。`params.timeout` 控制 Native 网络超时，`options.timeout` 控制 SDK 等待回调超时，后者应略大于前者。
 
 ## Current Limits
 

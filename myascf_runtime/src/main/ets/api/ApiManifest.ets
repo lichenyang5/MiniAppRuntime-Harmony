@@ -6,14 +6,16 @@ import {
   ACTION_SYSTEM_STORAGE_GET_ITEM,
   ACTION_SYSTEM_STORAGE_REMOVE_ITEM,
   ACTION_SYSTEM_STORAGE_SET_ITEM,
-  ACTION_UI_SHOW_TOAST
+  ACTION_UI_SHOW_TOAST,
+  ACTION_NETWORK_REQUEST
 } from './ActionNames';
 
 export enum ApiCategory {
   UI = 'ui',
   SYSTEM = 'system',
   RUNTIME = 'runtime',
-  CONTAINER = 'container'
+  CONTAINER = 'container',
+  NETWORK = 'network'
 }
 
 export interface ApiParamMeta {
@@ -180,5 +182,39 @@ export const BUILTIN_API_MANIFEST: ApiManifestItem[] = [
     biz: 'StorageBiz',
     imp: 'StorageImp',
     example: 'window.myascf.send("system.storage.clear", {})'
+  },
+  {
+    action: ACTION_NETWORK_REQUEST,
+    category: ApiCategory.NETWORK,
+    title: 'Network Request',
+    description: 'Send an HTTP or HTTPS request through the ArkTS runtime.',
+    params: [
+      { name: 'url', type: 'string', required: true, description: 'Absolute HTTP or HTTPS URL.' },
+      { name: 'method', type: 'NetworkMethod', required: false, description: 'GET, POST, PUT or DELETE.' },
+      { name: 'headers', type: 'NetworkHeaders', required: false, description: 'String request headers.' },
+      { name: 'body', type: 'string', required: false, description: 'Request body for non-GET methods.' },
+      { name: 'timeout', type: 'number', required: false, description: 'Native request timeout in milliseconds.' },
+      { name: 'responseType', type: 'NetworkResponseType', required: false, description: 'text or json.' }
+    ],
+    response: [
+      { name: 'statusCode', type: 'number', description: 'HTTP status code.' },
+      { name: 'headers', type: 'NetworkHeaders', description: 'HTTP response headers.' },
+      { name: 'body', type: 'NetworkBody', description: 'Text or parsed JSON response body.' },
+      { name: 'duration', type: 'number', description: 'Native request duration in milliseconds.' }
+    ],
+    errors: [
+      'PARAM_ERROR',
+      'NETWORK_INVALID_URL',
+      'NETWORK_UNSUPPORTED_PROTOCOL',
+      'NETWORK_TIMEOUT',
+      'NETWORK_REQUEST_FAILED',
+      'NETWORK_INVALID_RESPONSE',
+      'TIMEOUT',
+      'CALLBACK_LOST'
+    ],
+    implemented: true,
+    biz: 'NetworkBiz',
+    imp: 'NetworkImp',
+    example: 'window.myascf.send("network.request", { url: "https://example.com", method: "GET" })'
   }
 ];

@@ -15,7 +15,11 @@ const supportedBaseTypes = new Set([
   'number',
   'boolean',
   'unknown',
-  'ApiSummary'
+  'ApiSummary',
+  'NetworkMethod',
+  'NetworkHeaders',
+  'NetworkResponseType',
+  'NetworkBody'
 ]);
 const checkMode = process.argv.includes('--check');
 
@@ -143,6 +147,10 @@ function createTypesSource(items) {
   return `// AUTO-GENERATED: DO NOT EDIT DIRECTLY.\n` +
     `// Generated from tools/api-manifest.json.\n\n` +
     `import type { ApiSummary, BridgeResponse, MyASCFSendOptions } from '../bridge-types.js';\n\n` +
+    `export type NetworkMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';\n` +
+    `export type NetworkHeaders = Record<string, string>;\n` +
+    `export type NetworkResponseType = 'text' | 'json';\n` +
+    `export type NetworkBody = string | Record<string, unknown> | unknown[];\n\n` +
     `export type ApiAction =\n${actions};\n\n` +
     `export interface ApiParamsMap {\n${params}\n}\n\n` +
     `export interface ApiResponseDataMap {\n${responses}\n}\n\n` +

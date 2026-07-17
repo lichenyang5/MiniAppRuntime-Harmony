@@ -97,16 +97,135 @@ test('generated typed helper maps nested methods to existing actions', async () 
   await api.system.storage.setItem({ key: 'username', value: 'lichenyang' });
   await api.system.storage.getItem({ key: 'username' });
   await api.runtime.getApiList();
+  await api.network.request({
+    url: 'https://example.com/users?token=secret',
+    method: 'GET',
+    timeout: 10000,
+    responseType: 'json'
+  }, { timeout: 12000 });
 
   assert.deepEqual(calls.map((call) => call.action), [
     'ui.showToast',
     'system.clipboard.readText',
     'system.storage.setItem',
     'system.storage.getItem',
-    'runtime.getApiList'
+    'runtime.getApiList',
+    'network.request'
   ]);
   assert.equal(calls[1].params, undefined);
   assert.deepEqual(calls[1].options, { timeout: 1000 });
+  assert.equal(calls[5].params.timeout, 10000);
+  assert.deepEqual(calls[5].options, { timeout: 12000 });
+});
+
+test('network.request resolves a successful runtime response', async () => {
+  let requestText = '';
+  const sdk = await import(`${esmUrl}?test=network-success`);
+  const targetWindow = createWindow({
+    MyASCFNative: {
+      postMessage(message) {
+        requestText = message;
+      }
+    }
+  });
+  const client = sdk.createMyASCF({ targetWindow });
+  const promise = client.sendTyped('network.request', {
+    url: 'https://example.com/api',
+    method: 'GET',
+    timeout: 10000,
+    responseType: 'json'
+  }, { timeout: 12000 });
+  const request = JSON.parse(requestText);
+
+  client.handleNativeResponse({
+    requestId: request.requestId,
+    code: 0,
+    message: 'network request success',
+    data: { statusCode: 200, headers: {}, body: { ok: true }, duration: 18 }
+  });
+
+  const response = await promise;
+  assert.equal(response.data.statusCode, 200);
+  assert.deepEqual(response.data.body, { ok: true });
+});
+
+test('network.request rejects a mapped runtime network error', async () => {
+  let requestText = '';
+  const sdk = await import(`${esmUrl}?test=network-error`);
+  const targetWindow = createWindow({
+    MyASCFNative: {
+      postMessage(message) {
+        requestText = message;
+      }
+    }
+  });
+  const client = sdk.createMyASCF({ targetWindow });
+  const promise = client.send('network.request', {
+    url: 'https://example.com/slow',
+    timeout: 1000
+  }, { timeout: 3000 });
+  const request = JSON.parse(requestText);
+
+  client.handleNativeResponse({
+    requestId: request.requestId,
+    code: 1103,
+    message: 'NETWORK_TIMEOUT: request timed out'
+  });
+
+  await assert.rejects(promise, (error) => error.code === 1103);
+});
+
+test('network DebugPanel records redact query, headers and body content', async () => {
+  const starts = [];
+  const ends = [];
+  let requestText = '';
+  const sdk = await import(`${esmUrl}?test=network-debug-redaction`);
+  const targetWindow = createWindow({
+    MyASCFNative: {
+      postMessage(message) {
+        requestText = message;
+      }
+    },
+    MyASCFDebugPanel: {
+      recordStart(record) {
+        starts.push(record);
+      },
+      recordEnd(record) {
+        ends.push(record);
+      }
+    }
+  });
+  const client = sdk.createMyASCF({ targetWindow });
+  const promise = client.send('network.request', {
+    url: 'https://user:password@example.com/users?token=secret',
+    method: 'POST',
+    headers: { Authorization: 'Bearer secret', Cookie: 'sid=secret' },
+    body: '{"password":"secret"}',
+    timeout: 10000
+  }, { timeout: 12000 });
+  const request = JSON.parse(requestText);
+
+  assert.equal(starts[0].params.url, 'https://example.com/users');
+  assert.deepEqual(starts[0].params.headerNames, ['Authorization', 'Cookie']);
+  assert.equal(starts[0].params.bodyLength, 21);
+  assert.equal(JSON.stringify(starts[0]).includes('Bearer secret'), false);
+  assert.equal(JSON.stringify(starts[0]).includes('password'), false);
+
+  client.handleNativeResponse({
+    requestId: request.requestId,
+    code: 0,
+    message: 'success',
+    data: {
+      statusCode: 200,
+      headers: { 'Set-Cookie': 'sid=response-secret' },
+      body: '{"token":"response-secret"}',
+      duration: 1
+    }
+  });
+  await promise;
+  assert.deepEqual(ends[0].response.data.headerNames, ['Set-Cookie']);
+  assert.equal(ends[0].response.data.bodyLength, 27);
+  assert.equal(JSON.stringify(ends[0]).includes('response-secret'), false);
 });
 
 test('send creates unique requestIds with the stable prefix', async () => {

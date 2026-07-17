@@ -14,13 +14,13 @@ export class BridgeController {
   }
 
   handleMessage(message: string): void {
-    RuntimeLogger.info(`[BridgeController] raw message: ${message}`);
+    RuntimeLogger.info(`[BridgeController] raw message received, length=${message.length}`);
 
     try {
       const request: BridgeRequest = this.parseRequest(message);
       RuntimeLogger.info(`[BridgeController] requestId: ${request.requestId}`);
       RuntimeLogger.info(`[BridgeController] action: ${request.action}`);
-      RuntimeLogger.info(`[BridgeController] params: ${this.stringifyParams(request)}`);
+      RuntimeLogger.logBridgeParams(request);
       RuntimeLogger.logBridgeRequest(request.requestId, request.action);
 
       this.dispatcher.dispatch(request)
@@ -54,13 +54,6 @@ export class BridgeController {
       throw new Error('Invalid bridge request: requestId and action are required.');
     }
     return request;
-  }
-
-  private stringifyParams(request: BridgeRequest): string {
-    if (request.params === undefined) {
-      return '';
-    }
-    return JSON.stringify(request.params);
   }
 
   private extractRequestId(message: string): string {

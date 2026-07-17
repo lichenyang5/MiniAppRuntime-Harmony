@@ -13,13 +13,15 @@ v0.1.0 展示候选版还需同步完成 [版本专属验收清单](../release/v
 - [ ] `npm run check:api` 确认 Manifest、ActionNames、ApiManifest 与 RuntimeBootstrap 对齐。
 - [ ] `npm run check:package` 确认 package exports 指向真实文件。
 - [ ] `npm --prefix h5_sdk run check` 完成 build、test 和 `npm pack --dry-run`。
-- [ ] H5 SDK 13 个单元测试全部通过。
+- [ ] H5 SDK 16 个单元测试全部通过。
 
 ## HarmonyOS 回归
 
 - [ ] 按 [手工冒烟测试](manual-smoke-test.md) 完整执行并保留环境信息。
 - [ ] `entry` HAP 可以构建。
-- [ ] entry Demo 在目标设备启动并跑通 Toast、Clipboard、Storage 和 `runtime.getApiList`。
+- [ ] entry Demo 在目标设备启动并跑通 Toast、Clipboard、Storage、`network.request` 和 `runtime.getApiList`。
+- [ ] Network GET/POST、JSON/text、非法协议、断网、双 timeout 与 HTTP 4xx/5xx 策略已验证。
+- [ ] Network 日志和 DebugPanel 不泄露 query、Authorization、Cookie 或完整 body。
 - [ ] DebugPanel、URL Guard、错误页和重试行为正常。
 - [ ] 外部 Demo 可以导入 `myascf_runtime` HAR 并暴露 `MyASCFRuntime` proxy。
 

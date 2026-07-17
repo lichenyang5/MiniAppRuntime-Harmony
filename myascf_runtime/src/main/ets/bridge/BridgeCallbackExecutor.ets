@@ -17,7 +17,10 @@ export class BridgeCallbackExecutor {
     const script: string = `if (${H5_RESPONSE_CALLBACK}) { ${H5_RESPONSE_CALLBACK}(${responseArg}); }`;
     const action: string = this.getAction(response);
 
-    RuntimeLogger.info(`[BridgeCallbackExecutor] prepare H5 callback: ${responseText}`);
+    RuntimeLogger.info(
+      `[BridgeCallbackExecutor] prepare H5 callback: requestId=${response.requestId}, action=${action}, ` +
+      `code=${response.code}, payloadLength=${responseText.length}`
+    );
     RuntimeLogger.logBridgeResponse(response.requestId, action, response.code);
 
     try {

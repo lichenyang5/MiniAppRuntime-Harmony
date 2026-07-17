@@ -77,6 +77,35 @@ h1 {
   border-top: 1px solid #e5e7eb;
 }
 
+.networkSection {
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.networkOptions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.textArea {
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #111827;
+  background: #ffffff;
+  font: inherit;
+  line-height: 1.5;
+}
+
+.networkResponse {
+  min-height: 96px;
+  max-height: 320px;
+}
+
 .storageButtons {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }

@@ -13,6 +13,11 @@ export { WebUrlGuard } from './container/WebUrlGuard';
 export { WebLoadStatus, WebLoadState } from './container/WebLoadState';
 export { RuntimeLogger } from './logger/RuntimeLogger';
 export {
+  NetworkMethod,
+  NetworkPolicy,
+  NetworkResponseType
+} from './types/NetworkTypes';
+export {
   ApiCategory,
   ApiManifestItem,
   ApiParamMeta,

@@ -10,9 +10,10 @@
 - 提供 API、架构、接入、调试和 Release 文档。
 - 完成 H5 SDK npm pack 和外部 consumer 本地预检。
 - 提供测试、CI、Showcase、Release Notes 和候选验收清单。
+- 提供 GitHub Release 模板、手动发布记录和综合文章草稿。
 - 不发布 npm，不发布 HarmonyOS 包。
 
-当前状态：候选展示文档已整理，仍需候选 commit 的 GitHub Actions 结果、设备回归和真实截图。
+当前状态：候选展示文档已整理，`9de3f82` 的 GitHub Actions 已通过；仍需处置远端历史中的签名凭据、确认最终发布 commit 的 CI、完成设备回归并补充截图。安全门禁完成前不创建 tag 或 GitHub Release。
 
 ## v0.2.0：反馈与发布准备
 

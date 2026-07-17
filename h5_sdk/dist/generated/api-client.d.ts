@@ -19,5 +19,8 @@ export declare function createTypedApi(client: MyASCF): {
             clear: (options?: MyASCFSendOptions) => Promise<TypedBridgeResponse<"system.storage.clear">>;
         };
     };
+    network: {
+        request: (params: ApiParamsMap["network.request"], options?: MyASCFSendOptions) => Promise<TypedBridgeResponse<"network.request">>;
+    };
 };
 export type TypedApi = ReturnType<typeof createTypedApi>;

@@ -48,3 +48,9 @@ Controller 只负责协议入口，Dispatcher/Registry 负责扩展，Biz 负责
 - 发布并根据反馈修订技术文章。
 - 调研 H5 SDK npm 和 HarmonyOS HAR 的公开发布流程。
 - 在现有边界稳定后再评估 Network API 和更完整的 Web 内容安全策略。
+
+## 技术文章
+
+- [H5 SDK 如何配合 ArkTS Runtime：我做了一个 HarmonyOS JSBridge 框架 Demo](../articles/juejin-h5-sdk-runtime-framework-design.md)（仓库草稿，尚未发布）
+
+文章公开发布后只回填真实平台链接，发布状态见 [Articles](../articles/README.md)。

@@ -3,6 +3,11 @@
 
 import type { ApiSummary, BridgeResponse, MyASCFSendOptions } from '../bridge-types.js';
 
+export type NetworkMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+export type NetworkHeaders = Record<string, string>;
+export type NetworkResponseType = 'text' | 'json';
+export type NetworkBody = string | Record<string, unknown> | unknown[];
+
 export type ApiAction =
   | "runtime.getApiList"
   | "ui.showToast"
@@ -11,7 +16,8 @@ export type ApiAction =
   | "system.storage.setItem"
   | "system.storage.getItem"
   | "system.storage.removeItem"
-  | "system.storage.clear";
+  | "system.storage.clear"
+  | "network.request";
 
 export interface ApiParamsMap {
   "runtime.getApiList": undefined;
@@ -33,6 +39,14 @@ export interface ApiParamsMap {
     key: string;
   };
   "system.storage.clear": undefined;
+  "network.request": {
+    url: string;
+    method?: NetworkMethod;
+    headers?: NetworkHeaders;
+    body?: string;
+    timeout?: number;
+    responseType?: NetworkResponseType;
+  };
 }
 
 export interface ApiResponseDataMap {
@@ -65,6 +79,12 @@ export interface ApiResponseDataMap {
   };
   "system.storage.clear": {
     echoAction?: string;
+  };
+  "network.request": {
+    statusCode?: number;
+    headers?: NetworkHeaders;
+    body?: NetworkBody;
+    duration?: number;
   };
 }
 

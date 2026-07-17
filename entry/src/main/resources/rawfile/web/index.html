@@ -50,6 +50,26 @@
           <button id="storageParamErrorButton" class="secondaryButton" type="button">Storage 参数错误</button>
         </div>
       </section>
+      <section class="apiSection networkSection">
+        <h2>Network Request</h2>
+        <p class="containerMeta">HTTP 由 ArkTS Runtime 执行。示例地址可编辑，外部服务不是项目强依赖。</p>
+        <input id="networkUrl" class="textInput" value="https://jsonplaceholder.typicode.com/todos/1" aria-label="Request URL">
+        <div class="networkOptions">
+          <select id="networkMethod" class="textInput" aria-label="Request method">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+          <select id="networkResponseType" class="textInput" aria-label="Response type">
+            <option value="json">JSON</option>
+            <option value="text">Text</option>
+          </select>
+        </div>
+        <textarea id="networkBody" class="textArea" rows="4" aria-label="Request body" placeholder='{"title":"hello"}'></textarea>
+        <button id="networkSendButton" type="button">Send Request</button>
+        <pre id="networkResponse" class="result networkResponse">No network response</pre>
+      </section>
       <p id="status" class="status">等待 H5 发起调用。</p>
       <pre id="result" class="result">暂无响应</pre>
       <pre id="eventLog" class="eventLog">暂无事件</pre>
