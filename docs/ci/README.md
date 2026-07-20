@@ -19,7 +19,7 @@ workflow 使用 Ubuntu runner 和 Node.js 20，只申请只读仓库权限，不
 2. 以只读模式检查 API Markdown 与 SDK typed API 生成物。
 3. 检查 JSON Manifest、ActionNames、ApiManifest 与 RuntimeBootstrap 对齐。
 4. 构建 H5 SDK 的 IIFE、ESM 与 TypeScript 声明。
-5. 运行 H5 SDK 13 个 Node 单元测试。
+5. 运行 H5 SDK 17 个 Node 单元测试。
 6. 执行 `npm pack --dry-run --ignore-scripts` 预览候选包。
 7. 检查 package 路径、ESM 导出和 IIFE 全局挂载。
 

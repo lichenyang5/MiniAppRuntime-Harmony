@@ -20,7 +20,7 @@ npm run check
 
 1. API 文档和 H5 类型生成物未过期。
 2. JSON Manifest、ActionNames、ApiManifest 和 RuntimeBootstrap 对齐。
-3. H5 SDK 能构建，13 个单元测试通过，`npm pack --dry-run` 成功。
+3. H5 SDK 能构建，17 个单元测试通过，`npm pack --dry-run` 成功。
 4. `main`、`module`、`types` 和 `exports` 指向的文件存在，ESM 入口可导入且包含必要运行时导出。
 
 ## 文档索引

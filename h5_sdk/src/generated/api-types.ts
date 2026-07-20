@@ -6,7 +6,7 @@ import type { ApiSummary, BridgeResponse, MyASCFSendOptions } from '../bridge-ty
 export type NetworkMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 export type NetworkHeaders = Record<string, string>;
 export type NetworkResponseType = 'text' | 'json';
-export type NetworkBody = string | Record<string, unknown> | unknown[];
+export type NetworkBody = string | Record<string, unknown> | unknown[] | null;
 
 export type ApiAction =
   | "runtime.getApiList"
@@ -81,10 +81,12 @@ export interface ApiResponseDataMap {
     echoAction?: string;
   };
   "network.request": {
-    statusCode?: number;
-    headers?: NetworkHeaders;
-    body?: NetworkBody;
-    duration?: number;
+    ok: boolean;
+    statusCode: number;
+    statusText?: string;
+    headers: NetworkHeaders;
+    body: NetworkBody;
+    duration: number;
   };
 }
 

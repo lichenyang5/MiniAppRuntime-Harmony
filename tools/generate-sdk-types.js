@@ -75,6 +75,9 @@ function validateFields(item, fieldName, requireRequired) {
     if (requireRequired && typeof field.required !== 'boolean') {
       fail(`${item.action} params[${index}] missing required`);
     }
+    if (!requireRequired && field.required !== undefined && typeof field.required !== 'boolean') {
+      fail(`${item.action} response[${index}] has invalid required`);
+    }
   });
 }
 
@@ -126,7 +129,9 @@ function formatObjectType(fields, optionalResponse) {
     return 'Record<string, never>';
   }
   const lines = fields.map((field) => {
-    const optional = optionalResponse || field.required === false ? '?' : '';
+    const optional = optionalResponse
+      ? (field.required === true ? '' : '?')
+      : (field.required === false ? '?' : '');
     return `    ${field.name}${optional}: ${field.type};`;
   });
   return `{\n${lines.join('\n')}\n  }`;
@@ -150,7 +155,7 @@ function createTypesSource(items) {
     `export type NetworkMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';\n` +
     `export type NetworkHeaders = Record<string, string>;\n` +
     `export type NetworkResponseType = 'text' | 'json';\n` +
-    `export type NetworkBody = string | Record<string, unknown> | unknown[];\n\n` +
+    `export type NetworkBody = string | Record<string, unknown> | unknown[] | null;\n\n` +
     `export type ApiAction =\n${actions};\n\n` +
     `export interface ApiParamsMap {\n${params}\n}\n\n` +
     `export interface ApiResponseDataMap {\n${responses}\n}\n\n` +

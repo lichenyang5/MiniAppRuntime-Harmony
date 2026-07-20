@@ -18,7 +18,7 @@ Demo 中的 `web/js/myascf.js` 是 `h5_sdk/dist/myascf.js` 同步后的 IIFE 产
 
 `JavaScriptProxy.postMessage()` 只把字符串转给 `BridgeController`。Controller 负责解析协议、记录日志和启动分发，不处理 Toast、Clipboard 或 Storage 业务。
 
-`BridgeDispatcher` 根据 action 向 `HandlerRegistry` 查找 handler。`RuntimeBootstrap` 在 `MyASCFRuntime` 构造期间创建注册表并注册 8 个内置 action。未知 action 在 Dispatcher 层统一返回错误。
+`BridgeDispatcher` 根据 action 向 `HandlerRegistry` 查找 handler。`RuntimeBootstrap` 在 `MyASCFRuntime` 构造期间创建注册表并注册 9 个内置 action。未知 action 在 Dispatcher 层统一返回错误。
 
 ## 4. Biz 与 Imp 执行能力
 

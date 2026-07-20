@@ -6,6 +6,7 @@ import { NetworkImp } from '../imp/NetworkImp';
 import {
   NetworkImpError,
   NetworkImpErrorKind,
+  NetworkHttpStatus,
   NetworkMethod,
   NetworkPolicy,
   NetworkResponseType,
@@ -198,7 +199,10 @@ export class NetworkBiz {
 
     try {
       const result: NetworkResult = await this.networkImp.request(validation.request);
-      const body: string | Object | undefined = this.parseBody(result.bodyText, validation.request.responseType);
+      const body: string | Object | null | undefined = this.parseBody(
+        result.bodyText,
+        validation.request.responseType
+      );
       if (body === undefined) {
         return this.createErrorResponse(
           request.requestId,
@@ -208,7 +212,9 @@ export class NetworkBiz {
       }
       const data: BridgeResponseData = {
         echoAction: ACTION_NETWORK_REQUEST,
+        ok: NetworkHttpStatus.isOk(result.statusCode),
         statusCode: result.statusCode,
+        statusText: NetworkHttpStatus.getStatusText(result.statusCode),
         headers: result.headers,
         body: body,
         duration: result.duration
@@ -216,7 +222,7 @@ export class NetworkBiz {
       const response: BridgeResponse = {
         requestId: request.requestId,
         code: BridgeErrorCode.SUCCESS,
-        message: 'network request success',
+        message: 'success',
         data: data
       };
       return response;
@@ -232,13 +238,19 @@ export class NetworkBiz {
     }
   }
 
-  private parseBody(bodyText: string, responseType: NetworkResponseType): string | Object | undefined {
+  private parseBody(bodyText: string, responseType: NetworkResponseType): string | Object | null | undefined {
+    if (bodyText.length === 0) {
+      return null;
+    }
     if (responseType === NetworkResponseType.TEXT) {
       return bodyText;
     }
     try {
-      const parsed: Object = JSON.parse(bodyText) as Object;
-      if (parsed === null || typeof parsed !== 'object') {
+      const parsed: Object | null = JSON.parse(bodyText) as Object | null;
+      if (parsed === null) {
+        return null;
+      }
+      if (typeof parsed !== 'object') {
         return undefined;
       }
       return parsed;

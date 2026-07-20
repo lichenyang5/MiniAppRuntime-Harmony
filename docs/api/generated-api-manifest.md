@@ -286,7 +286,9 @@ Send an HTTP or HTTPS request through the ArkTS runtime.
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `ok` | `boolean` | Whether the HTTP status is in the 2xx range. |
 | `statusCode` | `number` | HTTP status code. |
+| `statusText` | `string` | Standard text for known HTTP status codes. |
 | `headers` | `NetworkHeaders` | HTTP response headers. |
 | `body` | `NetworkBody` | Text or parsed JSON response body. |
 | `duration` | `number` | Native request duration in milliseconds. |

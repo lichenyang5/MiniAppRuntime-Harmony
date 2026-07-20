@@ -53,6 +53,7 @@
       <section class="apiSection networkSection">
         <h2>Network Request</h2>
         <p class="containerMeta">HTTP 由 ArkTS Runtime 执行。示例地址可编辑，外部服务不是项目强依赖。</p>
+        <p class="containerMeta">404 会 resolved 且 ok=false，通常表示服务端没有对应路由，不代表 Bridge 调用失败。</p>
         <input id="networkUrl" class="textInput" value="https://jsonplaceholder.typicode.com/todos/1" aria-label="Request URL">
         <div class="networkOptions">
           <select id="networkMethod" class="textInput" aria-label="Request method">
@@ -66,6 +67,7 @@
             <option value="text">Text</option>
           </select>
         </div>
+        <textarea id="networkHeaders" class="textArea" rows="3" aria-label="Request headers" placeholder='{"Accept":"application/json"}'>{"Accept":"application/json"}</textarea>
         <textarea id="networkBody" class="textArea" rows="4" aria-label="Request body" placeholder='{"title":"hello"}'></textarea>
         <button id="networkSendButton" type="button">Send Request</button>
         <pre id="networkResponse" class="result networkResponse">No network response</pre>

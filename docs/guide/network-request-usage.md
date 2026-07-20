@@ -30,10 +30,17 @@ const response = await api.network.request({
 });
 
 console.log(response.data?.statusCode);
+console.log(response.data?.ok);
 console.log(response.data?.body);
 ```
 
 H5 SDK 不执行 HTTP。它把相同 BridgeRequest 交给 `window.MyASCFNative.postMessage`，真正的请求由 HAR 内的 `NetworkImp` 调用公开 HarmonyOS 网络能力完成。
+
+## Bridge 成功与 HTTP 成功
+
+`api.network.request()` 默认采用类似 Fetch 的语义：200、404 和 500 都是有效 HTTP 响应，因此 Promise 都 resolve。`data.ok` 只在 2xx 时为 `true`，同时保留真实 `statusCode`。
+
+当前不提供 `requestOrThrow`，也不提供 `rejectOnHttpError`，避免改变 Runtime 默认协议。需要严格模式时，业务方可以基于 `data.ok` 自行封装。
 
 ## 两种 timeout
 
@@ -55,4 +62,4 @@ const runtime = new MyASCFRuntime(controller, context, {
 
 ## 调试
 
-DebugPanel 会显示 action、requestId、duration、status 和 error code。网络记录只保留去掉 query 的 URL、Header 名称、body 长度和有限响应预览，不记录 Authorization、Cookie 或完整 body。
+DebugPanel 分开显示 Bridge RESOLVED/REJECTED、HTTP status、OK、duration 和错误码。网络记录只保留去掉 query 的 URL、Header 名称和 body 长度，不记录 Authorization、Cookie 或完整 body。

@@ -13,7 +13,7 @@ v0.1.0 展示候选版还需同步完成 [版本专属验收清单](../release/v
 - [ ] `npm run check:api` 确认 Manifest、ActionNames、ApiManifest 与 RuntimeBootstrap 对齐。
 - [ ] `npm run check:package` 确认 package exports 指向真实文件。
 - [ ] `npm --prefix h5_sdk run check` 完成 build、test 和 `npm pack --dry-run`。
-- [ ] H5 SDK 16 个单元测试全部通过。
+- [ ] H5 SDK 17 个单元测试全部通过。
 
 ## HarmonyOS 回归
 

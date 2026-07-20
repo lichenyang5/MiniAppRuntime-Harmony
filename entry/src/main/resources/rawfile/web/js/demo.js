@@ -23,6 +23,7 @@
   var networkUrl = document.getElementById('networkUrl');
   var networkMethod = document.getElementById('networkMethod');
   var networkResponseType = document.getElementById('networkResponseType');
+  var networkHeaders = document.getElementById('networkHeaders');
   var networkBody = document.getElementById('networkBody');
   var networkSendButton = document.getElementById('networkSendButton');
   var networkResponse = document.getElementById('networkResponse');
@@ -32,7 +33,7 @@
     !storageKey || !storageValue || !storageSetButton || !storageGetButton || !storageRemoveButton ||
     !storageClearButton || !storageParamErrorButton ||
     !status || !result || !eventLog || !currentUrl || !blockedUrlButton || !loadApiListButton ||
-    !networkUrl || !networkMethod || !networkResponseType || !networkBody ||
+    !networkUrl || !networkMethod || !networkResponseType || !networkHeaders || !networkBody ||
     !networkSendButton || !networkResponse) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
@@ -192,26 +193,73 @@
       requestId: response && response.requestId,
       code: response && response.code,
       message: response && response.message,
+      bridge: 'RESOLVED',
+      ok: data.ok,
       statusCode: data.statusCode,
+      statusText: data.statusText,
       duration: data.duration,
       headerNames: headerNames,
       bodyPreview: (bodyText || '').slice(0, 1200)
     };
   }
 
+  function parseNetworkHeaders() {
+    var value = networkHeaders.value.trim();
+    if (!value) {
+      return {};
+    }
+    var parsed = JSON.parse(value);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('Headers 必须是 JSON object。');
+    }
+    Object.keys(parsed).forEach(function (name) {
+      if (typeof parsed[name] !== 'string') {
+        throw new Error('Header value 必须是 string。');
+      }
+    });
+    return parsed;
+  }
+
+  function hasHeader(headers, expectedName) {
+    var normalizedName = expectedName.toLowerCase();
+    return Object.keys(headers).some(function (name) {
+      return name.toLowerCase() === normalizedName;
+    });
+  }
+
+  var getSampleUrl = 'https://jsonplaceholder.typicode.com/todos/1';
+  var postSampleUrl = 'https://jsonplaceholder.typicode.com/todos';
+  networkMethod.addEventListener('change', function () {
+    if (networkMethod.value === 'POST' && networkUrl.value === getSampleUrl) {
+      networkUrl.value = postSampleUrl;
+      networkBody.value = '{"title":"hello","body":"demo","userId":1}';
+    } else if (networkMethod.value === 'GET' && networkUrl.value === postSampleUrl) {
+      networkUrl.value = getSampleUrl;
+    }
+  });
+
   networkSendButton.addEventListener('click', function () {
     var nativeTimeout = 10000;
     var method = networkMethod.value;
-    var params = {
-      url: networkUrl.value,
-      method: method,
-      timeout: nativeTimeout,
-      responseType: networkResponseType.value,
-      headers: { Accept: 'application/json' }
-    };
+    var params;
+    try {
+      params = {
+        url: networkUrl.value,
+        method: method,
+        timeout: nativeTimeout,
+        responseType: networkResponseType.value,
+        headers: parseNetworkHeaders()
+      };
+    } catch (error) {
+      renderRejected({ code: 'DEMO_HEADERS_ERROR', message: error.message });
+      networkResponse.textContent = error.message;
+      return;
+    }
     if (method !== 'GET' && networkBody.value) {
       params.body = networkBody.value;
-      params.headers['Content-Type'] = 'application/json';
+      if (!hasHeader(params.headers, 'Content-Type')) {
+        params.headers['Content-Type'] = 'application/json';
+      }
     }
 
     renderPending('network.request');
@@ -224,6 +272,7 @@
       })
       .catch(function (error) {
         networkResponse.textContent = JSON.stringify({
+          bridge: 'REJECTED',
           requestId: error && error.requestId,
           code: error && error.code,
           message: error && error.message

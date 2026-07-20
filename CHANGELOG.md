@@ -7,10 +7,12 @@
 ### Added
 
 - `network.request` ArkTS Runtime 垂直能力链路。
+- Network 响应增加 `ok`、可选 `statusText` 和可空 `body`，明确 2xx/4xx/5xx 都以 Bridge `SUCCESS` 返回。
 - HTTP/HTTPS URL、method、headers、body、network timeout 与 responseType 校验。
 - `NetworkBiz` / `NetworkImp` 分层、网络错误码和 HTTP 状态码返回策略。
 - Manifest 生成的 `api.network.request` typed helper 与 Network 类型。
 - Network Demo、DebugPanel 摘要与敏感日志脱敏。
+- Network Demo 增加可编辑 Headers，DebugPanel 分开展示 Bridge、HTTP、OK、Duration 和 Error Code。
 - Network 自动测试、手工 smoke test、架构与使用文档。
 
 ### Notes

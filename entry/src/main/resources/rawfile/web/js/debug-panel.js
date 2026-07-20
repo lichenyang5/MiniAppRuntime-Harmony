@@ -4,6 +4,27 @@
   var supportedApis = [];
   var apiListError = '';
   var apiListLoaded = false;
+  var ERROR_CODE_NAMES = {
+    1001: 'UNKNOWN_ACTION',
+    1002: 'PARAM_ERROR',
+    1003: 'INTERNAL_ERROR',
+    1004: 'CALLBACK_LOST',
+    1005: 'TIMEOUT',
+    1006: 'PARSE_ERROR',
+    1007: 'INVALID_RESPONSE',
+    1101: 'NETWORK_INVALID_URL',
+    1102: 'NETWORK_UNSUPPORTED_PROTOCOL',
+    1103: 'NETWORK_TIMEOUT',
+    1104: 'NETWORK_REQUEST_FAILED',
+    1105: 'NETWORK_INVALID_RESPONSE'
+  };
+
+  function getErrorCodeName(record) {
+    if (record.code === 1006 && String(record.message).indexOf('NATIVE_UNAVAILABLE') !== -1) {
+      return 'NATIVE_UNAVAILABLE';
+    }
+    return ERROR_CODE_NAMES[record.code] || String(record.code);
+  }
 
   function clone(value) {
     try {
@@ -121,6 +142,23 @@
 
     container.innerHTML = records.map(function (record) {
       var statusClass = 'debug-record--' + record.status;
+      var isNetwork = record.action === 'network.request';
+      var responseData = record.response && record.response.data ? record.response.data : {};
+      var bridgeStatus = record.status === 'resolve' ? 'RESOLVED' :
+        (record.status === 'pending' ? 'PENDING' : 'REJECTED');
+      var httpStatus = typeof responseData.statusCode === 'number' ? responseData.statusCode : '-';
+      var httpOk = typeof responseData.ok === 'boolean' ? String(responseData.ok) : '-';
+      var errorCode = typeof record.code === 'number' && record.code !== 0 ?
+        getErrorCodeName(record) : '-';
+      var networkMeta = isNetwork ? [
+        '<div class="debug-network-status">',
+        '<span>Bridge: ' + escapeHtml(bridgeStatus) + '</span>',
+        '<span>HTTP: ' + escapeHtml(httpStatus) + '</span>',
+        '<span>OK: ' + escapeHtml(httpOk) + '</span>',
+        '<span>Duration: ' + escapeHtml(record.duration) + 'ms</span>',
+        '<span>Error Code: ' + escapeHtml(errorCode) + '</span>',
+        '</div>'
+      ].join('') : '';
       return [
         '<details class="debug-record ' + escapeHtml(statusClass) + '">',
         '<summary>',
@@ -129,6 +167,7 @@
         '<span class="debug-code">code: ' + escapeHtml(record.code) + '</span>',
         '<span class="debug-duration">' + escapeHtml(record.duration) + 'ms</span>',
         '</summary>',
+        networkMeta,
         '<div class="debug-meta">requestId: ' + escapeHtml(record.requestId) + '</div>',
         '<div class="debug-meta">message: ' + escapeHtml(record.message) + '</div>',
         '<pre class="debug-json">params: ' + escapeHtml(formatJson(record.params)) + '</pre>',

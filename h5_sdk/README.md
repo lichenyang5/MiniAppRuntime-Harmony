@@ -90,7 +90,10 @@ const network = await api.network.request({
   responseType: 'json'
 }, { timeout: 12000 });
 console.log(network.data?.statusCode);
+console.log(network.data?.ok);
 ```
+
+`network.request` 默认采用类似 Fetch 的语义：任何有效 HTTP 响应都会 resolve，404/500 不会自动转成 Bridge 错误。请使用 `network.data?.ok` 判断是否为 2xx，并通过 `network.data?.statusCode` 读取真实状态。当前不提供 `requestOrThrow` 或 `rejectOnHttpError`。
 
 重新生成：
 
@@ -153,7 +156,7 @@ npm run check
 
 当前使用 Node 原生 test runner，直接测试 IIFE 与 ESM 构建产物。用例覆盖 requestId、请求协议、成功与错误响应、timeout、callback lost、Native 不可用、非法响应、DebugPanel 安全调用、`sendTyped`、`createTypedApi` 和 `network.request` 的双 timeout 参数与脱敏记录。
 
-`npm test` 会先重建产物，避免测试旧 `dist`。`npm run check` 还会先检查 generated 文件是否过期，再运行 16 个测试并执行无 lifecycle 副作用的 `npm pack --dry-run`。完整说明见 [H5 SDK 测试指南](../docs/testing/h5-sdk-test-guide.md)。
+`npm test` 会先重建产物，避免测试旧 `dist`。`npm run check` 还会先检查 generated 文件是否过期，再运行 17 个测试并执行无 lifecycle 副作用的 `npm pack --dry-run`。完整说明见 [H5 SDK 测试指南](../docs/testing/h5-sdk-test-guide.md)。
 
 H5 SDK 不直接发起 HTTP；`network.request` 由 ArkTS Runtime 执行。`params.timeout` 控制 Native 网络超时，`options.timeout` 控制 SDK 等待回调超时，后者应略大于前者。
 

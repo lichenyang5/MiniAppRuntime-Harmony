@@ -118,40 +118,94 @@ test('generated typed helper maps nested methods to existing actions', async () 
   assert.deepEqual(calls[5].options, { timeout: 12000 });
 });
 
-test('network.request resolves a successful runtime response', async () => {
-  let requestText = '';
+test('network.request resolves 2xx, 4xx and 5xx with explicit ok semantics', async () => {
   const sdk = await import(`${esmUrl}?test=network-success`);
-  const targetWindow = createWindow({
-    MyASCFNative: {
-      postMessage(message) {
-        requestText = message;
+  const cases = [
+    { statusCode: 200, ok: true, statusText: 'OK', body: { result: 'ok' } },
+    { statusCode: 201, ok: true, statusText: 'Created', body: { id: 1 } },
+    { statusCode: 204, ok: true, statusText: 'No Content', body: null },
+    { statusCode: 404, ok: false, statusText: 'Not Found', body: 'missing' },
+    { statusCode: 500, ok: false, statusText: 'Internal Server Error', body: 'failed' }
+  ];
+
+  for (const item of cases) {
+    let requestText = '';
+    const targetWindow = createWindow({
+      MyASCFNative: {
+        postMessage(message) {
+          requestText = message;
+        }
       }
-    }
-  });
-  const client = sdk.createMyASCF({ targetWindow });
-  const promise = client.sendTyped('network.request', {
-    url: 'https://example.com/api',
-    method: 'GET',
-    timeout: 10000,
-    responseType: 'json'
-  }, { timeout: 12000 });
-  const request = JSON.parse(requestText);
+    });
+    const client = sdk.createMyASCF({ targetWindow });
+    const promise = client.sendTyped('network.request', {
+      url: 'https://example.com/api',
+      method: 'GET',
+      timeout: 10000,
+      responseType: 'json'
+    }, { timeout: 12000 });
+    const request = JSON.parse(requestText);
 
-  client.handleNativeResponse({
-    requestId: request.requestId,
-    code: 0,
-    message: 'network request success',
-    data: { statusCode: 200, headers: {}, body: { ok: true }, duration: 18 }
-  });
+    client.handleNativeResponse({
+      requestId: request.requestId,
+      code: 0,
+      message: 'success',
+      data: {
+        ok: item.ok,
+        statusCode: item.statusCode,
+        statusText: item.statusText,
+        headers: {},
+        body: item.body,
+        duration: 18
+      }
+    });
 
-  const response = await promise;
-  assert.equal(response.data.statusCode, 200);
-  assert.deepEqual(response.data.body, { ok: true });
+    const response = await promise;
+    assert.equal(response.code, 0);
+    assert.equal(response.data.statusCode, item.statusCode);
+    assert.equal(response.data.ok, item.ok);
+    assert.equal(response.data.statusText, item.statusText);
+    assert.deepEqual(response.data.body, item.body);
+  }
 });
 
-test('network.request rejects a mapped runtime network error', async () => {
-  let requestText = '';
+test('network.request rejects protocol, connection and native timeout errors', async () => {
   const sdk = await import(`${esmUrl}?test=network-error`);
+  const cases = [
+    { code: 1102, message: 'NETWORK_UNSUPPORTED_PROTOCOL: file' },
+    { code: 1104, message: 'NETWORK_REQUEST_FAILED: native request failed' },
+    { code: 1103, message: 'NETWORK_TIMEOUT: request timed out' }
+  ];
+
+  for (const item of cases) {
+    let requestText = '';
+    const targetWindow = createWindow({
+      MyASCFNative: {
+        postMessage(message) {
+          requestText = message;
+        }
+      }
+    });
+    const client = sdk.createMyASCF({ targetWindow });
+    const promise = client.send('network.request', {
+      url: 'https://example.com/slow',
+      timeout: 1000
+    }, { timeout: 3000 });
+    const request = JSON.parse(requestText);
+
+    client.handleNativeResponse({
+      requestId: request.requestId,
+      code: item.code,
+      message: item.message
+    });
+
+    await assert.rejects(promise, (error) => error.code === item.code);
+  }
+});
+
+test('network SDK timeout remains distinct from params.timeout', async () => {
+  let requestText = '';
+  const sdk = await import(`${esmUrl}?test=network-sdk-timeout`);
   const targetWindow = createWindow({
     MyASCFNative: {
       postMessage(message) {
@@ -163,16 +217,11 @@ test('network.request rejects a mapped runtime network error', async () => {
   const promise = client.send('network.request', {
     url: 'https://example.com/slow',
     timeout: 1000
-  }, { timeout: 3000 });
+  }, { timeout: 5 });
   const request = JSON.parse(requestText);
 
-  client.handleNativeResponse({
-    requestId: request.requestId,
-    code: 1103,
-    message: 'NETWORK_TIMEOUT: request timed out'
-  });
-
-  await assert.rejects(promise, (error) => error.code === 1103);
+  assert.equal(request.params.timeout, 1000);
+  await assert.rejects(promise, (error) => error.code === 1005);
 });
 
 test('network DebugPanel records redact query, headers and body content', async () => {
@@ -216,7 +265,9 @@ test('network DebugPanel records redact query, headers and body content', async 
     code: 0,
     message: 'success',
     data: {
+      ok: true,
       statusCode: 200,
+      statusText: 'OK',
       headers: { 'Set-Cookie': 'sid=response-secret' },
       body: '{"token":"response-secret"}',
       duration: 1
@@ -224,6 +275,8 @@ test('network DebugPanel records redact query, headers and body content', async 
   });
   await promise;
   assert.deepEqual(ends[0].response.data.headerNames, ['Set-Cookie']);
+  assert.equal(ends[0].response.data.ok, true);
+  assert.equal(ends[0].response.data.statusText, 'OK');
   assert.equal(ends[0].response.data.bodyLength, 27);
   assert.equal(JSON.stringify(ends[0]).includes('response-secret'), false);
 });

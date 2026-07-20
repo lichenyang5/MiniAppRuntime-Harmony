@@ -104,7 +104,9 @@ function sanitizeNetworkResponse(response) {
   return __spreadProps(__spreadValues({}, source), {
     data: {
       echoAction: data.echoAction,
+      ok: data.ok,
       statusCode: data.statusCode,
+      statusText: data.statusText,
       duration: data.duration,
       headerNames: headers ? Object.keys(headers) : [],
       bodyLength: bodyText.length

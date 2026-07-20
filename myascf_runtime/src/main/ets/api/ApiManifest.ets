@@ -28,6 +28,7 @@ export interface ApiParamMeta {
 export interface ApiResponseMeta {
   name: string;
   type: string;
+  required?: boolean;
   description: string;
 }
 
@@ -197,10 +198,12 @@ export const BUILTIN_API_MANIFEST: ApiManifestItem[] = [
       { name: 'responseType', type: 'NetworkResponseType', required: false, description: 'text or json.' }
     ],
     response: [
-      { name: 'statusCode', type: 'number', description: 'HTTP status code.' },
-      { name: 'headers', type: 'NetworkHeaders', description: 'HTTP response headers.' },
-      { name: 'body', type: 'NetworkBody', description: 'Text or parsed JSON response body.' },
-      { name: 'duration', type: 'number', description: 'Native request duration in milliseconds.' }
+      { name: 'ok', type: 'boolean', required: true, description: 'Whether the HTTP status is in the 2xx range.' },
+      { name: 'statusCode', type: 'number', required: true, description: 'HTTP status code.' },
+      { name: 'statusText', type: 'string', required: false, description: 'Standard text for known HTTP status codes.' },
+      { name: 'headers', type: 'NetworkHeaders', required: true, description: 'HTTP response headers.' },
+      { name: 'body', type: 'NetworkBody', required: true, description: 'Text or parsed JSON response body.' },
+      { name: 'duration', type: 'number', required: true, description: 'Native request duration in milliseconds.' }
     ],
     errors: [
       'PARAM_ERROR',

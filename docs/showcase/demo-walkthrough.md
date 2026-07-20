@@ -58,19 +58,27 @@ npm run check
 
 **操作：**调用 `runtime.getApiList`。
 
-**预期结果：**返回当前 8 个内置 action，DebugPanel 能以 Manifest 数据展示能力列表。
+**预期结果：**返回当前 9 个内置 action，DebugPanel 能以 Manifest 数据展示能力列表。
 
 **失败排查：**运行 `npm run check:api`，检查 RuntimeBootstrap 注册和 API Manifest 是否对齐。
 
-## 7. 查看 DebugPanel
+## 7. 测试 Network Request
+
+**操作：**先使用默认 GET 示例观察 200；再切换 POST，确认 Demo 将示例路径从 `/todos/1` 调整为 `/todos`，检查可编辑 Headers 和 Body 后发送。
+
+**预期结果：**200/201 resolve 且 `ok=true`。如果目标服务返回 404/500，Promise 仍 resolve，但 `ok=false` 并保留真实 `statusCode`。404 通常表示服务端没有对应 Method 路由，不代表 Bridge 失败。
+
+**失败排查：**先区分 DebugPanel 中的 Bridge 与 HTTP 状态。只有非法协议、DNS、连接失败或 timeout 才应 reject；第三方示例服务仅用于临时验证，不是项目强依赖。
+
+## 8. 查看 DebugPanel
 
 **操作：**连续调用多个 API，展开最近调用记录。
 
-**预期结果：**记录包含 requestId、action、状态、耗时和响应；清空/导出操作不影响 JSBridge 主流程。
+**预期结果：**普通记录包含 requestId、action、状态和耗时；Network 记录额外区分 Bridge RESOLVED/REJECTED、HTTP、OK、Duration 和 Error Code。清空/导出不影响 JSBridge 主流程。
 
 **失败排查：**检查 `window.MyASCFDebugPanel` 生命周期方法和浏览器 console。DebugPanel 异常应被 SDK 隔离。
 
-## 8. 测试错误场景
+## 9. 测试错误场景
 
 **操作：**发送未知 action、缺少必填参数，并在可控环境中模拟超时或晚到响应。
 
@@ -78,7 +86,7 @@ npm run check
 
 **失败排查：**查看 H5 callback map、BridgeErrorCode、Dispatcher 和 CallbackExecutor 日志，不在 Web 页面临时增加 action 分支。
 
-## 9. 查看 Web 容器状态
+## 10. 查看 Web 容器状态
 
 **操作：**观察首次加载进度，尝试不允许的 URL，并验证错误页重试。
 

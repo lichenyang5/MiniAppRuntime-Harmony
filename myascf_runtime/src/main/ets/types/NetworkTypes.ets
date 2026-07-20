@@ -50,6 +50,35 @@ export class NetworkResult {
   }
 }
 
+export class NetworkHttpStatus {
+  static isOk(statusCode: number): boolean {
+    return statusCode >= 200 && statusCode < 300;
+  }
+
+  static getStatusText(statusCode: number): string | undefined {
+    if (statusCode === 200) { return 'OK'; }
+    if (statusCode === 201) { return 'Created'; }
+    if (statusCode === 202) { return 'Accepted'; }
+    if (statusCode === 204) { return 'No Content'; }
+    if (statusCode === 301) { return 'Moved Permanently'; }
+    if (statusCode === 302) { return 'Found'; }
+    if (statusCode === 304) { return 'Not Modified'; }
+    if (statusCode === 400) { return 'Bad Request'; }
+    if (statusCode === 401) { return 'Unauthorized'; }
+    if (statusCode === 403) { return 'Forbidden'; }
+    if (statusCode === 404) { return 'Not Found'; }
+    if (statusCode === 405) { return 'Method Not Allowed'; }
+    if (statusCode === 408) { return 'Request Timeout'; }
+    if (statusCode === 409) { return 'Conflict'; }
+    if (statusCode === 429) { return 'Too Many Requests'; }
+    if (statusCode === 500) { return 'Internal Server Error'; }
+    if (statusCode === 502) { return 'Bad Gateway'; }
+    if (statusCode === 503) { return 'Service Unavailable'; }
+    if (statusCode === 504) { return 'Gateway Timeout'; }
+    return undefined;
+  }
+}
+
 export enum NetworkImpErrorKind {
   TIMEOUT = 'timeout',
   REQUEST_FAILED = 'request_failed',

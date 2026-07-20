@@ -21,7 +21,7 @@ H5 SDK
 
 ## Biz / Imp 分工
 
-`NetworkBiz` 负责 URL、协议、host、method、headers、timeout、body 与 responseType 校验，补齐默认值，解析 JSON，并把可识别异常映射为 BridgeResponse。
+`NetworkBiz` 负责 URL、协议、host、method、headers、timeout、body 与 responseType 校验，补齐默认值，解析 JSON，计算 HTTP `ok`，并把可识别传输异常映射为 BridgeResponse。
 
 `NetworkImp` 只接收 `NormalizedNetworkRequest`，不接触 BridgeRequest 或 H5 callback。它创建 HttpRequest、设置请求选项、通过总计时器约束完整请求、读取纯网络结果，并在 `finally` 中清理 timer 和执行 `destroy()`。
 
@@ -31,7 +31,9 @@ H5 SDK
 
 ## 错误映射
 
-HarmonyOS `2300028` 映射为 `NETWORK_TIMEOUT`；其他传输失败映射为 `NETWORK_REQUEST_FAILED`；非字符串 Native body 或 JSON 解析失败映射为 `NETWORK_INVALID_RESPONSE`。HTTP `4xx/5xx` 不改写为 Bridge 错误。
+HarmonyOS `2300028` 映射为 `NETWORK_TIMEOUT`；其他传输失败映射为 `NETWORK_REQUEST_FAILED`；非字符串 Native body 或非空 JSON 解析失败映射为 `NETWORK_INVALID_RESPONSE`。
+
+HTTP 状态与 Bridge 状态保持正交：拿到 2xx/4xx/5xx 响应都返回 Bridge `SUCCESS`，只通过 `data.ok` 和 `data.statusCode` 表达 HTTP 结果。`ok` 固定由 `statusCode >= 200 && statusCode < 300` 计算。
 
 ## 安全边界
 

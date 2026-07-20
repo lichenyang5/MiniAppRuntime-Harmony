@@ -33,8 +33,10 @@ export interface BridgeResponseData {
   value?: string;
   apis?: ApiSummary[];
   statusCode?: number;
+  ok?: boolean;
+  statusText?: string;
   headers?: Object;
-  body?: string | Object;
+  body?: string | Object | null;
   duration?: number;
 }
 
