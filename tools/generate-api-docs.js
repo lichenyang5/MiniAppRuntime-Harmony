@@ -71,6 +71,9 @@ function validateManifest(items) {
     if (typeof item.implemented !== 'boolean') {
       fail(`invalid manifest item: ${item.action} implemented must be boolean`);
     }
+    if (item.internal !== undefined && typeof item.internal !== 'boolean') {
+      fail(`invalid manifest item: ${item.action} internal must be boolean`);
+    }
     if (item.implemented && (typeof item.example !== 'string' || item.example.trim() === '')) {
       fail(`invalid manifest item: ${item.action} missing example`);
     }
@@ -178,10 +181,11 @@ function writeOrCheck(filePath, content) {
 
 const manifest = readManifest();
 validateManifest(manifest);
-const table = createTable(manifest);
+const publicManifest = manifest.filter((item) => item.internal !== true);
+const table = createTable(publicManifest);
 writeOrCheck(tablePath, `<!-- AUTO-GENERATED: DO NOT EDIT DIRECTLY -->\n\n${table}\n`);
-writeOrCheck(detailsPath, createDetails(manifest));
+writeOrCheck(detailsPath, createDetails(publicManifest));
 replaceGeneratedBlock(readmePath, table);
 replaceGeneratedBlock(apiIndexPath, table);
-console.log(`[api-docs] ${checkMode ? 'verified' : 'generated'} ${manifest.length} APIs`);
+console.log(`[api-docs] ${checkMode ? 'verified' : 'generated'} ${publicManifest.length} public APIs`);
 console.log(`[api-docs] ${checkMode ? 'checked' : 'updated'} README.md and docs/api/index.md`);

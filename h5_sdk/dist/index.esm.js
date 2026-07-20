@@ -38,6 +38,54 @@ var CallbackStore = class {
   }
 };
 
+// src/cancelled-request-store.ts
+var DEFAULT_TTL = 3e4;
+var DEFAULT_MAX_SIZE = 100;
+var CancelledRequestStore = class {
+  constructor(ttl = DEFAULT_TTL, maxSize = DEFAULT_MAX_SIZE) {
+    this.ttl = ttl;
+    this.maxSize = maxSize;
+    this.requestIds = /* @__PURE__ */ new Map();
+  }
+  add(requestId, now = Date.now()) {
+    this.purge(now);
+    this.requestIds.delete(requestId);
+    while (this.requestIds.size >= this.maxSize) {
+      const oldest = this.requestIds.keys().next();
+      if (oldest.done) {
+        break;
+      }
+      this.requestIds.delete(oldest.value);
+    }
+    this.requestIds.set(requestId, now + this.ttl);
+  }
+  consume(requestId, now = Date.now()) {
+    this.purge(now);
+    if (!this.requestIds.has(requestId)) {
+      return false;
+    }
+    this.requestIds.delete(requestId);
+    return true;
+  }
+  purge(now) {
+    this.requestIds.forEach((expiresAt, requestId) => {
+      if (expiresAt <= now) {
+        this.requestIds.delete(requestId);
+      }
+    });
+  }
+};
+
+// src/abort-error.ts
+var MyASCFAbortError = class extends Error {
+  constructor(requestId) {
+    super("The request was aborted.");
+    this.code = "ABORTED";
+    this.name = "AbortError";
+    this.requestId = requestId;
+  }
+};
+
 // src/debug-adapter.ts
 var DebugAdapter = class {
   constructor(targetWindow) {
@@ -92,12 +140,25 @@ function sanitizeNetworkParams(params) {
 function sanitizeNetworkResponse(response) {
   var _a;
   if (!response || typeof response !== "object" || Array.isArray(response)) {
-    return response;
+    return {
+      malformed: true,
+      valueType: Array.isArray(response) ? "array" : typeof response,
+      valueLength: getSerializedLength(response)
+    };
   }
   const source = response;
   const data = source.data && typeof source.data === "object" && !Array.isArray(source.data) ? source.data : void 0;
   if (!data) {
-    return response;
+    return {
+      requestId: source.requestId,
+      code: source.code,
+      message: source.message,
+      data: {
+        malformed: true,
+        valueType: Array.isArray(source.data) ? "array" : typeof source.data,
+        valueLength: getSerializedLength(source.data)
+      }
+    };
   }
   const bodyText = typeof data.body === "string" ? data.body : JSON.stringify((_a = data.body) != null ? _a : "");
   const headers = data.headers && typeof data.headers === "object" && !Array.isArray(data.headers) ? data.headers : void 0;
@@ -112,6 +173,16 @@ function sanitizeNetworkResponse(response) {
       bodyLength: bodyText.length
     }
   });
+}
+function getSerializedLength(value) {
+  if (typeof value === "string") {
+    return value.length;
+  }
+  try {
+    return JSON.stringify(value != null ? value : "").length;
+  } catch (error) {
+    return 0;
+  }
 }
 function sanitizeDebugRecord(record) {
   if (record.action !== "network.request") {
@@ -163,6 +234,9 @@ function createRequestId() {
 }
 
 // src/client.ts
+var ACTION_NETWORK_REQUEST = "network.request";
+var ACTION_NETWORK_ABORT = "network.abort";
+var ABORT_ACTION_TIMEOUT = 3e3;
 function isRecord(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -218,6 +292,7 @@ var MyASCFClient = class {
   constructor(targetWindow) {
     this.targetWindow = targetWindow;
     this.callbacks = new CallbackStore();
+    this.cancelledRequests = new CancelledRequestStore();
     this.nativeAdapter = new NativeAdapter(targetWindow);
     this.debugAdapter = new DebugAdapter(targetWindow);
   }
@@ -230,6 +305,7 @@ var MyASCFClient = class {
       };
       const timeout = getTimeout(options);
       const createdAt = Date.now();
+      let posted = false;
       this.debugAdapter.record("recordStart", {
         requestId: request.requestId,
         action,
@@ -238,7 +314,11 @@ var MyASCFClient = class {
         startTime: createdAt
       });
       const timer = this.targetWindow.setTimeout(() => {
-        this.callbacks.delete(request.requestId);
+        const callback = this.callbacks.take(request.requestId);
+        if (!callback) {
+          return;
+        }
+        this.cleanupCallback(callback);
         const timeoutResponse = createErrorResponse(
           request.requestId,
           action,
@@ -260,21 +340,68 @@ var MyASCFClient = class {
         });
         reject(timeoutResponse);
       }, timeout);
-      this.callbacks.set(request.requestId, {
+      const callbackRecord = {
         resolve,
         reject,
         timer,
         action,
         params,
         createdAt
-      });
+      };
+      this.callbacks.set(request.requestId, callbackRecord);
+      const signal = options == null ? void 0 : options.signal;
+      const handleAbort = () => {
+        const callback = this.callbacks.take(request.requestId);
+        if (!callback) {
+          return;
+        }
+        this.cleanupCallback(callback);
+        const abortError = new MyASCFAbortError(request.requestId);
+        const abortTime = Date.now();
+        this.debugAdapter.record("recordAbort", {
+          requestId: request.requestId,
+          action,
+          status: "cancelled",
+          code: abortError.code,
+          message: abortError.message,
+          params,
+          response: {
+            requestId: request.requestId,
+            action,
+            code: abortError.code,
+            message: abortError.message
+          },
+          endTime: abortTime,
+          abortTime,
+          duration: abortTime - createdAt
+        });
+        callback.reject(abortError);
+        if (posted) {
+          this.cancelledRequests.add(request.requestId, abortTime);
+          if (action === ACTION_NETWORK_REQUEST) {
+            this.requestNativeAbort(request.requestId);
+          }
+        }
+      };
+      if (signal) {
+        signal.addEventListener("abort", handleAbort, { once: true });
+        callbackRecord.removeAbortListener = () => {
+          signal.removeEventListener("abort", handleAbort);
+        };
+        if (signal.aborted) {
+          handleAbort();
+          return;
+        }
+      }
       try {
         console.log("[myascf] send request:", request.requestId, request.action);
+        posted = true;
         this.nativeAdapter.postMessage(request);
       } catch (error) {
+        posted = false;
         const callback = this.callbacks.take(request.requestId);
         if (callback) {
-          this.targetWindow.clearTimeout(callback.timer);
+          this.cleanupCallback(callback);
         }
         const code = error instanceof NativeBridgeError ? error.code : ERROR_CODE_INVALID_RESPONSE;
         const message = error instanceof Error ? error.message : "Bridge request failed.";
@@ -316,10 +443,14 @@ var MyASCFClient = class {
     }
     const callback = this.callbacks.take(response.requestId);
     if (!callback) {
+      if (this.cancelledRequests.consume(response.requestId)) {
+        this.recordLateAfterAbort(response);
+        return;
+      }
       this.emitCallbackLost(response);
       return;
     }
-    this.targetWindow.clearTimeout(callback.timer);
+    this.cleanupCallback(callback);
     response.duration = Date.now() - callback.createdAt;
     response.action = callback.action;
     this.debugAdapter.record("recordEnd", {
@@ -341,9 +472,13 @@ var MyASCFClient = class {
   }
   handleInvalidResponse(responseInput, error) {
     const requestId = extractRequestId(responseInput);
+    if (requestId && this.cancelledRequests.consume(requestId)) {
+      this.recordLateAfterAbort(responseInput);
+      return;
+    }
     const callback = requestId ? this.callbacks.take(requestId) : void 0;
     if (callback) {
-      this.targetWindow.clearTimeout(callback.timer);
+      this.cleanupCallback(callback);
     }
     const action = callback ? callback.action : "";
     const message = error instanceof Error ? `INVALID_RESPONSE: ${error.message}` : "INVALID_RESPONSE: native response is invalid.";
@@ -392,6 +527,34 @@ var MyASCFClient = class {
     if (typeof this.targetWindow.__myascf_on_callback_lost__ === "function") {
       this.targetWindow.__myascf_on_callback_lost__(detail);
     }
+  }
+  cleanupCallback(callback) {
+    this.targetWindow.clearTimeout(callback.timer);
+    if (callback.removeAbortListener) {
+      callback.removeAbortListener();
+      callback.removeAbortListener = void 0;
+    }
+  }
+  requestNativeAbort(targetRequestId) {
+    this.send(ACTION_NETWORK_ABORT, { targetRequestId }, { timeout: ABORT_ACTION_TIMEOUT }).catch((error) => {
+      console.warn("[myascf] network.abort failed:", error);
+    });
+  }
+  recordLateAfterAbort(responseInput) {
+    const requestId = extractRequestId(responseInput);
+    let action = ACTION_NETWORK_REQUEST;
+    if (typeof responseInput !== "string" && responseInput.data && typeof responseInput.data.echoAction === "string") {
+      action = responseInput.data.echoAction;
+    }
+    this.debugAdapter.record("recordLateAfterAbort", {
+      requestId,
+      action,
+      status: "late_after_abort",
+      code: "ABORTED",
+      message: "LATE_RESPONSE_AFTER_ABORT",
+      response: { requestId, ignored: true },
+      endTime: Date.now()
+    });
   }
 };
 
@@ -447,6 +610,7 @@ export {
   ERROR_CODE_NATIVE_UNAVAILABLE,
   ERROR_CODE_SUCCESS,
   ERROR_CODE_TIMEOUT,
+  MyASCFAbortError,
   createMyASCF,
   createTypedApi,
   initMyASCF

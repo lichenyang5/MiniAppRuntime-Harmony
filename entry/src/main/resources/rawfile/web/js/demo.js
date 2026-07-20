@@ -26,7 +26,11 @@
   var networkHeaders = document.getElementById('networkHeaders');
   var networkBody = document.getElementById('networkBody');
   var networkSendButton = document.getElementById('networkSendButton');
+  var networkCancelButton = document.getElementById('networkCancelButton');
+  var networkRequestStatus = document.getElementById('networkRequestStatus');
   var networkResponse = document.getElementById('networkResponse');
+  var currentNetworkController = null;
+  var currentNetworkTaskToken = 0;
 
   if (!button || !paramErrorButton || !unknownActionButton || !timeoutButton ||
     !clipboardText || !clipboardWriteButton || !clipboardReadButton || !clipboardParamErrorButton ||
@@ -34,7 +38,7 @@
     !storageClearButton || !storageParamErrorButton ||
     !status || !result || !eventLog || !currentUrl || !blockedUrlButton || !loadApiListButton ||
     !networkUrl || !networkMethod || !networkResponseType || !networkHeaders || !networkBody ||
-    !networkSendButton || !networkResponse) {
+    !networkSendButton || !networkCancelButton || !networkRequestStatus || !networkResponse) {
     console.log('[ArkMiniRuntime demo] Missing demo elements.');
     return;
   }
@@ -262,22 +266,53 @@
       }
     }
 
+    var controller = new AbortController();
+    var taskToken = currentNetworkTaskToken + 1;
+    currentNetworkTaskToken = taskToken;
+    currentNetworkController = controller;
+    networkCancelButton.disabled = false;
+    networkRequestStatus.textContent = 'Request Status: PENDING';
     renderPending('network.request');
     networkResponse.textContent = 'pending...';
-    window.myascf.send('network.request', params, { timeout: nativeTimeout + 2000 })
+    window.myascf.send('network.request', params, {
+      timeout: nativeTimeout + 2000,
+      signal: controller.signal
+    })
       .then(function (response) {
+        if (taskToken !== currentNetworkTaskToken) {
+          return;
+        }
         var summary = summarizeNetworkResponse(response);
         networkResponse.textContent = JSON.stringify(summary, null, 2);
+        networkRequestStatus.textContent = 'Request Status: RESOLVED';
         renderResolved(summary);
+        currentNetworkController = null;
+        networkCancelButton.disabled = true;
       })
       .catch(function (error) {
+        if (taskToken !== currentNetworkTaskToken) {
+          return;
+        }
+        var bridgeStatus = error && error.name === 'AbortError' ? 'CANCELLED' : 'REJECTED';
         networkResponse.textContent = JSON.stringify({
-          bridge: 'REJECTED',
+          bridge: bridgeStatus,
           requestId: error && error.requestId,
           code: error && error.code,
           message: error && error.message
         }, null, 2);
+        networkRequestStatus.textContent = 'Request Status: ' + bridgeStatus;
         renderRejected(error);
+        currentNetworkController = null;
+        networkCancelButton.disabled = true;
       });
+  });
+
+  networkCancelButton.addEventListener('click', function () {
+    if (!currentNetworkController || currentNetworkController.signal.aborted) {
+      return;
+    }
+    networkCancelButton.disabled = true;
+    networkRequestStatus.textContent = 'Request Status: CANCELLING';
+    currentNetworkController.abort();
   });
 })();

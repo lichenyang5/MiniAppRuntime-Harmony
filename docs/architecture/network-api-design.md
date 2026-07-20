@@ -25,15 +25,19 @@ H5 SDK
 
 `NetworkImp` 只接收 `NormalizedNetworkRequest`，不接触 BridgeRequest 或 H5 callback。它创建 HttpRequest、设置请求选项、通过总计时器约束完整请求、读取纯网络结果，并在 `finally` 中清理 timer 和执行 `destroy()`。
 
+取消能力由独立 `NetworkRequestRegistry` 承担。`NetworkImp` 只注册最小 `NetworkRequestHandle`，HTTP、timeout 与 abort Promise 进入同一个 race；`NetworkAbortBiz` 通过 internal `network.abort` 定向取消目标 requestId，不把 registry 逻辑塞入 BridgeController。
+
 ## 可测试边界
 
-参数归一化集中在 `NetworkRequestValidator`。它不执行 HTTP，便于针对空 URL、非法协议、method、timeout、默认值和 allowlist 做独立验证。当前仓库尚未配置 ArkTS 单元测试 runner，因此自动化侧覆盖 Manifest、typed helper、SDK resolve/reject 与脱敏，Validator 场景记录在手工 smoke test。
+参数归一化集中在 `NetworkRequestValidator`。它不执行 HTTP，便于针对空 URL、非法协议、method、timeout、默认值和 allowlist 做独立验证。当前 HAR Hypium runner 覆盖 `NetworkRequestRegistry` 的注册、移除、找不到、并发定向取消、requestId 复用保护和 clear；Validator 与真实 NetworkKit 行为继续由手工 smoke test 验证。
 
 ## 错误映射
 
 HarmonyOS `2300028` 映射为 `NETWORK_TIMEOUT`；其他传输失败映射为 `NETWORK_REQUEST_FAILED`；非字符串 Native body 或非空 JSON 解析失败映射为 `NETWORK_INVALID_RESPONSE`。
 
 HTTP 状态与 Bridge 状态保持正交：拿到 2xx/4xx/5xx 响应都返回 Bridge `SUCCESS`，只通过 `data.ok` 和 `data.statusCode` 表达 HTTP 结果。`ok` 固定由 `statusCode >= 200 && statusCode < 300` 计算。
+
+用户主动取消映射为 `NETWORK_ABORTED` Runtime 响应，但 H5 SDK 已先以 `AbortError / ABORTED` reject 并移除 callback，因此该晚到响应只用于清理和调试。当前公开 SDK 仅有 `destroy()`，底层终止语义为 best-effort。
 
 ## 安全边界
 

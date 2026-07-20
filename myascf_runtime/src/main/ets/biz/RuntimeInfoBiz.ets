@@ -9,6 +9,9 @@ export class RuntimeInfoBiz {
 
     for (let index: number = 0; index < BUILTIN_API_MANIFEST.length; index += 1) {
       const item: ApiManifestItem = BUILTIN_API_MANIFEST[index];
+      if (item.internal === true) {
+        continue;
+      }
       const summary: ApiSummary = {
         action: item.action,
         category: item.category,

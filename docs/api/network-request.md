@@ -4,6 +4,24 @@
 
 `network.request` 通过 ArkTS Runtime 执行 HTTP/HTTPS 请求。H5 SDK 只封装 JSBridge 请求、Promise 生命周期和回调超时，不直接访问网络。
 
+## AbortController
+
+```ts
+const controller = new AbortController();
+const task = api.network.request({
+  url: 'https://example.com/api/data',
+  method: 'GET'
+}, {
+  timeout: 12000,
+  signal: controller.signal
+});
+
+controller.abort();
+await task; // rejects: name=AbortError, code=ABORTED
+```
+
+`AbortSignal` 只存在于 H5 SDK send options，不会序列化进 Bridge params。SDK 通过 internal `network.abort` 通知 Runtime。
+
 ## 请求
 
 ```ts
@@ -71,9 +89,12 @@ POST 返回 404 通常说明目标 URL 没有对应 POST 路由，不代表 Java
 - `NETWORK_INVALID_URL`：URL 无法解析或 host 不符合策略。
 - `NETWORK_UNSUPPORTED_PROTOCOL`：不是允许的 HTTP/HTTPS 协议。
 - `NETWORK_TIMEOUT`：HarmonyOS 网络请求本身超时。
+- `ABORTED`：用户通过 AbortController 主动取消。
 - `NETWORK_REQUEST_FAILED`：DNS、连接或其他 Native 请求失败。
 - `NETWORK_INVALID_RESPONSE`：Native 响应或 JSON body 不符合约定。
 - `TIMEOUT`：H5 SDK 等待整个 Native 回调链路超时。
+
+`ABORTED`、`TIMEOUT` 与 `NETWORK_TIMEOUT` 是三种不同终态。当前 SDK 只公开 `HttpRequest.destroy()`，因此 Native 取消属于 best-effort。取消后的晚到响应记录为 `LATE_RESPONSE_AFTER_ABORT`，不会误报普通 `CALLBACK_LOST`。详见 [network.abort](network-abort.md) 和 [请求生命周期](../architecture/request-lifecycle.md)。
 
 ## 权限
 

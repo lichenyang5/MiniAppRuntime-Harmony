@@ -14,6 +14,10 @@
 - Network Demo、DebugPanel 摘要与敏感日志脱敏。
 - Network Demo 增加可编辑 Headers，DebugPanel 分开展示 Bridge、HTTP、OK、Duration 和 Error Code。
 - Network 自动测试、手工 smoke test、架构与使用文档。
+- `network.request` 支持 H5 `AbortController`，主动取消返回 `AbortError / ABORTED`。
+- 新增 internal `network.abort`、Runtime active request registry 与并发定向取消。
+- DebugPanel 增加 `CANCELLED` 和 `LATE_RESPONSE_AFTER_ABORT`，取消后的晚到响应不再误报普通 `CALLBACK_LOST`。
+- 当前 NetworkKit 仅公开 `HttpRequest.destroy()`，Native 取消明确为 best-effort。
 
 ### Notes
 

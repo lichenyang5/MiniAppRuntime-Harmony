@@ -16,7 +16,8 @@
     1102: 'NETWORK_UNSUPPORTED_PROTOCOL',
     1103: 'NETWORK_TIMEOUT',
     1104: 'NETWORK_REQUEST_FAILED',
-    1105: 'NETWORK_INVALID_RESPONSE'
+    1105: 'NETWORK_INVALID_RESPONSE',
+    1106: 'ABORTED'
   };
 
   function getErrorCodeName(record) {
@@ -49,13 +50,14 @@
       requestId: normalized.requestId || '',
       action: normalized.action || '',
       status: normalized.status || 'pending',
-      code: typeof normalized.code === 'number' ? normalized.code : '',
+      code: typeof normalized.code === 'number' || typeof normalized.code === 'string' ? normalized.code : '',
       message: normalized.message || '',
       params: clone(normalized.params),
       response: clone(normalized.response),
       startTime: normalized.startTime || Date.now(),
       endTime: normalized.endTime || 0,
-      duration: normalized.duration || 0
+      duration: normalized.duration || 0,
+      abortTime: normalized.abortTime || 0
     };
   }
 
@@ -145,17 +147,22 @@
       var isNetwork = record.action === 'network.request';
       var responseData = record.response && record.response.data ? record.response.data : {};
       var bridgeStatus = record.status === 'resolve' ? 'RESOLVED' :
-        (record.status === 'pending' ? 'PENDING' : 'REJECTED');
+        (record.status === 'pending' ? 'PENDING' :
+          (record.status === 'cancelled' ? 'CANCELLED' :
+            (record.status === 'late_after_abort' ? 'LATE_RESPONSE_AFTER_ABORT' : 'REJECTED')));
       var httpStatus = typeof responseData.statusCode === 'number' ? responseData.statusCode : '-';
       var httpOk = typeof responseData.ok === 'boolean' ? String(responseData.ok) : '-';
-      var errorCode = typeof record.code === 'number' && record.code !== 0 ?
-        getErrorCodeName(record) : '-';
+      var abortTime = typeof record.abortTime === 'number' ?
+        new Date(record.abortTime).toISOString() : '-';
+      var errorCode = record.code !== 0 && record.code !== '' ?
+        (typeof record.code === 'string' ? record.code : getErrorCodeName(record)) : '-';
       var networkMeta = isNetwork ? [
         '<div class="debug-network-status">',
         '<span>Bridge: ' + escapeHtml(bridgeStatus) + '</span>',
         '<span>HTTP: ' + escapeHtml(httpStatus) + '</span>',
         '<span>OK: ' + escapeHtml(httpOk) + '</span>',
         '<span>Duration: ' + escapeHtml(record.duration) + 'ms</span>',
+        '<span>Abort Time: ' + escapeHtml(abortTime) + '</span>',
         '<span>Error Code: ' + escapeHtml(errorCode) + '</span>',
         '</div>'
       ].join('') : '';
@@ -188,6 +195,12 @@
       upsert(record);
     },
     recordLost: function (record) {
+      upsert(record);
+    },
+    recordAbort: function (record) {
+      upsert(record);
+    },
+    recordLateAfterAbort: function (record) {
       upsert(record);
     },
     setApiList: function (apiList) {

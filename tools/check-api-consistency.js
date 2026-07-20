@@ -8,6 +8,7 @@ const manifestPath = path.join(__dirname, 'api-manifest.json');
 const actionNamesPath = path.join(rootDir, 'myascf_runtime', 'src', 'main', 'ets', 'api', 'ActionNames.ets');
 const arktsManifestPath = path.join(rootDir, 'myascf_runtime', 'src', 'main', 'ets', 'api', 'ApiManifest.ets');
 const bootstrapPath = path.join(rootDir, 'myascf_runtime', 'src', 'main', 'ets', 'registry', 'RuntimeBootstrap.ets');
+const runtimeInfoPath = path.join(rootDir, 'myascf_runtime', 'src', 'main', 'ets', 'biz', 'RuntimeInfoBiz.ets');
 const generatedPaths = [
   path.join(rootDir, 'docs', 'api', 'generated-api-table.md'),
   path.join(rootDir, 'docs', 'api', 'generated-api-manifest.md'),
@@ -87,6 +88,9 @@ function readManifest() {
     if (typeof item.implemented !== 'boolean') {
       fail(`${item.action} implemented must be boolean`);
     }
+    if (item.internal !== undefined && typeof item.internal !== 'boolean') {
+      fail(`${item.action} internal must be boolean`);
+    }
     if (item.implemented) {
       requireString(item, 'example');
     }
@@ -135,6 +139,7 @@ function assertSameSet(label, expected, actual) {
 const manifest = readManifest();
 const manifestActions = new Set(manifest.map((item) => item.action));
 const implementedItems = manifest.filter((item) => item.implemented);
+const publicImplementedItems = implementedItems.filter((item) => item.internal !== true);
 if (!manifestActions.has('runtime.getApiList')) {
   fail('runtime.getApiList is required');
 }
@@ -160,20 +165,30 @@ const implementedConstants = new Set(implementedItems.map((item) => {
 }));
 assertSameSet('RuntimeBootstrap registrations', implementedConstants, registeredRefs);
 
+const runtimeInfoSource = stripComments(requireFile(runtimeInfoPath));
+if (!/item\.internal\s*===\s*true/.test(runtimeInfoSource)) {
+  fail('RuntimeInfoBiz must filter internal API items');
+}
+
 const generatedSources = generatedPaths.map((filePath) => ({
   filePath,
   source: requireFile(filePath)
 }));
 generatedSources.forEach(({ filePath, source }) => {
-  const expectedItems = filePath.endsWith('api-types.ts') ? implementedItems : manifest;
+  const expectedItems = publicImplementedItems;
   expectedItems.forEach((item) => {
     if (!source.includes(item.action)) {
       fail(`${path.relative(rootDir, filePath)} missing ${item.action}`);
     }
   });
+  implementedItems.filter((item) => item.internal === true).forEach((item) => {
+    if (source.includes(item.action)) {
+      fail(`${path.relative(rootDir, filePath)} exposes internal action ${item.action}`);
+    }
+  });
 });
 
-console.log(`[check-api] OK: ${manifest.length} actions found (${implementedItems.length} implemented)`);
+console.log(`[check-api] OK: ${manifest.length} actions found (${publicImplementedItems.length} public implemented)`);
 console.log('[check-api] OK: ActionNames, ApiManifest and RuntimeBootstrap are aligned');
-console.log('[check-api] OK: generated API docs contain all actions');
-console.log('[check-api] OK: generated H5 SDK types contain all implemented actions');
+console.log('[check-api] OK: generated public API docs contain all public actions');
+console.log('[check-api] OK: generated H5 SDK types contain all public implemented actions');

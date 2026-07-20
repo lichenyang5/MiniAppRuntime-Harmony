@@ -198,7 +198,7 @@ export class NetworkBiz {
     }
 
     try {
-      const result: NetworkResult = await this.networkImp.request(validation.request);
+      const result: NetworkResult = await this.networkImp.request(request.requestId, validation.request);
       const body: string | Object | null | undefined = this.parseBody(
         result.bodyText,
         validation.request.responseType
@@ -260,6 +260,9 @@ export class NetworkBiz {
   }
 
   private createImpErrorResponse(requestId: string, error: NetworkImpError): BridgeResponse {
+    if (error.kind === NetworkImpErrorKind.ABORTED) {
+      return this.createErrorResponse(requestId, BridgeErrorCode.NETWORK_ABORTED, 'ABORTED: request aborted');
+    }
     if (error.kind === NetworkImpErrorKind.TIMEOUT) {
       return this.createErrorResponse(requestId, BridgeErrorCode.NETWORK_TIMEOUT, 'NETWORK_TIMEOUT: request timed out');
     }

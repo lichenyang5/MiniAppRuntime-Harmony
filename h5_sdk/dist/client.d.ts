@@ -3,6 +3,7 @@ import type { ApiAction, TypedBridgeResponse, TypedSendArgs } from './generated/
 export declare class MyASCFClient implements MyASCF {
     private readonly targetWindow;
     private readonly callbacks;
+    private readonly cancelledRequests;
     private readonly nativeAdapter;
     private readonly debugAdapter;
     constructor(targetWindow: Window);
@@ -11,4 +12,7 @@ export declare class MyASCFClient implements MyASCF {
     handleNativeResponse(responseInput: string | BridgeResponse): void;
     private handleInvalidResponse;
     private emitCallbackLost;
+    private cleanupCallback;
+    private requestNativeAbort;
+    private recordLateAfterAbort;
 }

@@ -7,3 +7,4 @@ export const ACTION_SYSTEM_STORAGE_REMOVE_ITEM: string = 'system.storage.removeI
 export const ACTION_SYSTEM_STORAGE_CLEAR: string = 'system.storage.clear';
 export const ACTION_RUNTIME_GET_API_LIST: string = 'runtime.getApiList';
 export const ACTION_NETWORK_REQUEST: string = 'network.request';
+export const ACTION_NETWORK_ABORT: string = 'network.abort';

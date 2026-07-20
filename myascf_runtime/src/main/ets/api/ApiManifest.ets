@@ -7,7 +7,8 @@ import {
   ACTION_SYSTEM_STORAGE_REMOVE_ITEM,
   ACTION_SYSTEM_STORAGE_SET_ITEM,
   ACTION_UI_SHOW_TOAST,
-  ACTION_NETWORK_REQUEST
+  ACTION_NETWORK_REQUEST,
+  ACTION_NETWORK_ABORT
 } from './ActionNames';
 
 export enum ApiCategory {
@@ -44,6 +45,7 @@ export interface ApiManifestItem {
   biz: string;
   imp: string;
   example: string;
+  internal?: boolean;
 }
 
 export const BUILTIN_API_MANIFEST: ApiManifestItem[] = [
@@ -212,6 +214,7 @@ export const BUILTIN_API_MANIFEST: ApiManifestItem[] = [
       'NETWORK_TIMEOUT',
       'NETWORK_REQUEST_FAILED',
       'NETWORK_INVALID_RESPONSE',
+      'NETWORK_ABORTED',
       'TIMEOUT',
       'CALLBACK_LOST'
     ],
@@ -219,5 +222,25 @@ export const BUILTIN_API_MANIFEST: ApiManifestItem[] = [
     biz: 'NetworkBiz',
     imp: 'NetworkImp',
     example: 'window.myascf.send("network.request", { url: "https://example.com", method: "GET" })'
+  },
+  {
+    action: ACTION_NETWORK_ABORT,
+    category: ApiCategory.NETWORK,
+    title: 'Abort Network Request',
+    description: 'Internal action used by the H5 SDK to cancel an active network.request.',
+    params: [
+      { name: 'targetRequestId', type: 'string', required: true, description: 'requestId of the active network.request.' }
+    ],
+    response: [
+      { name: 'targetRequestId', type: 'string', required: true, description: 'Target requestId.' },
+      { name: 'aborted', type: 'boolean', required: true, description: 'Whether an active request was aborted.' },
+      { name: 'reason', type: 'string', required: false, description: 'REQUEST_NOT_FOUND when no active request exists.' }
+    ],
+    errors: ['PARAM_ERROR', 'INTERNAL_ERROR', 'TIMEOUT', 'CALLBACK_LOST'],
+    implemented: true,
+    biz: 'NetworkAbortBiz',
+    imp: 'NetworkRequestRegistry',
+    example: 'window.myascf.send("network.abort", { targetRequestId: "myascf_xxx" })',
+    internal: true
   }
 ];

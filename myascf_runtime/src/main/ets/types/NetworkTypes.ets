@@ -82,7 +82,8 @@ export class NetworkHttpStatus {
 export enum NetworkImpErrorKind {
   TIMEOUT = 'timeout',
   REQUEST_FAILED = 'request_failed',
-  INVALID_RESPONSE = 'invalid_response'
+  INVALID_RESPONSE = 'invalid_response',
+  ABORTED = 'aborted'
 }
 
 export class NetworkImpError extends Error {

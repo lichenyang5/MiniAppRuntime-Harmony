@@ -6,6 +6,7 @@ import type {
 
 export interface MyASCFSendOptions {
   timeout?: number;
+  signal?: AbortSignal;
 }
 
 export interface CreateMyASCFOptions {
@@ -72,24 +73,26 @@ export interface NativeBridge {
 
 export interface CallbackRecord {
   resolve(response: BridgeResponse): void;
-  reject(response: BridgeResponse): void;
+  reject(reason: unknown): void;
   timer: number;
   action: string;
   params: BridgeRequestParams;
   createdAt: number;
+  removeAbortListener?: () => void;
 }
 
 export interface DebugRecord {
   requestId: string;
   action: string;
   status: string;
-  code?: number;
+  code?: number | string;
   message?: string;
   params?: BridgeRequestParams;
   response?: unknown;
   startTime?: number;
   endTime?: number;
   duration?: number;
+  abortTime?: number;
 }
 
 export interface DebugPanel {
@@ -97,6 +100,8 @@ export interface DebugPanel {
   recordEnd?(record: DebugRecord): void;
   recordError?(record: DebugRecord): void;
   recordLost?(record: DebugRecord): void;
+  recordAbort?(record: DebugRecord): void;
+  recordLateAfterAbort?(record: DebugRecord): void;
 }
 
 declare global {

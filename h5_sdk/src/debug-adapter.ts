@@ -1,6 +1,7 @@
 import type { DebugPanel, DebugRecord } from './bridge-types.js';
 
-type DebugMethod = 'recordStart' | 'recordEnd' | 'recordError' | 'recordLost';
+type DebugMethod = 'recordStart' | 'recordEnd' | 'recordError' | 'recordLost' |
+  'recordAbort' | 'recordLateAfterAbort';
 
 export class DebugAdapter {
   constructor(private readonly targetWindow: Window) {}
@@ -59,7 +60,11 @@ function sanitizeNetworkParams(params: unknown): unknown {
 
 function sanitizeNetworkResponse(response: unknown): unknown {
   if (!response || typeof response !== 'object' || Array.isArray(response)) {
-    return response;
+    return {
+      malformed: true,
+      valueType: Array.isArray(response) ? 'array' : typeof response,
+      valueLength: getSerializedLength(response)
+    };
   }
   const source: Record<string, unknown> = response as Record<string, unknown>;
   const data: Record<string, unknown> | undefined = source.data &&
@@ -67,7 +72,16 @@ function sanitizeNetworkResponse(response: unknown): unknown {
     ? source.data as Record<string, unknown>
     : undefined;
   if (!data) {
-    return response;
+    return {
+      requestId: source.requestId,
+      code: source.code,
+      message: source.message,
+      data: {
+        malformed: true,
+        valueType: Array.isArray(source.data) ? 'array' : typeof source.data,
+        valueLength: getSerializedLength(source.data)
+      }
+    };
   }
   const bodyText: string = typeof data.body === 'string'
     ? data.body
@@ -88,6 +102,17 @@ function sanitizeNetworkResponse(response: unknown): unknown {
       bodyLength: bodyText.length
     }
   };
+}
+
+function getSerializedLength(value: unknown): number {
+  if (typeof value === 'string') {
+    return value.length;
+  }
+  try {
+    return JSON.stringify(value ?? '').length;
+  } catch (error) {
+    return 0;
+  }
 }
 
 function sanitizeDebugRecord(record: DebugRecord): DebugRecord {

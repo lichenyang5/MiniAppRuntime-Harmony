@@ -117,6 +117,9 @@ function validateManifest(items) {
     if (typeof item.implemented !== 'boolean') {
       fail(`${item.action} implemented must be boolean`);
     }
+    if (item.internal !== undefined && typeof item.internal !== 'boolean') {
+      fail(`${item.action} internal must be boolean`);
+    }
     if (item.implemented &&
       (typeof item.example !== 'string' || item.example.trim() === '')) {
       fail(`${item.action} missing example`);
@@ -246,7 +249,7 @@ function writeOrCheck(filePath, content) {
 
 const manifest = readManifest();
 validateManifest(manifest);
-const implementedManifest = manifest.filter((item) => item.implemented);
+const implementedManifest = manifest.filter((item) => item.implemented && item.internal !== true);
 if (implementedManifest.length === 0) {
   fail('manifest does not contain an implemented API');
 }
@@ -255,4 +258,4 @@ if (!checkMode) {
 }
 writeOrCheck(typesPath, createTypesSource(implementedManifest));
 writeOrCheck(clientPath, createClientSource(implementedManifest));
-console.log(`[sdk-types] ${checkMode ? 'verified' : 'generated'} ${implementedManifest.length} implemented APIs`);
+console.log(`[sdk-types] ${checkMode ? 'verified' : 'generated'} ${implementedManifest.length} public implemented APIs`);

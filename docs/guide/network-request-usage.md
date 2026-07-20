@@ -36,6 +36,32 @@ console.log(response.data?.body);
 
 H5 SDK 不执行 HTTP。它把相同 BridgeRequest 交给 `window.MyASCFNative.postMessage`，真正的请求由 HAR 内的 `NetworkImp` 调用公开 HarmonyOS 网络能力完成。
 
+## 主动取消
+
+```ts
+const controller = new AbortController();
+const task = api.network.request({
+  url: 'https://example.com/slow',
+  method: 'GET',
+  timeout: 10000
+}, {
+  timeout: 12000,
+  signal: controller.signal
+});
+
+controller.abort();
+
+try {
+  await task;
+} catch (error) {
+  if (error instanceof Error && error.name === 'AbortError') {
+    console.log('request cancelled');
+  }
+}
+```
+
+发送前已经 aborted 的 signal 会直接 reject，不调用 Native。发送后的取消会清理 callback、SDK timer 和 listener，再通过 internal `network.abort` best-effort 调用 `HttpRequest.destroy()`。
+
 ## Bridge 成功与 HTTP 成功
 
 `api.network.request()` 默认采用类似 Fetch 的语义：200、404 和 500 都是有效 HTTP 响应，因此 Promise 都 resolve。`data.ok` 只在 2xx 时为 `true`，同时保留真实 `statusCode`。
@@ -48,6 +74,12 @@ H5 SDK 不执行 HTTP。它把相同 BridgeRequest 交给 `window.MyASCFNative.p
 - `options.timeout`：H5 SDK 等待整个 ArkTS 回调的超时，默认 `5000ms`。
 
 网络调用应显式让 SDK timeout 略大于 network timeout，例如 `10000ms` 与 `12000ms`。否则 H5 Promise 可能先以 `TIMEOUT` reject，随后到达的 Native response 会被记录为 `CALLBACK_LOST`。
+
+主动取消后的晚到响应是例外：SDK 会识别已取消 requestId，记录 `LATE_RESPONSE_AFTER_ABORT`，不记为普通 `CALLBACK_LOST`。
+
+- `ABORTED`：用户主动取消。
+- `TIMEOUT`：SDK 等待 callback 超时。
+- `NETWORK_TIMEOUT`：Native HTTP 超时。
 
 ## Runtime 策略
 

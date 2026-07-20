@@ -25,6 +25,36 @@ function createWindow(windowOverrides = {}) {
   }, windowOverrides);
 }
 
+function createTrackedAbortController() {
+  const listeners = new Set();
+  const signal = {
+    aborted: false,
+    addEventListener(type, listener) {
+      if (type === 'abort') {
+        listeners.add(listener);
+      }
+    },
+    removeEventListener(type, listener) {
+      if (type === 'abort') {
+        listeners.delete(listener);
+      }
+    }
+  };
+  return {
+    signal,
+    abort() {
+      if (signal.aborted) {
+        return;
+      }
+      signal.aborted = true;
+      Array.from(listeners).forEach((listener) => listener());
+    },
+    listenerCount() {
+      return listeners.size;
+    }
+  };
+}
+
 test.afterEach(() => {
   delete globalThis.window;
 });
@@ -91,6 +121,8 @@ test('generated typed helper maps nested methods to existing actions', async () 
     }
   };
   const api = sdk.createTypedApi(client);
+
+  assert.equal(api.network.abort, undefined);
 
   await api.ui.showToast({ message: 'hello' });
   await api.system.clipboard.readText({ timeout: 1000 });
@@ -224,6 +256,214 @@ test('network SDK timeout remains distinct from params.timeout', async () => {
   await assert.rejects(promise, (error) => error.code === 1005);
 });
 
+test('pre-aborted signal rejects AbortError without posting to native', async () => {
+  const sdk = await import(`${esmUrl}?test=network-pre-abort`);
+  const posted = [];
+  const abortRecords = [];
+  const controller = new AbortController();
+  controller.abort();
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) {
+          posted.push(JSON.parse(message));
+        }
+      },
+      MyASCFDebugPanel: {
+        recordAbort(record) {
+          abortRecords.push(record);
+        }
+      }
+    })
+  });
+
+  await assert.rejects(
+    client.send('network.request', { url: 'https://example.com' }, { signal: controller.signal }),
+    (error) => error.name === 'AbortError' && error.code === 'ABORTED'
+  );
+  assert.equal(posted.length, 0);
+  assert.equal(abortRecords[0].status, 'cancelled');
+});
+
+test('abort after post clears callback and suppresses CALLBACK_LOST for a late response', async () => {
+  const sdk = await import(`${esmUrl}?test=network-post-abort`);
+  const posted = [];
+  const abortRecords = [];
+  const lateRecords = [];
+  const lostRecords = [];
+  const controller = new AbortController();
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) {
+          posted.push(JSON.parse(message));
+        }
+      },
+      MyASCFDebugPanel: {
+        recordAbort(record) { abortRecords.push(record); },
+        recordLateAfterAbort(record) { lateRecords.push(record); },
+        recordLost(record) { lostRecords.push(record); }
+      }
+    })
+  });
+  const promise = client.send('network.request', {
+    url: 'https://example.com/slow'
+  }, { signal: controller.signal, timeout: 1000 });
+  const originalRequest = posted[0];
+
+  controller.abort();
+  await assert.rejects(promise, (error) => error.name === 'AbortError' && error.code === 'ABORTED');
+  const abortRequest = posted.find((request) => request.action === 'network.abort');
+  assert.equal(abortRequest.params.targetRequestId, originalRequest.requestId);
+  client.handleNativeResponse({
+    requestId: abortRequest.requestId,
+    code: 0,
+    message: 'success',
+    data: { echoAction: 'network.abort', targetRequestId: originalRequest.requestId, aborted: true }
+  });
+  client.handleNativeResponse({
+    requestId: originalRequest.requestId,
+    code: 1106,
+    message: 'ABORTED: request aborted',
+    data: { echoAction: 'network.request' }
+  });
+
+  assert.equal(abortRecords.length, 1);
+  assert.equal(lateRecords.length, 1);
+  assert.equal(lateRecords[0].status, 'late_after_abort');
+  assert.equal(lostRecords.length, 0);
+});
+
+test('cancelled non-network request suppresses CALLBACK_LOST without native abort', async () => {
+  const sdk = await import(`${esmUrl}?test=non-network-post-abort`);
+  const posted = [];
+  const lateRecords = [];
+  const lostRecords = [];
+  const controller = new AbortController();
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) { posted.push(JSON.parse(message)); }
+      },
+      MyASCFDebugPanel: {
+        recordLateAfterAbort(record) { lateRecords.push(record); },
+        recordLost(record) { lostRecords.push(record); }
+      }
+    })
+  });
+  const promise = client.send('system.clipboard.readText', {}, {
+    signal: controller.signal,
+    timeout: 1000
+  });
+  const request = posted[0];
+
+  controller.abort();
+  await assert.rejects(promise, (error) => error.code === 'ABORTED');
+  assert.equal(posted.length, 1);
+  client.handleNativeResponse({
+    requestId: request.requestId,
+    code: 0,
+    message: 'success',
+    data: { echoAction: request.action, text: 'late' }
+  });
+
+  assert.equal(lateRecords.length, 1);
+  assert.equal(lostRecords.length, 0);
+});
+
+test('successful completion removes the abort listener and ignores later abort', async () => {
+  const sdk = await import(`${esmUrl}?test=network-success-abort`);
+  const posted = [];
+  const controller = createTrackedAbortController();
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) { posted.push(JSON.parse(message)); }
+      }
+    })
+  });
+  const promise = client.send('network.request', {
+    url: 'https://example.com'
+  }, { signal: controller.signal, timeout: 1000 });
+  const request = posted[0];
+  assert.equal(controller.listenerCount(), 1);
+
+  client.handleNativeResponse({
+    requestId: request.requestId,
+    code: 0,
+    message: 'success',
+    data: { echoAction: 'network.request', ok: true, statusCode: 200, headers: {}, body: null, duration: 1 }
+  });
+  await promise;
+  assert.equal(controller.listenerCount(), 0);
+  controller.abort();
+  assert.equal(posted.length, 1);
+});
+
+test('SDK timeout removes the abort listener and later abort does not settle twice', async () => {
+  const sdk = await import(`${esmUrl}?test=network-timeout-abort`);
+  const posted = [];
+  const controller = createTrackedAbortController();
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) { posted.push(JSON.parse(message)); }
+      }
+    })
+  });
+  const promise = client.send('network.request', {
+    url: 'https://example.com/slow'
+  }, { signal: controller.signal, timeout: 5 });
+
+  await assert.rejects(promise, (error) => error.code === 1005);
+  assert.equal(controller.listenerCount(), 0);
+  controller.abort();
+  assert.equal(posted.length, 1);
+});
+
+test('concurrent network requests abort only the target requestId', async () => {
+  const sdk = await import(`${esmUrl}?test=network-concurrent-abort`);
+  const posted = [];
+  const firstController = new AbortController();
+  const secondController = new AbortController();
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) { posted.push(JSON.parse(message)); }
+      }
+    })
+  });
+  const firstPromise = client.send('network.request', {
+    url: 'https://example.com/first'
+  }, { signal: firstController.signal, timeout: 1000 });
+  const secondPromise = client.send('network.request', {
+    url: 'https://example.com/second'
+  }, { signal: secondController.signal, timeout: 1000 });
+  const firstRequest = posted[0];
+  const secondRequest = posted[1];
+
+  firstController.abort();
+  const abortRequest = posted.find((request) => request.action === 'network.abort');
+  assert.equal(abortRequest.params.targetRequestId, firstRequest.requestId);
+  assert.notEqual(abortRequest.params.targetRequestId, secondRequest.requestId);
+  client.handleNativeResponse({
+    requestId: abortRequest.requestId,
+    code: 0,
+    message: 'success',
+    data: { echoAction: 'network.abort', targetRequestId: firstRequest.requestId, aborted: true }
+  });
+  client.handleNativeResponse({
+    requestId: secondRequest.requestId,
+    code: 0,
+    message: 'success',
+    data: { echoAction: 'network.request', ok: true, statusCode: 200, headers: {}, body: null, duration: 1 }
+  });
+
+  await assert.rejects(firstPromise, (error) => error.code === 'ABORTED');
+  const secondResponse = await secondPromise;
+  assert.equal(secondResponse.requestId, secondRequest.requestId);
+});
+
 test('network DebugPanel records redact query, headers and body content', async () => {
   const starts = [];
   const ends = [];
@@ -279,6 +519,38 @@ test('network DebugPanel records redact query, headers and body content', async 
   assert.equal(ends[0].response.data.statusText, 'OK');
   assert.equal(ends[0].response.data.bodyLength, 27);
   assert.equal(JSON.stringify(ends[0]).includes('response-secret'), false);
+});
+
+test('malformed network response is reduced to redacted metadata', async () => {
+  const sdk = await import(`${esmUrl}?test=network-malformed-redaction`);
+  const posted = [];
+  const errors = [];
+  const client = sdk.createMyASCF({
+    targetWindow: createWindow({
+      MyASCFNative: {
+        postMessage(message) { posted.push(JSON.parse(message)); }
+      },
+      MyASCFDebugPanel: {
+        recordError(record) { errors.push(record); }
+      }
+    })
+  });
+  const promise = client.send('network.request', {
+    url: 'https://example.com'
+  }, { timeout: 1000 });
+  const request = posted[0];
+
+  client.handleNativeResponse({
+    requestId: request.requestId,
+    code: 0,
+    message: 'success',
+    data: 'Authorization: Bearer response-secret'
+  });
+
+  await assert.rejects(promise, (error) => error.code === 1007);
+  assert.equal(errors[0].response.data.malformed, true);
+  assert.equal(errors[0].response.data.valueType, 'string');
+  assert.equal(JSON.stringify(errors[0]).includes('response-secret'), false);
 });
 
 test('send creates unique requestIds with the stable prefix', async () => {

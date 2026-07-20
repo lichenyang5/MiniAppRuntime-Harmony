@@ -1,5 +1,5 @@
 import type { DebugRecord } from './bridge-types.js';
-type DebugMethod = 'recordStart' | 'recordEnd' | 'recordError' | 'recordLost';
+type DebugMethod = 'recordStart' | 'recordEnd' | 'recordError' | 'recordLost' | 'recordAbort' | 'recordLateAfterAbort';
 export declare class DebugAdapter {
     private readonly targetWindow;
     constructor(targetWindow: Window);

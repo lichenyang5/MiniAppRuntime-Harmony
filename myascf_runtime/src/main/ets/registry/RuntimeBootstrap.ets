@@ -7,7 +7,8 @@ import {
   ACTION_SYSTEM_STORAGE_GET_ITEM,
   ACTION_SYSTEM_STORAGE_REMOVE_ITEM,
   ACTION_SYSTEM_STORAGE_CLEAR,
-  ACTION_NETWORK_REQUEST
+  ACTION_NETWORK_REQUEST,
+  ACTION_NETWORK_ABORT
 } from '../api/ActionNames';
 import { common } from '@kit.AbilityKit';
 import { BridgeHandler, BridgeRequest, BridgeResponse } from '../api/BridgeTypes';
@@ -19,7 +20,9 @@ import { ClipboardImp } from '../imp/ClipboardImp';
 import { ToastImp } from '../imp/ToastImp';
 import { StorageImp } from '../imp/StorageImp';
 import { NetworkBiz } from '../biz/NetworkBiz';
+import { NetworkAbortBiz } from '../biz/NetworkAbortBiz';
 import { NetworkImp } from '../imp/NetworkImp';
+import { NetworkRequestRegistry } from '../network/NetworkRequestRegistry';
 import { NetworkPolicy } from '../types/NetworkTypes';
 import { HandlerRegistry } from './HandlerRegistry';
 
@@ -91,11 +94,25 @@ class NetworkRequestHandler implements BridgeHandler {
   }
 }
 
+class NetworkAbortHandler implements BridgeHandler {
+  private networkAbortBiz: NetworkAbortBiz;
+
+  constructor(networkAbortBiz: NetworkAbortBiz) {
+    this.networkAbortBiz = networkAbortBiz;
+  }
+
+  async handle(request: BridgeRequest): Promise<BridgeResponse> {
+    return await this.networkAbortBiz.handle(request);
+  }
+}
+
 export class RuntimeBootstrap {
   static createRegistry(context: common.Context, networkPolicy?: NetworkPolicy): HandlerRegistry {
     // Keep ActionNames, ApiManifest, runtime registration, API docs and H5 API list aligned.
     const registry: HandlerRegistry = new HandlerRegistry();
     const storageBiz: StorageBiz = new StorageBiz(new StorageImp(context));
+    const networkRequestRegistry: NetworkRequestRegistry = new NetworkRequestRegistry();
+    const networkImp: NetworkImp = new NetworkImp(networkRequestRegistry);
     registry.register(ACTION_UI_SHOW_TOAST, new ShowToastHandler());
     registry.register(ACTION_SYSTEM_CLIPBOARD_WRITE_TEXT, new ClipboardWriteTextHandler());
     registry.register(ACTION_SYSTEM_CLIPBOARD_READ_TEXT, new ClipboardReadTextHandler());
@@ -104,7 +121,8 @@ export class RuntimeBootstrap {
     registry.register(ACTION_SYSTEM_STORAGE_REMOVE_ITEM, new StorageRemoveItemHandler(storageBiz));
     registry.register(ACTION_SYSTEM_STORAGE_CLEAR, new StorageClearHandler(storageBiz));
     registry.register(ACTION_RUNTIME_GET_API_LIST, new RuntimeGetApiListHandler());
-    registry.register(ACTION_NETWORK_REQUEST, new NetworkRequestHandler(new NetworkBiz(new NetworkImp(), networkPolicy)));
+    registry.register(ACTION_NETWORK_REQUEST, new NetworkRequestHandler(new NetworkBiz(networkImp, networkPolicy)));
+    registry.register(ACTION_NETWORK_ABORT, new NetworkAbortHandler(new NetworkAbortBiz(networkRequestRegistry)));
     return registry;
   }
 }

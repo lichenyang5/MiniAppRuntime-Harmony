@@ -69,7 +69,11 @@
         </div>
         <textarea id="networkHeaders" class="textArea" rows="3" aria-label="Request headers" placeholder='{"Accept":"application/json"}'>{"Accept":"application/json"}</textarea>
         <textarea id="networkBody" class="textArea" rows="4" aria-label="Request body" placeholder='{"title":"hello"}'></textarea>
-        <button id="networkSendButton" type="button">Send Request</button>
+        <div class="buttonGroup networkButtons">
+          <button id="networkSendButton" type="button">Send Request</button>
+          <button id="networkCancelButton" class="secondaryButton" type="button" disabled>Cancel Request</button>
+        </div>
+        <p id="networkRequestStatus" class="containerMeta">Request Status: IDLE</p>
         <pre id="networkResponse" class="result networkResponse">No network response</pre>
       </section>
       <p id="status" class="status">等待 H5 发起调用。</p>

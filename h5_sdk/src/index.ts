@@ -1,6 +1,8 @@
 import type { CreateMyASCFOptions, MyASCF } from './bridge-types.js';
 import { MyASCFClient } from './client.js';
 
+export { MyASCFAbortError } from './abort-error.js';
+
 export type {
   ApiSummary,
   BridgeRequest,

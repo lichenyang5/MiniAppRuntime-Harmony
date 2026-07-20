@@ -106,6 +106,15 @@ h1 {
   max-height: 320px;
 }
 
+.networkButtons {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .storageButtons {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -353,6 +362,14 @@ button:active {
 .debug-record--timeout,
 .debug-record--callback_lost {
   border-left-color: #dc2626;
+}
+
+.debug-record--cancelled {
+  border-left-color: #d97706;
+}
+
+.debug-record--late_after_abort {
+  border-left-color: #7c3aed;
 }
 
 .debug-meta {

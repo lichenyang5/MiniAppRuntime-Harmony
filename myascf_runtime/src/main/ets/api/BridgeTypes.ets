@@ -9,6 +9,7 @@ export interface BridgeRequestParams {
   body?: string;
   timeout?: number;
   responseType?: string;
+  targetRequestId?: string;
 }
 
 export interface BridgeRequest {
@@ -38,6 +39,9 @@ export interface BridgeResponseData {
   headers?: Object;
   body?: string | Object | null;
   duration?: number;
+  targetRequestId?: string;
+  aborted?: boolean;
+  reason?: string;
 }
 
 export interface BridgeResponse {
