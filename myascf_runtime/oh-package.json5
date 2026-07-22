@@ -5,5 +5,17 @@
   "main": "Index.ets",
   "author": "Li Chenyang",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lichenyang5/MiniAppRuntime-Harmony.git"
+  },
+  "homepage": "https://github.com/lichenyang5/MiniAppRuntime-Harmony",
+  "keywords": [
+    "HarmonyOS",
+    "ArkTS",
+    "ArkWeb",
+    "JSBridge",
+    "HAR"
+  ],
   "dependencies": {}
 }

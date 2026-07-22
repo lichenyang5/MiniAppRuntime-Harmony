@@ -40,7 +40,7 @@ IIFE 位于包内 `dist/myascf.js`，也可通过 `@lcy453/miniapp-runtime-harmo
 
 ## Registry Verification
 
-首次发布后执行：
+当前已发布版本可直接安装：
 
 ```bash
 npm view @lcy453/miniapp-runtime-harmony-web-sdk version

@@ -15,7 +15,7 @@
 | system | `system.storage.getItem` | `key: string` | `echoAction: string, key: string, value: string` | ✅ |
 | system | `system.storage.removeItem` | `key: string` | `echoAction: string, key: string` | ✅ |
 | system | `system.storage.clear` | - | `echoAction: string` | ✅ |
-| network | `network.request` | `url: string, method?: NetworkMethod, headers?: NetworkHeaders, body?: string, timeout?: number, responseType?: NetworkResponseType` | `ok: boolean, statusCode: number, statusText: string, headers: NetworkHeaders, body: NetworkBody, duration: number` | ✅ |
+| network | `network.request` | `url: string, method?: NetworkMethod, headers?: NetworkHeaders, body?: string, timeout?: number, responseType?: NetworkResponseType` | `ok: boolean, statusCode: number, statusText?: string, headers: NetworkHeaders, body: NetworkBody, duration: number` | ✅ |
 <!-- API_TABLE_END -->
 
 统一错误说明见 [错误码](error-code.md)。

@@ -1,108 +1,68 @@
-# H5 SDK 使用指南
+# H5 SDK Usage
 
-这篇文档解决什么问题：说明 H5 页面如何通过 script 或 ESM 两种方式接入 SDK，并调用 ArkTS runtime。
+这篇文档解决什么问题：说明 H5 SDK 的 npm、ESM、IIFE、类型化调用和错误边界。
 
-当前公开版本为 `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0`，已通过 npm registry 消费验证。
-
-## Script 方式
-
-适用于 ArkWeb rawfile 和无前端构建工具的页面：
-
-```html
-<script src="./js/debug-panel.js"></script>
-<script src="./js/myascf.js"></script>
-<script src="./js/demo.js"></script>
-```
-
-IIFE 加载后自动挂载 `window.myascf`：
-
-```js
-const response = await window.myascf.send(
-  'ui.showToast',
-  { message: 'hello from h5' },
-  { timeout: 5000 }
-);
-```
-
-构建并同步 rawfile：
+## npm 与 ESM
 
 ```bash
-npm --prefix h5_sdk install
-npm run h5:sync
+npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 ```
-
-## ESM 方式
-
-适用于 TypeScript 与现代前端工程：
 
 ```ts
 import {
-  initMyASCF,
-  type BridgeResponse
+  createTypedApi,
+  initMyASCF
 } from '@lcy453/miniapp-runtime-harmony-web-sdk';
-
-const myascf = initMyASCF();
-const response: BridgeResponse = await myascf.send('ui.showToast', {
-  message: 'hello from esm'
-});
-```
-
-需要自行管理挂载时，可以使用：
-
-```ts
-import { createMyASCF } from '@lcy453/miniapp-runtime-harmony-web-sdk';
-
-const myascf = createMyASCF();
-// createMyASCF 不会修改 window.myascf。
-window.__myascf_on_native_response__ = (response) => {
-  myascf.handleNativeResponse(response);
-};
-```
-
-## 类型化 API
-
-```ts
-import { createTypedApi, initMyASCF } from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);
-
-await client.sendTyped('ui.showToast', { message: 'hello' });
-const result = await api.system.storage.getItem({ key: 'username' });
-console.log(result.data?.value);
+const response = await api.ui.showToast({ message: 'hello' });
 ```
 
-`sendTyped` 和 nested helper 的类型由 `tools/api-manifest.json` 生成，运行时仍复用通用 `send`。完整说明见 [typed API 使用指南](typed-api-usage.md)。
+`initMyASCF()` 创建客户端，并挂载 `window.myascf` 与 Native response callback。`createTypedApi(client)` 根据 Manifest 生成的类型提供 nested helper。底层仍可直接调用：
 
-## Native 边界
-
-SDK 通过以下对象把请求发给 ArkWeb JavaScriptProxy：
-
-```js
-window.MyASCFNative.postMessage(requestText);
+```ts
+await client.send('ui.showToast', { message: 'hello' }, { timeout: 5000 });
 ```
 
-ArkTS 通过 `runJavaScript` 调用：
+## IIFE
 
-```js
-window.__myascf_on_native_response__(responseText);
+`@lcy453/miniapp-runtime-harmony-web-sdk/iife` 对应全局脚本产物，加载后自动初始化。需要模块化和 tree-shaking 时优先使用 ESM。
+
+## requestId 与 callback map
+
+每次 `send` 生成唯一 requestId，callback map 保存 Promise 的 resolve/reject、timer、action 和参数摘要。Native response 根据 requestId 找回 callback；超时后移除 callback，晚到响应进入 CALLBACK_LOST 或取消后的晚到响应记录。
+
+## Promise 与错误
+
+- `code === 0`：Bridge resolve。
+- `code !== 0`：Bridge reject。
+- `NATIVE_UNAVAILABLE`：普通浏览器没有 `window.MyASCFNative`，属于预期边界。
+- `TIMEOUT`：H5 等待 Native callback 超时。
+- `CALLBACK_LOST`：response 找不到 callback。
+- `INVALID_RESPONSE`：Native response 不符合协议。
+- `UNKNOWN_ACTION`、参数错误、业务错误和网络错误由 Runtime 返回。
+
+HTTP 404/500 不是 Bridge 错误：`network.request` resolve，业务通过 `response.data.ok` 和 `statusCode` 判断。
+
+## React
+
+```tsx
+const api = createTypedApi(initMyASCF());
+
+function ToastButton() {
+  return <button onClick={() => void api.ui.showToast({ message: 'hello' })}>Toast</button>;
+}
 ```
 
-SDK 根据 `requestId` 找回 callback，按 `code` resolve 或 reject Promise。普通浏览器没有 `window.MyASCFNative`，因此返回 `NATIVE_UNAVAILABLE` 是预期行为。
+## Vanilla JS
 
-## Timeout 与错误
-
-`options.timeout` 默认为 5000ms。超时后 SDK 删除 callback 并 reject `TIMEOUT`；之后到达的响应记为 `CALLBACK_LOST`。格式错误的响应记为 `INVALID_RESPONSE`，不会让页面主链路直接崩溃。
-
-## 本地 Tarball 验证
-
-```bash
-cd h5_sdk
-npm run pack:local
-
-cd ../examples/sdk-consumer-demo
-npm install
-npm test
+```ts
+const client = initMyASCF();
+document.querySelector('#toast')?.addEventListener('click', async () => {
+  const response = await client.send('ui.showToast', { message: 'hello' });
+  console.log(response.requestId, response.data);
+});
 ```
 
-consumer 示例通过 registry 包名进行真实 ESM import，并验证 package exports 与类型声明。
+完整可运行示例见 `examples/npm-har-consumer-demo/web`。

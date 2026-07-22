@@ -11,10 +11,20 @@
     "check:generated": "node tools/check-generated-files.js",
     "check:api": "node tools/check-api-consistency.js",
     "check:package": "node tools/check-package-exports.js",
-    "check": "npm run check:generated && npm run check:api && npm run h5:check && npm run check:package",
+    "check:docs": "node scripts/check-doc-links.mjs",
+    "check:public": "node scripts/check-public-content.mjs",
+    "check:har-release": "node scripts/check-har-release.mjs --metadata-only",
+    "check": "npm run check:generated && npm run check:api && npm run h5:check && npm run check:package && npm run check:docs && npm run check:public && npm run check:har-release",
     "h5:build": "npm --prefix h5_sdk run build",
     "h5:sync": "npm --prefix h5_sdk run build:demo",
     "h5:test": "npm --prefix h5_sdk run test",
     "h5:check": "npm --prefix h5_sdk run check"
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "keywords": [],
+  "license": "ISC"
 }

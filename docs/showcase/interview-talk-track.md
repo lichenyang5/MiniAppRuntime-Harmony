@@ -11,7 +11,7 @@
 1. **为什么做：**ArkWeb 注入一个 Native 方法容易，但并发请求、Promise 回调、action 扩展、参数错误、超时和调试需要完整治理。
 2. **整体架构：**entry 负责 Web 容器；`myascf_runtime` HAR 负责 ArkTS 主链路；`h5_sdk` 负责浏览器侧请求生命周期。
 3. **核心链路：**H5 `send` 生成 requestId，通过 JavaScriptProxy 进入 Controller，再经过 Dispatcher/Registry、Biz/Imp；响应由 CallbackExecutor 调用 `runJavaScript` 回到 callback map。
-4. **当前 API：**Toast、Clipboard、Storage 和 `runtime.getApiList`，共 8 个 action。
+4. **当前 API：**Toast、Clipboard、Storage、`runtime.getApiList` 和 `network.request`，共 9 个公开 action；`network.abort` 是内部 action。
 5. **模块化：**`MyASCFRuntime` 在 HAR 内组装组件，entry 不直接了解 Dispatcher、Registry 和 Bootstrap。
 6. **工程化：**Manifest 生成文档和 typed API，Node 测试覆盖 H5 协议，CI 检查生成物、注册关系、build/test 和 pack；设备能力由 smoke test 补充。
 
@@ -79,7 +79,7 @@ Biz 管 JSBridge 参数与响应语义，Imp 管 HarmonyOS API。分开后协议
 
 CI 覆盖 generated 文件、API 注册关系、H5 build/test、pack 和 package 入口；不覆盖 HAP、JavaScriptProxy 真机通信、权限和系统 UI，这些进入 manual smoke test。
 
-### 11. 和生产级框架还有什么差距？
+### 11. 当前成熟度边界是什么？
 
 还缺更系统的安全模型、远程内容治理、兼容性矩阵、设备自动化、性能指标、版本兼容策略、发布渠道和长期维护验证。项目实现并解释了当前架构链路与工程方法，但设备兼容性、安全和长期运行仍需更完整验证。
 
@@ -131,4 +131,4 @@ CI 覆盖 generated 文件、API 注册关系、H5 build/test、pack 和 package
 
 - 3 分钟内画出双向调用链，并能指出 H5/ArkTS 边界。
 - 任意抽一个文件，能说明输入、输出和“不应该做什么”。
-- 能主动说明当前未发布 npm、HAR 仍是本地包、截图和设备回归仍有缺口。
+- 能主动说明 H5 SDK 已发布 npm、HAR 仍以本地文件接入、GitHub Release/ohpm 和部分设备回归仍有缺口。

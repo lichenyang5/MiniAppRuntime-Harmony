@@ -1,0 +1,9 @@
+web/node_modules/
+web/dist/
+harmony/.hvigor/
+harmony/oh_modules/
+harmony/entry/build/
+harmony/entry/oh_modules/
+harmony/local.properties
+harmony/entry/libs/*.har
+

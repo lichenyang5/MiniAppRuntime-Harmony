@@ -11,7 +11,7 @@
 | `BridgeCallbackExecutor.ets` | H5 响应出口 | BridgeResponse | `runJavaScript` callback | 双重 JSON 序列化保护字符串边界，集中记录回调结果 | 不决定业务 code，不管理 H5 callback map |
 | `BridgeDispatcher.ets` | action 分发 | BridgeRequest | BridgeResponse | 根据 action 找 handler，统一 UNKNOWN_ACTION 与 handler 异常 | 不注册 handler，不写参数校验 |
 | `HandlerRegistry.ets` | handler 注册表 | action、handler | handler 或 undefined | 保存 action 到 BridgeHandler 的映射 | 不创建业务对象，不执行系统 API |
-| `RuntimeBootstrap.ets` | 内置 API 装配 | Context | 已注册的 HandlerRegistry | 在启动阶段创建 Biz/Imp 并注册 8 个 action | 不参与每次请求的协议解析 |
+| `RuntimeBootstrap.ets` | 内置 API 装配 | Context | 已注册的 HandlerRegistry | 在启动阶段创建 Biz/Imp 并注册 10 个 action（9 个公开、1 个内部） | 不参与每次请求的协议解析 |
 | `ToastBiz.ets` | Toast 协议业务层 | BridgeRequest | BridgeResponse | 校验 message，决定成功或参数错误响应 | 不直接调用 ArkUI API |
 | `ToastImp.ets` | Toast 平台实现 | message | Promise<void> | 调用公开 `promptAction.showToast` | 不理解 requestId 或错误协议 |
 | `ClipboardBiz.ets` | Clipboard 业务层 | BridgeRequest | BridgeResponse | 校验写入文本，组织读写响应 | 不处理系统剪贴板对象 |

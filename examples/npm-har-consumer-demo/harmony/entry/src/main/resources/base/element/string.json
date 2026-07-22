@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "npm SDK and local HAR consumer"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "ArkWeb consumer demo"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "npm SDK Consumer"
+    },
+    {
+      "name": "pasteboard_reason",
+      "value": "用于演示读取用户主动触发的剪贴板文本"
+    }
+  ]
+}

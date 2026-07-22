@@ -6,6 +6,7 @@
 
 ### Added
 
+- 独立 `npm-har-consumer-demo`、本地 HAR 构建/复制脚本、HAR 发布预检、完整接入教程与 ohpm 发布准备文档。
 - H5 SDK 以 `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0` 发布，并补充 registry 消费验证。
 - 新增本地 tgz consumer smoke，以及 registry SDK + 本地 HAR 的独立 HarmonyOS Demo。
 - 根 package 入口改为无副作用 ESM，IIFE 自动初始化保留在 `./iife` 子路径。
@@ -25,7 +26,7 @@
 
 ### Notes
 
-- H5 SDK 不直接执行 HTTP，当前仍不发布 npm/ohpm。
+- H5 SDK 不直接执行 HTTP；HAR 尚未发布到 GitHub Release 或 ohpm。
 - v0.2.0 不包含 download/upload、WebSocket、Cookie 管理、重试或生产级证书策略。
 
 ## [0.1.0] - Unreleased

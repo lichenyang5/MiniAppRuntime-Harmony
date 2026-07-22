@@ -4,7 +4,7 @@
 
 ## 当前版本状态
 
-当前候选版本为 `v0.1.0`，状态是 GitHub 展示版准备中。它用于源码阅读、本地构建、Demo 验证和面试讲解。H5 SDK 仍未进入 npm registry，HAR 仍未进入 HarmonyOS 包仓库，tag 与 GitHub Release 尚未创建。
+当前候选版本为 `v0.1.0`，状态是 GitHub Release 准备中。H5 SDK `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0` 已进入 npm registry 并完成消费验证；HAR 当前通过本地文件和独立 Demo 接入，GitHub Release 与 ohpm 尚未发布。
 
 ## 发布阻塞项
 
@@ -21,7 +21,7 @@
 
 ## 两个包的发布方向
 
-H5 SDK 本质上是普通 JavaScript / TypeScript SDK。当前已设置公开 scoped 包名、`private: false` 和 `publishConfig.access = public`，真正发布仍由人工确认阻止误操作。
+H5 SDK 本质上是普通 JavaScript / TypeScript SDK，已使用公开 scoped 包名发布到 npm。后续版本仍必须经过 check、test 和 pack dry-run，再由项目作者确认发布。
 
 `myascf_runtime` 是 HarmonyOS 本地 HAR 模块，不能简单等同于普通 npm 包。当前优先通过本地 file 依赖和 GitHub 示例展示，后续再调研对应的 HarmonyOS 包管理与发布方式。
 
@@ -36,7 +36,7 @@ H5 SDK `0.1.0` 已完成：
 - TypeScript 全局类型编译。
 - 普通浏览器 NATIVE_UNAVAILABLE 验证。
 
-本次预检没有执行 npm publish。H5 SDK 已完成 scoped tgz、独立 consumer 和 HarmonyOS Demo 构建验证，registry 安装验证必须等首次发布后执行。
+当前已完成 scoped tgz、独立 consumer、npm registry 安装和 HarmonyOS Demo 构建验证。本次整理不会再次执行 npm publish。
 
 ## 发布前检查
 
@@ -56,6 +56,8 @@ H5 SDK `0.1.0` 已完成：
 - [x] `9de3f82` 的 [GitHub Actions CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/runs/29386035145) 通过。
 - [ ] 完成签名凭据轮换/吊销、当前文件清理与 Git 历史清理。
 - [ ] 确认最终发布 commit 的 CI 成功。
+- [ ] 构建 HAR、计算 SHA-256，并按 `docs/release/har-release-guide.md` 准备 GitHub Release 资产。
+- [ ] 确认 ohpm 账号、包名、scope 与公开发布意图；本次不执行 ohpm publish。
 
 ## v0.1.0 文档
 

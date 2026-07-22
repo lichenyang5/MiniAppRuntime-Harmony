@@ -69,7 +69,7 @@ npm run build:demo
 
 - SDK 的 IIFE、ESM 与 typed API 共 10 项测试全部通过。
 - `main/module/types/exports` 均指向实际文件。
-- tarball 包大小约 9.7 kB，解包约 40.8 kB，共 18 个公开文件。
+- 当前 dry-run 的 tarball 约 13.1 kB，解包约 60.3 kB，共 20 个公开文件；以实际 `npm pack --dry-run` 输出为准。
 - tarball 同时包含 `myascf.js`、`index.esm.js`、类型入口及其声明依赖。
 - 外部 consumer 从本地 tarball 完成 ESM import、typed helper、TypeScript 检查和 4 项测试。
 - rawfile 继续使用 IIFE，Hvigor `assembleHap` 构建通过。

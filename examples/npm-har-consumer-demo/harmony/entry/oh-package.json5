@@ -1,0 +1,9 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "HarmonyOS ArkWeb consumer for the npm H5 SDK and local HAR demo.",
+  "main": "",
+  "dependencies": {
+    "myascf_runtime": "file:./libs/myascf_runtime.har"
+  }
+}

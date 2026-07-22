@@ -9,6 +9,7 @@ const tablePath = path.join(rootDir, 'docs', 'api', 'generated-api-table.md');
 const detailsPath = path.join(rootDir, 'docs', 'api', 'generated-api-manifest.md');
 const readmePath = path.join(rootDir, 'README.md');
 const apiIndexPath = path.join(rootDir, 'docs', 'api', 'index.md');
+const apiReadmePath = path.join(rootDir, 'docs', 'api', 'README.md');
 const markerStart = '<!-- API_TABLE_START -->';
 const markerEnd = '<!-- API_TABLE_END -->';
 const checkMode = process.argv.includes('--check');
@@ -88,12 +89,12 @@ function escapeCell(value) {
   return String(value).replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 }
 
-function formatFields(fields, includeOptional) {
+function formatFields(fields) {
   if (fields.length === 0) {
     return '-';
   }
   return fields.map((field) => {
-    const optional = includeOptional && field.required === false ? '?' : '';
+    const optional = field.required === false ? '?' : '';
     return `${field.name}${optional}: ${field.type}`;
   }).join(', ');
 }
@@ -108,7 +109,7 @@ function createTable(items) {
     '| --- | --- | --- | --- | --- |'
   ];
   items.forEach((item) => {
-    lines.push(`| ${escapeCell(item.category)} | \`${escapeCell(item.action)}\` | ${formatCodeCell(formatFields(item.params, true))} | ${formatCodeCell(formatFields(item.response, false))} | ${item.implemented ? '✅' : 'Planned'} |`);
+    lines.push(`| ${escapeCell(item.category)} | \`${escapeCell(item.action)}\` | ${formatCodeCell(formatFields(item.params))} | ${formatCodeCell(formatFields(item.response))} | ${item.implemented ? '✅' : 'Planned'} |`);
   });
   return lines.join('\n');
 }
@@ -136,10 +137,72 @@ function createDetails(items) {
     if (item.response.length === 0) {
       lines.push('-');
     } else {
-      lines.push('| Name | Type | Description |', '| --- | --- | --- |');
-      item.response.forEach((field) => lines.push(`| \`${escapeCell(field.name)}\` | \`${escapeCell(field.type)}\` | ${escapeCell(field.description)} |`));
+      lines.push('| Name | Type | Required | Description |', '| --- | --- | --- | --- |');
+      item.response.forEach((field) => lines.push(`| \`${escapeCell(field.name)}\` | \`${escapeCell(field.type)}\` | ${field.required ? 'Yes' : 'No'} | ${escapeCell(field.description)} |`));
     }
     lines.push('', '### Errors', '', item.errors.length === 0 ? '-' : item.errors.map((error) => `\`${error}\``).join(', '), '', '### Example', '', '```js', example, '```');
+  });
+  return `${lines.join('\n')}\n`;
+}
+
+function readPackageVersion(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8')).version;
+  } catch (error) {
+    fail(`cannot read package version from ${path.relative(rootDir, filePath)}: ${error.message}`);
+  }
+}
+
+function permissionForAction(action) {
+  if (action === 'system.clipboard.readText') {
+    return '`ohos.permission.READ_PASTEBOARD`';
+  }
+  if (action === 'network.request') {
+    return '`ohos.permission.INTERNET`';
+  }
+  return 'No additional permission';
+}
+
+function createApiReadme(items, sdkVersion, runtimeVersion) {
+  const lines = [
+    '<!-- AUTO-GENERATED: DO NOT EDIT DIRECTLY -->',
+    '',
+    '# API Reference',
+    '',
+    '这篇文档解决什么问题：从真实 API Manifest 汇总当前公开 action、参数、响应、版本和权限边界。',
+    '',
+    `Current compatibility: H5 SDK \`${sdkVersion}\` + HAR Runtime metadata \`${runtimeVersion}\`.`,
+    '',
+    '> Run `npm run docs:api` to regenerate this file. Internal actions are intentionally excluded.'
+  ];
+  items.forEach((item) => {
+    lines.push(
+      '',
+      `## ${item.action}`,
+      '',
+      `- Params: ${formatCodeCell(formatFields(item.params))}`,
+      `- Response: ${formatCodeCell(formatFields(item.response))}`,
+      `- Supported combination: H5 SDK \`${sdkVersion}\` / HAR Runtime \`${runtimeVersion}\``,
+      `- Permission: ${permissionForAction(item.action)}`,
+      '',
+      'Success call:',
+      '',
+      '```js',
+      item.example,
+      '```',
+      '',
+      'Failure handling:',
+      '',
+      '```js',
+      `try {`,
+      `  await ${item.example.replace(/^window\./, 'window.').replace(/;$/, '')};`,
+      `} catch (error) {`,
+      `  console.error('${item.action}', error);`,
+      `}`,
+      '```',
+      '',
+      `Errors: ${item.errors.map((error) => `\`${error}\``).join(', ') || '-'}`
+    );
   });
   return `${lines.join('\n')}\n`;
 }
@@ -183,8 +246,11 @@ const manifest = readManifest();
 validateManifest(manifest);
 const publicManifest = manifest.filter((item) => item.internal !== true);
 const table = createTable(publicManifest);
+const sdkVersion = readPackageVersion(path.join(rootDir, 'h5_sdk', 'package.json'));
+const runtimeVersion = readPackageVersion(path.join(rootDir, 'myascf_runtime', 'oh-package.json5'));
 writeOrCheck(tablePath, `<!-- AUTO-GENERATED: DO NOT EDIT DIRECTLY -->\n\n${table}\n`);
 writeOrCheck(detailsPath, createDetails(publicManifest));
+writeOrCheck(apiReadmePath, createApiReadme(publicManifest, sdkVersion, runtimeVersion));
 replaceGeneratedBlock(readmePath, table);
 replaceGeneratedBlock(apiIndexPath, table);
 console.log(`[api-docs] ${checkMode ? 'verified' : 'generated'} ${publicManifest.length} public APIs`);

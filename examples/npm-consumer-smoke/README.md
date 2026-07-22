@@ -10,4 +10,4 @@ npm install
 npm test
 ```
 
-这里只允许使用生成的 tgz。它不证明 registry 安装成功，也不会执行 `npm publish`。发布后的 registry 验证由 `examples/npm-harmony-consumer-demo/web_app` 完成。
+这里只允许使用生成的 tgz。它不证明 registry 安装成功，也不会执行 `npm publish`。registry SDK + 本地 HAR 的完整验证由 `examples/npm-har-consumer-demo/web` 完成。

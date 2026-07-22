@@ -20,9 +20,9 @@ Generated from `tools/api-manifest.json` by `npm run docs:api`.
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `apis` | `ApiSummary[]` | 当前 runtime 支持的 API 简要列表。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `apis` | `ApiSummary[]` | No | 当前 runtime 支持的 API 简要列表。 |
 
 ### Errors
 
@@ -52,9 +52,9 @@ window.myascf.send("runtime.getApiList", {})
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
 
 ### Errors
 
@@ -84,9 +84,9 @@ window.myascf.send("ui.showToast", { message: "hello" })
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
 
 ### Errors
 
@@ -114,10 +114,10 @@ window.myascf.send("system.clipboard.writeText", { text: "hello" })
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
-| `text` | `string` | 读取到的剪贴板文本。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
+| `text` | `string` | No | 读取到的剪贴板文本。 |
 
 ### Errors
 
@@ -148,11 +148,11 @@ window.myascf.send("system.clipboard.readText", {})
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
-| `key` | `string` | 已写入的 key。 |
-| `value` | `string` | 已写入的 value。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
+| `key` | `string` | No | 已写入的 key。 |
+| `value` | `string` | No | 已写入的 value。 |
 
 ### Errors
 
@@ -182,11 +182,11 @@ window.myascf.send("system.storage.setItem", { key: "username", value: "lichenya
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
-| `key` | `string` | 查询的 key。 |
-| `value` | `string` | 读取结果。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
+| `key` | `string` | No | 查询的 key。 |
+| `value` | `string` | No | 读取结果。 |
 
 ### Errors
 
@@ -216,10 +216,10 @@ window.myascf.send("system.storage.getItem", { key: "username" })
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
-| `key` | `string` | 已删除的 key。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
+| `key` | `string` | No | 已删除的 key。 |
 
 ### Errors
 
@@ -247,9 +247,9 @@ window.myascf.send("system.storage.removeItem", { key: "username" })
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `echoAction` | `string` | 回显当前 action。 |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `echoAction` | `string` | No | 回显当前 action。 |
 
 ### Errors
 
@@ -284,14 +284,14 @@ Send an HTTP or HTTPS request through the ArkTS runtime.
 
 ### Response
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `ok` | `boolean` | Whether the HTTP status is in the 2xx range. |
-| `statusCode` | `number` | HTTP status code. |
-| `statusText` | `string` | Standard text for known HTTP status codes. |
-| `headers` | `NetworkHeaders` | HTTP response headers. |
-| `body` | `NetworkBody` | Text or parsed JSON response body. |
-| `duration` | `number` | Native request duration in milliseconds. |
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| `ok` | `boolean` | Yes | Whether the HTTP status is in the 2xx range. |
+| `statusCode` | `number` | Yes | HTTP status code. |
+| `statusText` | `string` | No | Standard text for known HTTP status codes. |
+| `headers` | `NetworkHeaders` | Yes | HTTP response headers. |
+| `body` | `NetworkBody` | Yes | Text or parsed JSON response body. |
+| `duration` | `number` | Yes | Native request duration in milliseconds. |
 
 ### Errors
 

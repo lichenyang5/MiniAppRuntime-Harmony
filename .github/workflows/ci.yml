@@ -29,7 +29,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: h5_sdk/package-lock.json
+          cache-dependency-path: |
+            h5_sdk/package-lock.json
+            examples/npm-har-consumer-demo/web/package-lock.json
 
       - name: Install H5 SDK dependencies
         working-directory: h5_sdk
@@ -56,6 +58,26 @@ jobs:
       - name: Check package exports
         run: npm run check:package
 
+      - name: Install independent Web Demo dependencies
+        working-directory: examples/npm-har-consumer-demo/web
+        run: npm ci
+
+      - name: Build and sync independent Web Demo
+        working-directory: examples/npm-har-consumer-demo/web
+        run: npm run build:harmony
+
+      - name: Check committed rawfile is current
+        run: git diff --exit-code -- examples/npm-har-consumer-demo/harmony/entry/src/main/resources/rawfile/web
+
+      - name: Check documentation links
+        run: npm run check:docs
+
+      - name: Check public content
+        run: npm run check:public
+
+      - name: Check HAR release metadata
+        run: npm run check:har-release
+
       - name: Write summary
         if: always()
         shell: bash
@@ -63,7 +85,7 @@ jobs:
           {
             echo "## MiniAppRuntime-Harmony CI"
             echo
-            echo "This workflow checks generated files, API registration, H5 SDK build and tests, and npm package entries."
+            echo "This workflow checks generated files, API registration, H5 SDK build/tests/package entries, documentation links, public-content hygiene, and HAR release metadata."
             echo
-            echo "HarmonyOS HAP and device behavior remain part of the manual smoke test."
+            echo "HarmonyOS HAR/HAP builds and device behavior remain local-only parts of the manual smoke test."
           } >> "$GITHUB_STEP_SUMMARY"

@@ -55,7 +55,7 @@ IIFE 产物适合 rawfile 页面直接通过 `<script>` 加载并自动挂载 `w
 
 ArkTS Runtime 处理进入 Native 边界后的工作：解析请求、查找 handler、校验参数、调用公开 HarmonyOS Kit，并构造统一 BridgeResponse。`MyASCFRuntime` 门面在 HAR 内部创建 Registry、Dispatcher、CallbackExecutor、Controller 和 JavaScriptProxy，entry 不需要手动组装这些对象。
 
-当前 Demo 提供 Toast、Clipboard、Storage 和 `runtime.getApiList`，共 8 个内置 action。HAR 仍通过 `file:../myascf_runtime` 本地依赖接入，尚未发布到包仓库。
+当前公开 Manifest 提供 Toast、Clipboard、Storage、`runtime.getApiList` 和 `network.request`，共 9 个公开 action；另有 1 个仅供 Runtime 内部使用的 `network.abort`。仓库内 `entry` 使用源码联调，独立消费 Demo 使用本地 HAR；HAR 尚未发布到 GitHub Release 或 ohpm。
 
 ## requestId 与 callback map
 
@@ -144,7 +144,7 @@ typed helper 最终仍调用 `sendTyped()`，而 `sendTyped()` 复用原有 `sen
 
 当前自动检查覆盖生成物、Manifest 注册关系、H5 SDK build/test、package exports 和 npm pack dry-run。ArkWeb 注入、系统权限、Toast UI 和设备差异仍需要 DevEco Studio 手工 smoke test。
 
-H5 SDK 未发布 npm，HAR 未发布 ohpm，CLI、Network API、Device API 和生产级安全沙箱均未实现。当前仓库还需要先完成已暴露签名凭据的轮换/吊销和 Git 历史清理，之后才能继续 v0.1.0 Release 操作。
+H5 SDK `0.1.0` 已发布到 npm，`network.request` 已实现；HAR 尚未发布 GitHub Release 或 ohpm，CLI、Device API 和完整安全沙箱不在当前范围。仓库仍需完成已暴露签名凭据的轮换/吊销和 Git 历史清理，之后才能继续 GitHub Release 操作。
 
 ## 总结
 

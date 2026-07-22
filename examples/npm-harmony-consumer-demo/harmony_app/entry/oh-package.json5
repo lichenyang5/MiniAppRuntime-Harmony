@@ -1,9 +1,0 @@
-{
-  "name": "entry",
-  "version": "1.0.0",
-  "description": "HarmonyOS ArkWeb consumer for the registry H5 SDK demo.",
-  "main": "",
-  "dependencies": {
-    "myascf_runtime": "file:../../../../myascf_runtime"
-  }
-}

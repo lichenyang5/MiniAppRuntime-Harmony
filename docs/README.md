@@ -73,6 +73,19 @@
 
 已完成 JSBridge 主链路、Toast/Clipboard/Storage、`network.request`、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper、npm 发布和 registry 消费验证。综合文章草稿与发布清单已整理，但尚未在掘金发布。当前已有 7 张真实证据图片，Clipboard 独立结果、Web loading 和 URL Guard/错误页仍待补；签名凭据轮换与历史清理、HAR 发布方式调研尚未完成。
 
+## 接入与发布入口
+
+- [Quick Start](guide/quick-start.md)
+- [H5 SDK 使用](guide/h5-sdk-usage.md)
+- [HAR Runtime 使用](guide/har-runtime-usage.md)
+- [npm + HAR 独立 Demo](guide/npm-sdk-har-demo.md)
+- [API Reference](api/README.md)
+- [故障排查](troubleshooting.md)
+- [版本兼容矩阵](version-compatibility.md)
+- [HAR GitHub Release](release/har-release-guide.md)
+- [ohpm 发布准备](release/ohpm-publish-guide.md)
+- [Release Checklist](release/checklist.md)
+
 ## Release
 
 - [Release Preparation](../RELEASE.md)
@@ -122,6 +135,6 @@ GitHub Actions 配置见 [CI 文档](ci/README.md)。workflow 自动运行 Node 
 ## npm 发布与接入
 
 - [npm SDK 安装](guide/npm-sdk-install.md)
-- [npm SDK + 本地 HAR Demo](guide/npm-sdk-harmony-demo.md)
+- [npm SDK + 本地 HAR Demo](guide/npm-sdk-har-demo.md)
 - [npm 发布检查清单](release/npm-publish-checklist.md)
 - [v0.1.0 npm 发布记录](release/v0.1.0-publish-record.md)

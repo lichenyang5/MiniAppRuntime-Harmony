@@ -4,13 +4,13 @@
 
 ## 当前版本
 
-根项目和 H5 SDK 当前使用 `0.1.0` 候选版本。`myascf_runtime/oh-package.json5` 使用 `1.0.0`，因为当前 Hvigor 的模块版本校验要求 major 从 1 开始。两个版本轨道都处于本地准备阶段，不代表 npm 或 HarmonyOS 包已经发布。
+H5 SDK 当前版本为 `0.1.0`，并已发布到 npm。`myascf_runtime/oh-package.json5` 使用 `1.0.0`，因为当前 Hvigor 对 `0.1.0` 给出会影响 ohpm 安装和发布的版本警告。HAR 版本仍处于本地/GitHub Release/ohpm 准备阶段，不表示已发布到 HarmonyOS 包仓库。
 
 ## 包边界
 
 | 单元 | 类型 | 当前接入 | 发布状态 |
 | --- | --- | --- | --- |
-| `myascf_runtime` | HarmonyOS ArkTS HAR `1.0.0` metadata | `file:../myascf_runtime` | 本地包，未正式发布 |
+| `myascf_runtime` | HarmonyOS ArkTS HAR `1.0.0` metadata | source link / local HAR | 本地与 GitHub Release 准备，未发布 ohpm |
 | `h5_sdk` | JavaScript / TypeScript SDK | dist 复制到 rawfile | npm 元数据准备中，保持 private |
 | `entry` | HarmonyOS Demo | DevEco Studio 运行 | 示例应用，不作为库发布 |
 

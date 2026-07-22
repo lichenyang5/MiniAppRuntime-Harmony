@@ -1,0 +1,26 @@
+{
+  "name": "miniapp-runtime-npm-har-consumer-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build && node scripts/inline-dist.mjs",
+    "sync:harmony": "node scripts/sync-harmony.mjs",
+    "build:harmony": "npm run build && npm run sync:harmony",
+    "build:harmony-web": "npm run build:harmony"
+  },
+  "dependencies": {
+    "@lcy453/miniapp-runtime-harmony-web-sdk": "0.1.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "@types/react-dom": "19.1.6",
+    "@vitejs/plugin-react": "4.6.0",
+    "typescript": "5.7.2",
+    "vite": "6.4.3"
+  }
+}
