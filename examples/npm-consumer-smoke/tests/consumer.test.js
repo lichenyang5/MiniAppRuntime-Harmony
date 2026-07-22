@@ -7,9 +7,9 @@ import {
   ERROR_CODE_NATIVE_UNAVAILABLE,
   createMyASCF,
   createTypedApi
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
-const packageRoot = path.resolve('node_modules', '@lichenyang5', 'miniapp-runtime-harmony-web-sdk');
+const packageRoot = path.resolve('node_modules', '@lcy453', 'miniapp-runtime-harmony-web-sdk');
 
 test('tarball exposes only the expected public package files', () => {
   const expected = [

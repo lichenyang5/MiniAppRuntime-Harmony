@@ -1,5 +1,5 @@
 {
-  "name": "@lichenyang5/miniapp-runtime-harmony-web-sdk",
+  "name": "@lcy453/miniapp-runtime-harmony-web-sdk",
   "version": "0.1.0",
   "description": "H5 JavaScript SDK for the MiniAppRuntime-Harmony JSBridge.",
   "private": false,

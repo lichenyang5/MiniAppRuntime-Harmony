@@ -7,12 +7,12 @@ import {
   createTypedApi,
   createMyASCF,
   initMyASCF
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const packageRoot = path.resolve(
   'node_modules',
-  '@lichenyang5',
-  '@lichenyang5/miniapp-runtime-harmony-web-sdk'
+  '@lcy453',
+  'miniapp-runtime-harmony-web-sdk'
 );
 
 test('installed tarball contains IIFE, ESM and type entry files', () => {

@@ -6,7 +6,7 @@
 
 ```mermaid
 flowchart TD
-  H5["H5 Demo"] --> SDK["@lichenyang5/miniapp-runtime-harmony-web-sdk"]
+  H5["H5 Demo"] --> SDK["@lcy453/miniapp-runtime-harmony-web-sdk"]
   SDK --> Send["window.myascf.send(action, params, options)"]
   Send --> Request["requestId + callback map"]
   Request --> Native["window.MyASCFNative.postMessage"]

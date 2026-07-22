@@ -1,8 +1,8 @@
 # Changelog
 
-这份文件记录 `@lichenyang5/miniapp-runtime-harmony-web-sdk` 的公开变化。
+这份文件记录 `@lcy453/miniapp-runtime-harmony-web-sdk` 的公开变化。
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-07-22
 
 ### Added
 
@@ -20,5 +20,5 @@
 
 ### Notes
 
-- 当前包已调整为 `@lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0` 公开发布候选，尚未执行 npm publish。
+- `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0` 已发布到 npm，并完成独立 registry 消费验证。
 - action 类型尚未从 API Manifest 自动生成。

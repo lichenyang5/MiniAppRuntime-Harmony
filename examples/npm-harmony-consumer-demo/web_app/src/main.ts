@@ -2,7 +2,7 @@ import {
   createTypedApi,
   initMyASCF,
   type DebugRecord
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 import './style.css';
 
 const debugRecords: DebugRecord[] = [];

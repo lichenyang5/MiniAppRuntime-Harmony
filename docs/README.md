@@ -71,7 +71,7 @@
 
 ## 当前状态
 
-已完成 JSBridge 主链路、Toast/Clipboard/Storage、`network.request`、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper 和 npm pack 本地验证。综合文章草稿与发布清单已整理，但尚未在掘金发布。当前已有 7 张真实证据图片，Clipboard 独立结果、Web loading 和 URL Guard/错误页仍待补；签名凭据清理、npm publish 和 HAR 发布方式调研尚未完成。
+已完成 JSBridge 主链路、Toast/Clipboard/Storage、`network.request`、DebugPanel、本地 HAR、MyASCFRuntime、Web 容器增强、API Manifest、API 文档生成、H5 SDK IIFE/ESM、Manifest 类型生成、typed helper、npm 发布和 registry 消费验证。综合文章草稿与发布清单已整理，但尚未在掘金发布。当前已有 7 张真实证据图片，Clipboard 独立结果、Web loading 和 URL Guard/错误页仍待补；签名凭据轮换与历史清理、HAR 发布方式调研尚未完成。
 
 ## Release
 

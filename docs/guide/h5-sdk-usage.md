@@ -2,7 +2,7 @@
 
 这篇文档解决什么问题：说明 H5 页面如何通过 script 或 ESM 两种方式接入 SDK，并调用 ArkTS runtime。
 
-当前候选版本为 `0.1.0`，尚未发布到 npm，仓库内通过 dist 文件或本地 tarball 验证。
+当前公开版本为 `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0`，已通过 npm registry 消费验证。
 
 ## Script 方式
 
@@ -39,7 +39,7 @@ npm run h5:sync
 import {
   initMyASCF,
   type BridgeResponse
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const myascf = initMyASCF();
 const response: BridgeResponse = await myascf.send('ui.showToast', {
@@ -50,7 +50,7 @@ const response: BridgeResponse = await myascf.send('ui.showToast', {
 需要自行管理挂载时，可以使用：
 
 ```ts
-import { createMyASCF } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+import { createMyASCF } from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const myascf = createMyASCF();
 // createMyASCF 不会修改 window.myascf。
@@ -62,7 +62,7 @@ window.__myascf_on_native_response__ = (response) => {
 ## 类型化 API
 
 ```ts
-import { createTypedApi, initMyASCF } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+import { createTypedApi, initMyASCF } from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);
@@ -105,4 +105,4 @@ npm install
 npm test
 ```
 
-consumer 示例通过包名进行真实 ESM import，并验证 package exports 与类型声明。当前不执行 `npm publish`。
+consumer 示例通过 registry 包名进行真实 ESM import，并验证 package exports 与类型声明。

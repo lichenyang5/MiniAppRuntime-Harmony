@@ -2,7 +2,7 @@ import {
   ERROR_CODE_NATIVE_UNAVAILABLE,
   createTypedApi,
   initMyASCF
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);

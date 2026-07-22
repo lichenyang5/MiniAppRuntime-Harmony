@@ -9,7 +9,7 @@
     "test": "npm run build && node --test tests/consumer.test.js"
   },
   "dependencies": {
-    "@lichenyang5/miniapp-runtime-harmony-web-sdk": "file:../../h5_sdk/lichenyang5-miniapp-runtime-harmony-web-sdk-0.1.0.tgz"
+    "@lcy453/miniapp-runtime-harmony-web-sdk": "0.1.0"
   },
   "devDependencies": {
     "esbuild": "0.28.1",

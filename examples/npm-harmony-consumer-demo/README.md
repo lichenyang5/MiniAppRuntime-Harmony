@@ -4,7 +4,7 @@
 
 ## Boundaries
 
-- `web_app` 的 SDK 依赖固定为 `@lichenyang5/miniapp-runtime-harmony-web-sdk: 0.1.0`。
+- `web_app` 的 SDK 依赖固定为 `@lcy453/miniapp-runtime-harmony-web-sdk: 0.1.0`。
 - `web_app` 不允许使用 file、link、workspace 或仓库源码 import。
 - `harmony_app` 只把 ArkTS Runtime 作为本地 HAR 接入。
 - 不发布 HAR，不发布 ohpm，不执行 CLI。

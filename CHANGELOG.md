@@ -6,7 +6,7 @@
 
 ### Added
 
-- H5 SDK 调整为 `@lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0` 公开 scoped 包候选。
+- H5 SDK 以 `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0` 发布，并补充 registry 消费验证。
 - 新增本地 tgz consumer smoke，以及 registry SDK + 本地 HAR 的独立 HarmonyOS Demo。
 - 根 package 入口改为无副作用 ESM，IIFE 自动初始化保留在 `./iife` 子路径。
 
@@ -51,7 +51,7 @@
 ### Notes
 
 - 当前版本用于 GitHub 源码展示、本地 HAR 接入和 H5 SDK dist 验证。
-- H5 SDK 尚未发布到 npm，HAR 尚未发布到 HarmonyOS 包仓库。
+- H5 SDK 已发布到 npm；HAR 尚未发布到 HarmonyOS 包仓库。
 - `9de3f82` 的 GitHub Actions 已通过，但最终发布 commit 尚未产生。
 - v0.1.0 tag、GitHub Release 和技术文章尚未发布。
 - 签名凭据轮换/吊销及仓库历史清理是创建 Release 前的阻塞项。

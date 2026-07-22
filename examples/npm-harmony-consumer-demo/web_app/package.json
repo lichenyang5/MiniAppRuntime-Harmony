@@ -10,7 +10,7 @@
     "build:harmony-web": "npm run build && npm run sync:harmony"
   },
   "dependencies": {
-    "@lichenyang5/miniapp-runtime-harmony-web-sdk": "0.1.0"
+    "@lcy453/miniapp-runtime-harmony-web-sdk": "0.1.0"
   },
   "devDependencies": {
     "typescript": "5.7.2",

@@ -1,4 +1,4 @@
-# @lichenyang5/miniapp-runtime-harmony-web-sdk
+# @lcy453/miniapp-runtime-harmony-web-sdk
 
 这篇文档解决什么问题：说明 MiniAppRuntime-Harmony H5 SDK 的安装方式、公开入口、ArkWeb 边界、构建测试和首次发布状态。
 
@@ -9,7 +9,7 @@
 发布后从 npm registry 安装：
 
 ```bash
-npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
+npm install @lcy453/miniapp-runtime-harmony-web-sdk
 ```
 
 当前包处于首次发布前人工确认阶段。registry 回读完成前，不将上述命令描述为已验证可用。
@@ -20,7 +20,7 @@ npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
 import {
   initMyASCF,
   createTypedApi
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);
@@ -41,7 +41,7 @@ IIFE 产物位于 `dist/myascf.js`，加载后会自动执行 `initMyASCF()`：
 </script>
 ```
 
-npm 子路径为 `@lichenyang5/miniapp-runtime-harmony-web-sdk/iife`。该入口具有自动初始化副作用，因此 package.json 只把 IIFE 标记为 `sideEffects`。
+npm 子路径为 `@lcy453/miniapp-runtime-harmony-web-sdk/iife`。该入口具有自动初始化副作用，因此 package.json 只把 IIFE 标记为 `sideEffects`。
 
 ## Typed API
 
@@ -116,12 +116,12 @@ npm pack
 
 ## 当前发布状态
 
-- 包名：`@lichenyang5/miniapp-runtime-harmony-web-sdk`
+- 包名：`@lcy453/miniapp-runtime-harmony-web-sdk`
 - 版本：`0.1.0`
 - registry：`https://registry.npmjs.org/`
 - package 配置：`private: false`、`publishConfig.access = public`
-- 本地 tgz consumer：已验证
-- npm publish：尚未执行，等待项目作者确认
+- npm registry consumer：已验证
+- npm publish：`0.1.0` 已发布
 - ArkTS Runtime：继续通过本地 HAR/GitHub 源码接入，不随 npm 包发布
 
 项目用于开源学习和工程实践，不宣称达到生产级 SDK 的安全、兼容性或设备覆盖要求。

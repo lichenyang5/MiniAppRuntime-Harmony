@@ -5,7 +5,7 @@
 ## Install
 
 ```bash
-npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
+npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 ```
 
 `package.json` 应为：
@@ -13,7 +13,7 @@ npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
 ```json
 {
   "dependencies": {
-    "@lichenyang5/miniapp-runtime-harmony-web-sdk": "0.1.0"
+    "@lcy453/miniapp-runtime-harmony-web-sdk": "0.1.0"
   }
 }
 ```
@@ -26,7 +26,7 @@ npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
 import {
   initMyASCF,
   createTypedApi
-} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+} from '@lcy453/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);
@@ -36,16 +36,16 @@ const api = createTypedApi(client);
 
 ## IIFE
 
-IIFE 位于包内 `dist/myascf.js`，也可通过 `@lichenyang5/miniapp-runtime-harmony-web-sdk/iife` 子路径解析。它具有自动挂载 `window.myascf` 的副作用。
+IIFE 位于包内 `dist/myascf.js`，也可通过 `@lcy453/miniapp-runtime-harmony-web-sdk/iife` 子路径解析。它具有自动挂载 `window.myascf` 的副作用。
 
 ## Registry Verification
 
 首次发布后执行：
 
 ```bash
-npm view @lichenyang5/miniapp-runtime-harmony-web-sdk version
-npm view @lichenyang5/miniapp-runtime-harmony-web-sdk dist
-npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
+npm view @lcy453/miniapp-runtime-harmony-web-sdk version
+npm view @lcy453/miniapp-runtime-harmony-web-sdk dist
+npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 npm run build
 ```
 

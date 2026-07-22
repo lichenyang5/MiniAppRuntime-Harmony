@@ -44,7 +44,7 @@ try {
   fail(`cannot read h5_sdk/package.json: ${error.message}`);
 }
 
-if (packageJson.name !== '@lichenyang5/miniapp-runtime-harmony-web-sdk') {
+if (packageJson.name !== '@lcy453/miniapp-runtime-harmony-web-sdk') {
   fail(`unexpected public package name ${packageJson.name}`);
 }
 if (packageJson.private !== false) {
