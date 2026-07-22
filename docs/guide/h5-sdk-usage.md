@@ -39,7 +39,7 @@ npm run h5:sync
 import {
   initMyASCF,
   type BridgeResponse
-} from 'miniapp-runtime-harmony-web-sdk';
+} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
 
 const myascf = initMyASCF();
 const response: BridgeResponse = await myascf.send('ui.showToast', {
@@ -50,7 +50,7 @@ const response: BridgeResponse = await myascf.send('ui.showToast', {
 需要自行管理挂载时，可以使用：
 
 ```ts
-import { createMyASCF } from 'miniapp-runtime-harmony-web-sdk';
+import { createMyASCF } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
 
 const myascf = createMyASCF();
 // createMyASCF 不会修改 window.myascf。
@@ -62,7 +62,7 @@ window.__myascf_on_native_response__ = (response) => {
 ## 类型化 API
 
 ```ts
-import { createTypedApi, initMyASCF } from 'miniapp-runtime-harmony-web-sdk';
+import { createTypedApi, initMyASCF } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);

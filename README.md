@@ -108,14 +108,26 @@ H5 -> window.myascf.send -> JavaScriptProxy -> BridgeController
 
 Current candidate version: `v0.1.0`.
 
-项目当前按 GitHub 开源展示候选版整理。H5 SDK 已具备 npm 包结构，但仍保持 `private: true`，本阶段不执行 npm publish；ArkTS runtime 当前只提供本地 HAR 和 GitHub 示例接入，不声称已经发布到 HarmonyOS 包仓库。
+项目当前按 GitHub 开源展示候选版整理。H5 SDK 已整理为公开 scoped 包候选并完成本地 tgz 消费验证，但尚未执行 npm publish；ArkTS runtime 当前只提供本地 HAR 和 GitHub 示例接入，不声称已经发布到 HarmonyOS 包仓库。
+
+发布后安装：
+
+```bash
+npm install @lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0
+```
+
+```ts
+import { initMyASCF, createTypedApi } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
+```
+
+在首次发布和 registry 回读完成前，项目不会提前标记为 Published。
 
 `9de3f82` 的 [GitHub Actions CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/runs/29386035145) 已通过，但 `v0.1.0` 尚未创建 tag 或 GitHub Release。远端历史中的签名凭据必须先轮换或吊销并完成清理，这是发布阻塞项。详情见 [Release Preparation](RELEASE.md)、[v0.1.0 Release Notes](docs/release/v0.1.0-release-notes.md)、[Publish Record](docs/release/v0.1.0-publish-record.md) 和 [候选验收清单](docs/release/v0.1.0-checklist.md)。
 
 ## H5 SDK 类型化调用
 
 ```ts
-import { createTypedApi, initMyASCF } from 'miniapp-runtime-harmony-web-sdk';
+import { createTypedApi, initMyASCF } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);
@@ -137,7 +149,7 @@ npm run pack:check
 npm run pack:local
 ```
 
-生成的 `miniapp-runtime-harmony-web-sdk-0.1.0.tgz` 只用于本地验证并由 Git 忽略。`npm pack` 检查候选包内容，和把包上传到 registry 的 `npm publish` 是两件事。完整步骤见 [npm pack 验证](docs/release/npm-pack-verify.md)。
+生成的 `lichenyang5-miniapp-runtime-harmony-web-sdk-0.1.0.tgz` 只用于本地验证并由 Git 忽略。`npm pack` 检查候选包内容，和把包上传到 registry 的 `npm publish` 是两件事。完整步骤见 [npm pack 验证](docs/release/npm-pack-verify.md)。
 
 ## CI / Quality
 

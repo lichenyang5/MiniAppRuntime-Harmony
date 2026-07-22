@@ -51,7 +51,7 @@ await client.sendTyped('system.clipboard.readText', undefined, {
 import {
   createTypedApi,
   initMyASCF
-} from 'miniapp-runtime-harmony-web-sdk';
+} from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
 
 const client = initMyASCF();
 const api = createTypedApi(client);

@@ -2,7 +2,7 @@
 
 这篇文档解决什么问题：验证 H5 SDK 的本地 npm tarball 可以被仓库外形态的 TypeScript 前端工程通过 ESM 入口消费。
 
-示例直接从 `miniapp-runtime-harmony-web-sdk` 导入 `initMyASCF`、`createTypedApi` 和类型，不复制 IIFE 文件，也不依赖预先存在的 `window.myascf`。
+示例直接从 `@lichenyang5/miniapp-runtime-harmony-web-sdk` 导入 `initMyASCF`、`createTypedApi` 和类型，不复制 IIFE 文件，也不依赖预先存在的 `window.myascf`。
 
 ## 准备 tarball
 

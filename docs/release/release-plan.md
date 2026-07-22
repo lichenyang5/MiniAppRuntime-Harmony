@@ -21,7 +21,7 @@
 - 在现有 IIFE/ESM、typed API 和 npm pack 结果上补充浏览器兼容验证。
 - 根据 v0.1.0 反馈完善 API 类型、错误语义和兼容性说明。
 - 补充 README 英文摘要与浏览器测试矩阵。
-- 根据实际反馈决定是否移除 `private: true`。
+- 已移除 `private: true` 并设置 public publishConfig；真正发布仍需人工审批。
 
 ## v0.3.0：发布与生态调研
 

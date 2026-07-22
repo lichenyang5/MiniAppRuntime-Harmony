@@ -44,9 +44,23 @@ try {
   fail(`cannot read h5_sdk/package.json: ${error.message}`);
 }
 
+if (packageJson.name !== '@lichenyang5/miniapp-runtime-harmony-web-sdk') {
+  fail(`unexpected public package name ${packageJson.name}`);
+}
+if (packageJson.private !== false) {
+  fail('private must be false for the public package candidate');
+}
+if (!packageJson.publishConfig || packageJson.publishConfig.access !== 'public') {
+  fail('publishConfig.access must be public');
+}
+if (packageJson.publishConfig.registry !== 'https://registry.npmjs.org/') {
+  fail('publishConfig.registry must target the official npm registry');
+}
+
 requirePackageFile('main', packageJson.main);
 requirePackageFile('module', packageJson.module);
 requirePackageFile('types', packageJson.types);
+requirePackageFile('browser', packageJson.browser);
 checkExportPaths(packageJson.exports, 'exports');
 
 if (!Array.isArray(packageJson.files) || !packageJson.files.includes('dist')) {
@@ -65,6 +79,12 @@ async function checkEsmEntry() {
     packageJson.module : `./${packageJson.module}`;
   if (importTarget !== normalizedModule) {
     fail(`module and exports["."].import differ: ${packageJson.module} / ${importTarget}`);
+  }
+  const normalizedMain = packageJson.main.startsWith('./') ? packageJson.main : `./${packageJson.main}`;
+  const defaultTarget = packageJson.exports && packageJson.exports['.'] &&
+    packageJson.exports['.'].default;
+  if (normalizedMain !== importTarget || defaultTarget !== importTarget) {
+    fail('main, exports["."].import and exports["."].default must use the side-effect-free ESM entry');
   }
   const modulePath = path.resolve(sdkDir, importTarget);
   let exportsObject;

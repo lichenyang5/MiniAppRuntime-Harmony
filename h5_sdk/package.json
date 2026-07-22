@@ -1,16 +1,18 @@
 {
-  "name": "miniapp-runtime-harmony-web-sdk",
+  "name": "@lichenyang5/miniapp-runtime-harmony-web-sdk",
   "version": "0.1.0",
-  "private": true,
+  "description": "H5 JavaScript SDK for the MiniAppRuntime-Harmony JSBridge.",
+  "private": false,
   "type": "module",
-  "main": "dist/myascf.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.esm.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "browser": "./dist/index.esm.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
-      "default": "./dist/myascf.js"
+      "default": "./dist/index.esm.js"
     },
     "./iife": {
       "types": "./dist/myascf.d.ts",
@@ -43,9 +45,29 @@
     "pack:dry-run": "npm pack --dry-run --ignore-scripts",
     "pack:check": "npm run build && npm run pack:dry-run",
     "pack:local": "npm pack",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run check"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lichenyang5/MiniAppRuntime-Harmony.git"
+  },
+  "homepage": "https://github.com/lichenyang5/MiniAppRuntime-Harmony#readme",
+  "bugs": {
+    "url": "https://github.com/lichenyang5/MiniAppRuntime-Harmony/issues"
   },
   "license": "MIT",
+  "keywords": [
+    "HarmonyOS",
+    "ArkWeb",
+    "JSBridge",
+    "WebView",
+    "H5",
+    "ArkTS"
+  ],
   "devDependencies": {
     "esbuild": "0.28.1",
     "typescript": "5.7.2"

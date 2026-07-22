@@ -21,7 +21,7 @@
 
 ## 两个包的发布方向
 
-H5 SDK 本质上是普通 JavaScript / TypeScript SDK，可以继续完成 `npm pack` 检查并在合适时发布。当前 `private: true` 用于阻止误发布。
+H5 SDK 本质上是普通 JavaScript / TypeScript SDK。当前已设置公开 scoped 包名、`private: false` 和 `publishConfig.access = public`，真正发布仍由人工确认阻止误操作。
 
 `myascf_runtime` 是 HarmonyOS 本地 HAR 模块，不能简单等同于普通 npm 包。当前优先通过本地 file 依赖和 GitHub 示例展示，后续再调研对应的 HarmonyOS 包管理与发布方式。
 
@@ -36,7 +36,7 @@ H5 SDK `0.1.0` 已完成：
 - TypeScript 全局类型编译。
 - 普通浏览器 NATIVE_UNAVAILABLE 验证。
 
-本次预检没有执行 npm publish，H5 SDK 继续保持 `private: true`。
+本次预检没有执行 npm publish。H5 SDK 已完成 scoped tgz、独立 consumer 和 HarmonyOS Demo 构建验证，registry 安装验证必须等首次发布后执行。
 
 ## 发布前检查
 

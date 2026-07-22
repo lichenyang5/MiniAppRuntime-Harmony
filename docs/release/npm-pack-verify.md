@@ -21,7 +21,7 @@ npm run pack:check
 npm run pack:local
 ```
 
-候选文件名为 `miniapp-runtime-harmony-web-sdk-0.1.0.tgz`，已由 Git 忽略。
+候选文件名为 `lichenyang5-miniapp-runtime-harmony-web-sdk-0.1.0.tgz`，已由 Git 忽略。
 
 ## 必查入口
 
@@ -49,7 +49,7 @@ npm test
 示例通过以下代码真实消费 package exports：
 
 ```ts
-import { initMyASCF } from 'miniapp-runtime-harmony-web-sdk';
+import { initMyASCF } from '@lichenyang5/miniapp-runtime-harmony-web-sdk';
 ```
 
 它会验证 TypeScript 类型解析、ESM bundle、`createMyASCF`/`initMyASCF` 语义和普通浏览器中的 `NATIVE_UNAVAILABLE`。

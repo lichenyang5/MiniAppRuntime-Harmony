@@ -6,6 +6,10 @@
 
 ### Added
 
+- H5 SDK 调整为 `@lichenyang5/miniapp-runtime-harmony-web-sdk@0.1.0` 公开 scoped 包候选。
+- 新增本地 tgz consumer smoke，以及 registry SDK + 本地 HAR 的独立 HarmonyOS Demo。
+- 根 package 入口改为无副作用 ESM，IIFE 自动初始化保留在 `./iife` 子路径。
+
 - `network.request` ArkTS Runtime 垂直能力链路。
 - Network 响应增加 `ok`、可选 `statusText` 和可空 `body`，明确 2xx/4xx/5xx 都以 Bridge `SUCCESS` 返回。
 - HTTP/HTTPS URL、method、headers、body、network timeout 与 responseType 校验。

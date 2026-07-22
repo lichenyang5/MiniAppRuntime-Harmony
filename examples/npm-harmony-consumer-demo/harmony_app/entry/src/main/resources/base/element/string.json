@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "npm SDK and local HAR consumer"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "ArkWeb consumer demo"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "npm SDK Consumer"
+    }
+  ]
+}

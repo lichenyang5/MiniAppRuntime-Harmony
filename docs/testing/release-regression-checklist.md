@@ -35,7 +35,7 @@ v0.1.0 展示候选版还需同步完成 [版本专属验收清单](../release/v
 - [ ] pack 内容包含 `dist/myascf.js`、`dist/index.esm.js` 和 d.ts。
 - [ ] pack 内容不包含 `src`、`tests`、`scripts` 或 `node_modules`。
 - [ ] package version、CHANGELOG 和 release version 一致。
-- [ ] `private: true` 的当前发布边界保持不变。
+- [ ] H5 SDK 保持 `private: false` 和 public publishConfig，但本轮未获人工确认前不执行 npm publish。
 
 ## 文档与合规
 

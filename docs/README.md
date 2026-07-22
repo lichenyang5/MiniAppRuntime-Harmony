@@ -118,3 +118,10 @@ GitHub Actions 配置见 [CI 文档](ci/README.md)。workflow 自动运行 Node 
 ## 公开边界
 
 所有文档只描述本仓库自行实现的代码和公开 HarmonyOS 能力。项目用于开源学习与工程实践，不夸大为完整小程序平台或生产级 SDK。
+
+## npm 发布与接入
+
+- [npm SDK 安装](guide/npm-sdk-install.md)
+- [npm SDK + 本地 HAR Demo](guide/npm-sdk-harmony-demo.md)
+- [npm 发布检查清单](release/npm-publish-checklist.md)
+- [v0.1.0 npm 发布记录](release/v0.1.0-publish-record.md)
