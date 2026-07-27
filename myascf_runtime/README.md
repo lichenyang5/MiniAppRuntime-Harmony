@@ -6,7 +6,13 @@
 
 ## 安装与入口
 
-当前通过本地 HAR 接入：
+在 HarmonyOS 工程的模块目录中执行：
+
+```bash
+ohpm install myascf_runtime
+安装特定版本
+ohpm install myascf_runtime@1.0.0
+当前通过本地 HAR 接入:
 
 ```json5
 {
