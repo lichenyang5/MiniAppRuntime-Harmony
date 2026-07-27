@@ -1,101 +1,59 @@
-# API：Clipboard
+# Clipboard API
 
-这篇文档解决的问题：记录 Clipboard API 的 action 名称、请求参数、响应结构和错误处理方式。
+你将学会什么：写入和读取纯文本剪贴板，并处理读取权限。
 
-两个 action 的结构化元信息维护在 HAR `BUILTIN_API_MANIFEST`。
-
-## Actions
-
-```text
-system.clipboard.writeText
-system.clipboard.readText
-```
-
-## system.clipboard.writeText
-
-### 请求
-
-```json
-{
-  "requestId": "string",
-  "action": "system.clipboard.writeText",
-  "params": {
-    "text": "hello from MiniAppRuntime"
-  }
-}
-```
+## `system.clipboard.writeText`
 
 ### 参数
 
-| 字段 | 类型 | 必填 | 说明 |
-| --- | --- | --- | --- |
-| `text` | `string` | 是 | 要写入剪贴板的文本，不能为空 |
+| 字段 | 类型 | 必填 | 默认值 | 说明 |
+| --- | --- | --- | --- | --- |
+| `text` | `string` | 是 | 无 | trim 后必须非空 |
 
-### 成功响应
+### 返回值与示例
 
-```json
-{
-  "requestId": "对应请求 requestId",
-  "code": 0,
-  "message": "write clipboard success",
-  "data": {
-    "echoAction": "system.clipboard.writeText"
+返回 `echoAction`。
+
+```ts
+await api.system.clipboard.writeText({ text: 'ORDER-2026-001' });
+await api.system.clipboard.writeText({ text: 'https://example.com/share' });
+```
+
+成功 message 为 `write clipboard success`；空文本返回 `PARAM_ERROR`。
+
+## `system.clipboard.readText`
+
+### 参数
+
+无参数。
+
+### 返回值
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `echoAction` | `string` | 当前 action |
+| `text` | `string` | 系统剪贴板主文本 |
+
+### React 示例
+
+```tsx
+const readClipboard = async (): Promise<void> => {
+  try {
+    const response = await api.system.clipboard.readText();
+    setValue(response.data?.text ?? '');
+  } catch (error: unknown) {
+    setError('请检查剪贴板读取授权');
   }
-}
+};
 ```
 
-### 参数错误
+成功 message 为 `read clipboard success`。权限拒绝或平台异常经 Dispatcher 转换为 `INTERNAL_ERROR`。
 
-```json
-{
-  "requestId": "对应请求 requestId",
-  "code": 1002,
-  "message": "PARAM_ERROR: text is required",
-  "data": {
-    "echoAction": "system.clipboard.writeText"
-  }
-}
-```
+### 权限与实现链路
 
-## system.clipboard.readText
+读取需要宿主声明 `ohos.permission.READ_PASTEBOARD` 并按系统要求授权；写入不需要该读取权限。H5 SDK → ClipboardBiz → ClipboardImp → pasteboard。
 
-### 请求
+## 下一步阅读
 
-```json
-{
-  "requestId": "string",
-  "action": "system.clipboard.readText",
-  "params": {}
-}
-```
-
-### 成功响应
-
-```json
-{
-  "requestId": "对应请求 requestId",
-  "code": 0,
-  "message": "read clipboard success",
-  "data": {
-    "echoAction": "system.clipboard.readText",
-    "text": "剪贴板内容"
-  }
-}
-```
-
-## 当前实现范围
-
-- 支持写入纯文本。
-- 支持读取纯文本。
-- 不支持图片、富文本、多 record 解析。
-- 权限与系统弹窗遵循当前 HarmonyOS SDK 和设备行为，项目不额外实现权限框架。
-
-## H5 示例
-
-```js
-window.myascf.send("system.clipboard.writeText", {
-  text: "hello from MiniAppRuntime"
-})
-
-window.myascf.send("system.clipboard.readText", {})
-```
+- [Clipboard 示例](../examples/clipboard.md)
+- [错误处理](../guide/error-handling.md)

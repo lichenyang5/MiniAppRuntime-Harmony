@@ -1,27 +1,64 @@
 # Storage API
 
-这篇文档解决什么问题：说明 H5 如何通过 MyASCF 调用 HarmonyOS Preferences 本地键值存储，以及参数、响应和错误约定。
+你将学会什么：用 HarmonyOS Preferences 保存、读取、删除和清空字符串数据。
 
-四个 action 的结构化元信息维护在 HAR `BUILTIN_API_MANIFEST`。
+Storage 名称为 `myascf_storage`，当前只接受字符串 value。不存在的 key 返回空字符串，因此无法仅凭空字符串区分“未保存”和“保存了空字符串”。
 
-## Actions
+## `system.storage.setItem`
 
-- `system.storage.setItem`：写入字符串值，参数为 `key`、`value`。
-- `system.storage.getItem`：读取字符串值，参数为 `key`；不存在时 `data.value` 返回空字符串。
-- `system.storage.removeItem`：删除指定 key；key 不存在也返回成功。
-- `system.storage.clear`：清空 `myascf_storage` Preferences 文件。
+| 字段 | 类型 | 必填 | 默认值 | 说明 |
+| --- | --- | --- | --- | --- |
+| `key` | `string` | 是 | 无 | trim 后非空 |
+| `value` | `string` | 是 | 无 | 原样保存，可为空字符串 |
 
-```js
-await window.myascf.send('system.storage.setItem', { key: 'username', value: 'lichenyang' });
-const response = await window.myascf.send('system.storage.getItem', { key: 'username' });
-await window.myascf.send('system.storage.removeItem', { key: 'username' });
-await window.myascf.send('system.storage.clear', {});
+```ts
+await api.system.storage.setItem({ key: 'username', value: 'lichenyang' });
 ```
 
-`key` 必须是非空字符串；`setItem.value` 当前只接受字符串。校验失败返回 `PARAM_ERROR`，Preferences 调用异常由 Dispatcher 转换为 `INTERNAL_ERROR`。
+返回 `echoAction`、`key`、`value`；非法参数返回 `PARAM_ERROR`。
 
-调用链为 H5 -> JavaScriptProxy -> BridgeController -> BridgeDispatcher -> HandlerRegistry -> StorageBiz -> StorageImp -> Preferences，响应沿原链路回到 H5 Promise。
+## `system.storage.getItem`
 
-StorageBiz 只处理参数和响应语义；StorageImp 只封装 `@kit.ArkData` Preferences。Context 通过 `new MyASCFRuntime(controller, getContext(this))` 传入 HAR，并由门面内部完成注册。
+参数为必填字符串 `key`，返回 `echoAction`、`key`、`value`。
 
-当前只支持字符串键值，不支持 object、批量操作、过期时间和多存储空间。
+```ts
+const response = await api.system.storage.getItem({ key: 'theme' });
+console.log(response.data?.value ?? '');
+```
+
+## `system.storage.removeItem`
+
+参数为必填字符串 `key`。删除是幂等操作，key 不存在仍可成功。
+
+```ts
+await api.system.storage.removeItem({ key: 'username' });
+```
+
+## `system.storage.clear`
+
+无参数，清空框架专用 Preferences。
+
+```ts
+await api.system.storage.clear();
+```
+
+## React 示例
+
+```tsx
+const saveName = async (): Promise<void> => {
+  try {
+    await api.system.storage.setItem({ key: 'username', value: name });
+  } catch (error: unknown) {
+    setError(JSON.stringify(error));
+  }
+};
+```
+
+## 权限、错误和实现链路
+
+无需额外权限。四项 API 都可能出现 `PARAM_ERROR`（有参数时）、`INTERNAL_ERROR`、H5 `TIMEOUT` 与 `CALLBACK_LOST`。H5 SDK → StorageBiz → StorageImp → Preferences，写、删、清都会 flush。
+
+## 下一步阅读
+
+- [Storage 示例](../examples/storage.md)
+- [Preferences 边界](../concepts/biz-and-imp.md)

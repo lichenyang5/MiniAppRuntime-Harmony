@@ -46,7 +46,7 @@ ArkTS runtime 位于 `myascf_runtime` HAR，entry 通过 `MyASCFRuntime` 门面�
 - DebugPanel 调用链记录。
 - H5 侧 NATIVE_UNAVAILABLE 与 INVALID_RESPONSE。
 - Web 容器加载进度、URL Guard、错误状态与重试。
-- runtime 本地 HAR 与 `MyASCFRuntime` 门面。
+- runtime OHPM HAR 与 `MyASCFRuntime` 门面。
 - H5 SDK IIFE + ESM 构建、npm pack 与外部 ESM consumer 本地验证。
 - Manifest JSON 生成 `ApiAction`、Params Map、Response Map 与 typed helper。
 - `sendTyped` 与 `createTypedApi` 复用现有 `send`，不改变 Bridge 协议。

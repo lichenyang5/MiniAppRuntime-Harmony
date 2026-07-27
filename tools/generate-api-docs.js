@@ -109,7 +109,7 @@ function createTable(items) {
     '| --- | --- | --- | --- | --- |'
   ];
   items.forEach((item) => {
-    lines.push(`| ${escapeCell(item.category)} | \`${escapeCell(item.action)}\` | ${formatCodeCell(formatFields(item.params))} | ${formatCodeCell(formatFields(item.response))} | ${item.implemented ? '✅' : 'Planned'} |`);
+    lines.push(`| ${escapeCell(item.category)} | \`${escapeCell(item.action)}\` | ${formatCodeCell(formatFields(item.params))} | ${formatCodeCell(formatFields(item.response))} | ${item.implemented ? 'Implemented' : 'Planned'} |`);
   });
   return lines.join('\n');
 }
@@ -169,11 +169,15 @@ function createApiReadme(items, sdkVersion, runtimeVersion) {
     '',
     '# API Reference',
     '',
-    '这篇文档解决什么问题：从真实 API Manifest 汇总当前公开 action、参数、响应、版本和权限边界。',
+    '## 你将学会什么',
     '',
-    `Current compatibility: H5 SDK \`${sdkVersion}\` + HAR Runtime metadata \`${runtimeVersion}\`.`,
+    '从真实 API Manifest 查看当前公开 action、参数、响应、版本、权限和错误边界。',
     '',
-    '> Run `npm run docs:api` to regenerate this file. Internal actions are intentionally excluded.'
+    `Current compatibility: H5 SDK \`${sdkVersion}\` + OHPM Runtime \`${runtimeVersion}\`.`,
+    '',
+    '> Run `npm run docs:api` to regenerate this file. Internal actions are intentionally excluded.',
+    '',
+    'Category guides: [Runtime](runtime.md) · [UI](ui.md) · [Clipboard](clipboard.md) · [Storage](storage.md) · [Network](network.md)'
   ];
   items.forEach((item) => {
     lines.push(
@@ -204,6 +208,14 @@ function createApiReadme(items, sdkVersion, runtimeVersion) {
       `Errors: ${item.errors.map((error) => `\`${error}\``).join(', ') || '-'}`
     );
   });
+  lines.push(
+    '',
+    '## 下一步',
+    '',
+    '- [API 使用指南](../guide/api-usage.md)',
+    '- [错误处理](../guide/error-handling.md)',
+    '- [扩展 API](../guide/extending-api.md)'
+  );
   return `${lines.join('\n')}\n`;
 }
 

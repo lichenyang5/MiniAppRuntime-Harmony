@@ -30,7 +30,7 @@ This project is based on public HarmonyOS, ArkTS and ArkWeb capabilities. The re
 ```json5
 {
   "dependencies": {
-    "myascf_runtime": "file:../myascf_runtime"
+    "myascf_runtime": "1.0.0"
   }
 }
 ```

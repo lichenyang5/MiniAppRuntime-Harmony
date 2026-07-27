@@ -18,7 +18,7 @@ H5 -> JavaScriptProxy -> BridgeController -> Dispatcher -> Registry
 
 ## 当前完成状态
 
-项目已经实现本地 H5、Promise JSBridge、requestId/callback map、Timeout/Callback Lost、Dispatcher/Registry、Biz/Imp、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime 门面，以及加载进度、URL Guard 和错误状态页。
+项目已经实现本地 H5、Promise JSBridge、requestId/callback map、Timeout/Callback Lost、Dispatcher/Registry、Biz/Imp、Toast/Clipboard/Storage/Network、DebugPanel、OHPM HAR、MyASCFRuntime 门面，以及加载进度、URL Guard 和错误状态页。
 
 ## 项目边界
 

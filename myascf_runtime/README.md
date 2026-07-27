@@ -1,28 +1,28 @@
 # myascf_runtime
 
-这篇文档解决什么问题：说明 HAR Runtime 的公共入口、宿主权限、接入方式和发布边界。
+## 你将学会什么
 
-`myascf_runtime` 是基于 HarmonyOS、ArkTS 和 ArkWeb 公开能力实现的轻量级 JSBridge Runtime。它在 HAR 内部完成 JavaScriptProxy、请求分发、API 注册、Biz/Imp 调用和 `runJavaScript` 回调。
+了解 ArkTS HAR Runtime 的安装、公共入口、宿主权限和 npm H5 SDK 配套方式。
 
-## 安装与入口
+`myascf_runtime` 是基于 HarmonyOS、ArkTS 和 ArkWeb 公开能力实现的轻量级 JSBridge Runtime。它在 HAR 内完成 JavaScriptProxy、请求分发、API 注册、Biz/Imp 调用和 `runJavaScript` 回调。
 
-在 HarmonyOS 工程的模块目录中执行：
+## 安装
 
 ```bash
-ohpm install myascf_runtime
-安装特定版本
 ohpm install myascf_runtime@1.0.0
-当前通过本地 HAR 接入:
+```
+
+模块依赖将写入：
 
 ```json5
 {
   "dependencies": {
-    "myascf_runtime": "file:./libs/myascf_runtime.har"
+    "myascf_runtime": "1.0.0"
   }
 }
 ```
 
-外部工程只从包入口导入：
+## 公共入口
 
 ```ts
 import { MyASCFRuntime, NetworkPolicy } from 'myascf_runtime';
@@ -30,53 +30,28 @@ import { MyASCFRuntime, NetworkPolicy } from 'myascf_runtime';
 const runtime = new MyASCFRuntime(controller, context, networkPolicy);
 ```
 
-不要从 HAR 内部路径导入 Dispatcher、Registry、Biz、Imp、Bootstrap、Controller、Logger 或内置 Manifest。
+应用通过 `getNativeProxy()`、`getProxyName()` 和 `getMethodList()` 注册 ArkWeb JavaScriptProxy。不要从 HAR 内部路径导入 Dispatcher、Registry、Biz、Imp、Bootstrap、Controller、Logger 或内置 Manifest。
 
-## 公共 API
-
-- 门面：`MyASCFRuntime`、`MyASCFNativeProxy`。
-- 响应与错误：`BridgeResponse`、`BridgeResponseData`、`ApiSummary`、`BridgeErrorCode`。
-- 网络配置：`NetworkPolicy`、`NetworkMethod`、`NetworkResponseType`。
-- Web 容器：`WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus`、`WebLoadState`。
-
-`RuntimeLogger`、`BUILTIN_API_MANIFEST`、Bridge 请求解析类型和运行时装配类属于内部实现，不是首版兼容契约。
+首版公共类型还包括 Bridge 响应/错误、NetworkPolicy 与 WebContainerConfig 等必要契约；以包入口 `Index.ets` 的实际导出为准。
 
 ## 宿主权限
 
-HAR 无法替宿主应用声明或动态申请权限，消费方需要按实际启用能力配置 `entry/src/main/module.json5`。
+| 能力 | 宿主声明 | 运行时授权 |
+| --- | --- | --- |
+| `network.request` | `ohos.permission.INTERNET` | 无弹窗 |
+| `system.clipboard.readText` | `ohos.permission.READ_PASTEBOARD` | 需要 |
+| Clipboard write / Storage / Toast / API List | 无额外权限 | 不需要 |
 
-| 能力 | 宿主声明 | 用户授权 | 说明 |
-| --- | --- | --- | --- |
-| `network.request` | `ohos.permission.INTERNET` | 无运行时弹窗 | 只有使用网络能力时才声明。 |
-| `system.clipboard.readText` | `ohos.permission.READ_PASTEBOARD` | 需要调用 `requestPermissionsFromUser` | 用户可能选择单次授权，拒绝后应正常返回错误。 |
-| `system.clipboard.writeText` | 无额外权限 | 否 | 当前实现只调用系统剪贴板 `setData`。 |
-| `system.storage.*` | 无额外权限 | 否 | 使用应用沙箱内 Preferences，需要向 Runtime 传入宿主 `Context`。 |
-| `ui.showToast` | 无额外权限 | 否 | 使用 ArkUI `promptAction`。 |
-| `runtime.getApiList` | 无额外权限 | 否 | 只读取 Runtime 内置元信息。 |
+HAR 不能替宿主声明或申请权限。剪贴板读取权限应按需申请，Storage 通过宿主 `Context` 使用应用沙箱 Preferences。
 
-宿主声明示例：
+## 配套版本
 
-```json5
-"requestPermissions": [
-  { "name": "ohos.permission.INTERNET" },
-  {
-    "name": "ohos.permission.READ_PASTEBOARD",
-    "reason": "$string:pasteboard_reason",
-    "usedScene": {
-      "abilities": ["EntryAbility"],
-      "when": "inuse"
-    }
-  }
-]
-```
+- OHPM Runtime：`myascf_runtime@1.0.0`
+- npm H5 SDK：`@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0`
+- 公开 API：9 个；内部取消 action：1 个
 
-权限应按需申请，不建议在应用启动时无条件批量请求。完整宿主示例见 `examples/npm-har-consumer-demo/harmony`。
+## 下一步
 
-## 分发状态
-
-- H5 SDK：`@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0` 已发布 npm。
-- HAR Runtime：`myascf_runtime@1.0.0`，OHPM 发布准备中，尚未发布。
-- 开源候选 HAR 使用 `artifactType: original`，正式发布参数固定为 `--source_type open`。
-- GitHub Release：尚未创建正式资产。
-
-完整接入、兼容矩阵和发布步骤见仓库 `docs/guide/har-runtime-usage.md`、`docs/version-compatibility.md` 与 `docs/release/ohpm-publish-guide.md`。
+- [Runtime 安装](../docs/guide/runtime-installation.md)
+- [ArkWeb 接入](../docs/guide/arkweb-integration.md)
+- [版本兼容矩阵](../docs/version-compatibility.md)

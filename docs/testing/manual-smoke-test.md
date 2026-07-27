@@ -16,7 +16,7 @@ GitHub Actions 只覆盖 H5 SDK 和 Node 工具链。即使 CI 通过，ArkWeb�
 ## 环境检查
 
 - [ ] DevEco Studio 可以打开并同步工程。
-- [ ] `myascf_runtime` 本地 HAR 依赖可以解析。
+- [ ] `myascf_runtime@1.0.0` OHPM 依赖可以解析。
 - [ ] `entry` 完成 Clean 和 Rebuild，没有 ArkTS 编译错误。
 - [ ] 模拟器或真机可以安装并启动 entry Demo。
 - [ ] ArkWeb 能加载 `rawfile/web/index.html`。

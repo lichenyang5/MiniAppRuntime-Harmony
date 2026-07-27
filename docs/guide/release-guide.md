@@ -1,37 +1,34 @@
-# 发布前整理指南
+# 发布维护指南
 
-这篇文档解决什么问题：说明根项目、ArkTS HAR 和 H5 SDK 如何分别管理版本、构建和候选发布物。
+## 你将学会什么
+
+分别维护 npm H5 SDK 与 OHPM ArkTS Runtime 的版本、构建、验证和文档边界。
 
 ## 当前版本
 
-H5 SDK 当前版本为 `0.1.0`，并已发布到 npm。`myascf_runtime/oh-package.json5` 使用 `1.0.0`，因为当前 Hvigor 对 `0.1.0` 给出会影响 ohpm 安装和发布的版本警告。HAR 版本仍处于本地/GitHub Release/ohpm 准备阶段，不表示已发布到 HarmonyOS 包仓库。
+| 包 | 版本 | Registry |
+| --- | --- | --- |
+| H5 SDK | `0.1.0` | npm，已发布 |
+| ArkTS Runtime | `1.0.0` | OHPM，已发布 |
 
-## 包边界
+两个包服务不同生态，版本号不要求一致，但兼容组合必须记录在 `docs/version-compatibility.md`。
 
-| 单元 | 类型 | 当前接入 | 发布状态 |
-| --- | --- | --- | --- |
-| `myascf_runtime` | HarmonyOS ArkTS HAR `1.0.0` metadata | source link / local HAR | 本地与 GitHub Release 准备，未发布 ohpm |
-| `h5_sdk` | JavaScript / TypeScript SDK | dist 复制到 rawfile | npm 元数据准备中，保持 private |
-| `entry` | HarmonyOS Demo | DevEco Studio 运行 | 示例应用，不作为库发布 |
+## 未来版本流程
 
-## 版本更新顺序
+1. 更新真实能力与 CHANGELOG。
+2. 更新 Manifest、Runtime 注册、SDK 类型、API 文档和 Demo。
+3. 运行 `npm run generate`、根检查和 SDK 检查。
+4. 执行 npm pack、HAR build 与 `ohpm prepublish`。
+5. 在独立 Demo 中从候选包完成 Web/HAP 构建和真机 smoke test。
+6. 作者确认 registry 凭据后分别手动发布。
+7. 回读 registry，再更新发布说明和兼容矩阵。
 
-1. 明确本次真实完成的功能和兼容性变化。
-2. 更新根 CHANGELOG；涉及 H5 SDK 时同步更新其 CHANGELOG。
-3. 分别更新根/H5 候选版本和 HAR `oh-package.json5` 版本，不强行保持数字一致。
-4. 生成 API 文档并构建 H5 SDK。
-5. 运行测试、同步 rawfile、构建 HAP 并完成设备回归。
-6. 更新 RELEASE 和 GitHub Release Notes。
-7. 最后再决定是否创建 tag、GitHub Release 或发布具体包。
+不要把 npm SDK 与 OHPM HAR 合并为一个包，也不要在仓库保存 token、发布码、私钥、证书或签名。
 
-## H5 SDK
+本轮文档整理不执行发布命令，不创建 tag 或 GitHub Release。
 
-H5 SDK 可以按普通前端包思路准备 npm，但当前仍有包名确认、逐 action 类型、pack 内容检查和设备回归事项。详细步骤见 [npm 发布检查清单](../release/npm-publish-checklist.md)。
+## 下一步
 
-## ArkTS HAR
-
-HAR 当前以源码模块和本地 file dependency 使用。不要使用 npm 发布术语描述它，也不要声称已经进入 HarmonyOS 包仓库。后续先调研目标 HarmonyOS SDK 对应的包格式、依赖声明和发布渠道。
-
-## GitHub Release
-
-GitHub Release 可以包含源码 tag、说明文档和验证结果，但不应暗示两个库包已经发布。模板见 [GitHub Release 模板](../release/github-release-template.md)，阶段规划见 [Release Plan](../release/release-plan.md)。
+- [npm 与 OHPM 边界](../concepts/npm-and-ohpm-boundaries.md)
+- [OHPM 发布维护](../release/ohpm-publish-guide.md)
+- [发布回归清单](../testing/release-regression-checklist.md)

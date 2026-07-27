@@ -11,7 +11,7 @@ H5 Promise -> JavaScriptProxy -> Controller -> Dispatcher -> Registry
 -> Biz / Imp -> HarmonyOS Kit -> CallbackExecutor -> H5 Promise
 ```
 
-链路之外还有 requestId、callback map、Timeout、Callback Lost、统一错误码、DebugPanel、本地 HAR、门面类，以及 Web 容器加载状态、URL Guard 和错误恢复。
+链路之外还有 requestId、callback map、Timeout、Callback Lost、统一错误码、DebugPanel、OHPM HAR、门面类，以及 Web 容器加载状态、URL Guard 和错误恢复。
 
 ## 面试讲解顺序
 
@@ -31,7 +31,7 @@ MiniAppRuntime-Harmony | HarmonyOS / ArkTS / ArkWeb / JSBridge / HAR
 设计并实现轻量 HarmonyOS Web 容器与 JSBridge 运行时，支持 H5 Promise
 调用 ArkTS、requestId/callback map、Timeout/Callback Lost 和统一错误响应；
 通过 Dispatcher、Registry、Biz/Imp 与 CallbackExecutor 拆分通信、分发、校验、
-平台调用和回调职责，并将 runtime 抽取为本地 HAR，通过 MyASCFRuntime 门面接入。
+平台调用和回调职责，并将 runtime 抽取为 OHPM HAR，通过 MyASCFRuntime 门面接入。
 
 实现 Toast、Clipboard、Storage 能力和 H5 DebugPanel，并补充 Web 加载进度、
 URL Guard、错误状态与重试入口。

@@ -2,7 +2,7 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "npm SDK and local HAR consumer"
+      "value": "npm SDK and OHPM Runtime consumer"
     },
     {
       "name": "EntryAbility_desc",

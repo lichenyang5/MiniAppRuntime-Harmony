@@ -10,7 +10,7 @@
 - [x] BridgeController、BridgeDispatcher、HandlerRegistry 与 Biz/Imp 分层。
 - [x] Toast、Clipboard、Storage 与 `runtime.getApiList`。
 - [x] DebugPanel、API Manifest 与 API 文档生成。
-- [x] runtime 抽取为 `myascf_runtime` 本地 HAR，并提供 `MyASCFRuntime` 门面。
+- [x] runtime 抽取为 `myascf_runtime` HAR，提供 `MyASCFRuntime` 门面并发布 OHPM `1.0.0`。
 - [x] Web 容器加载进度、URL Guard 与错误状态。
 - [x] H5 SDK 抽离、TypeScript 类型与 rawfile 同步。
 - [x] H5 SDK IIFE script 产物。

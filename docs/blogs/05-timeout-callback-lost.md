@@ -12,4 +12,4 @@ window.myascf.send('ui.showToast', { message: 'hello' }, { timeout: 1000 });
 
 BridgeCallbackExecutor 统一负责 JSON 转义和 `runJavaScript`，避免 Controller、Biz 或 Handler 各自拼接脚本。H5 全局 callback 再统一完成 map 查询、timer 清理和 resolve/reject。
 
-DebugPanel 展示 pending、resolve、reject、timeout、callback_lost，以及 action、requestId、code、message 和 duration。当前这些机制已随 runtime 进入本地 HAR，Toast、Clipboard 和 Storage 共用同一回调出口。
+DebugPanel 展示 pending、resolve、reject、timeout、callback_lost，以及 action、requestId、code、message 和 duration。当前这些机制已随 runtime 进入 OHPM HAR，Toast、Clipboard、Storage 和 Network 共用同一回调出口。

@@ -1,6 +1,8 @@
 # H5 SDK 如何配合 ArkTS Runtime：我做了一个 HarmonyOS JSBridge 框架 Demo
 
-这篇文档解决什么问题：从一个真实的 HarmonyOS Web 容器 Demo 出发，说明 H5 SDK 与 ArkTS Runtime 如何分工，并形成可追踪、可扩展的 JSBridge 调用链。
+## 你将学会什么
+
+从一个真实的 HarmonyOS Web 容器 Demo 出发，理解 H5 SDK 与 ArkTS Runtime 如何分工，并形成可追踪、可扩展的 JSBridge 调用链。
 
 > 本文只讨论 MiniAppRuntime-Harmony 仓库自行实现的代码和公开 HarmonyOS、ArkTS、ArkWeb 能力。项目用于个人开源学习与工程实践，不代表完整小程序平台，也不提供生产级安全与兼容性承诺。
 
@@ -14,7 +16,7 @@
 
 - `entry`：可运行的 ArkWeb Demo 和容器状态展示。
 - `h5_sdk`：H5 侧 JSBridge 客户端。
-- `myascf_runtime`：ArkTS 本地 HAR runtime。
+- `myascf_runtime`：通过 OHPM 分发的 ArkTS HAR runtime。
 
 ## 整体架构
 
@@ -55,7 +57,7 @@ IIFE 产物适合 rawfile 页面直接通过 `<script>` 加载并自动挂载 `w
 
 ArkTS Runtime 处理进入 Native 边界后的工作：解析请求、查找 handler、校验参数、调用公开 HarmonyOS Kit，并构造统一 BridgeResponse。`MyASCFRuntime` 门面在 HAR 内部创建 Registry、Dispatcher、CallbackExecutor、Controller 和 JavaScriptProxy，entry 不需要手动组装这些对象。
 
-当前公开 Manifest 提供 Toast、Clipboard、Storage、`runtime.getApiList` 和 `network.request`，共 9 个公开 action；另有 1 个仅供 Runtime 内部使用的 `network.abort`。仓库内 `entry` 使用源码联调，独立消费 Demo 使用本地 HAR；HAR 尚未发布到 GitHub Release 或 ohpm。
+当前公开 Manifest 提供 Toast、Clipboard、Storage、`runtime.getApiList` 和 `network.request`，共 9 个公开 action；另有 1 个仅供 Runtime 内部使用的 `network.abort`。仓库内 `entry` 使用源码联调，独立消费 Demo 从 OHPM 安装 `myascf_runtime@1.0.0`。
 
 ## requestId 与 callback map
 
@@ -144,8 +146,14 @@ typed helper 最终仍调用 `sendTyped()`，而 `sendTyped()` 复用原有 `sen
 
 当前自动检查覆盖生成物、Manifest 注册关系、H5 SDK build/test、package exports 和 npm pack dry-run。ArkWeb 注入、系统权限、Toast UI 和设备差异仍需要 DevEco Studio 手工 smoke test。
 
-H5 SDK `0.1.0` 已发布到 npm，`network.request` 已实现；HAR 尚未发布 GitHub Release 或 ohpm，CLI、Device API 和完整安全沙箱不在当前范围。仓库仍需完成已暴露签名凭据的轮换/吊销和 Git 历史清理，之后才能继续 GitHub Release 操作。
+H5 SDK `0.1.0` 已发布 npm，Runtime `1.0.0` 已发布 OHPM，`network.request` 已实现；CLI、Device API 和完整安全沙箱不在当前范围。仓库仍需完成历史签名凭据的轮换/吊销，再由作者决定 GitHub Release 与历史处置。
 
 ## 总结
 
 这个项目让我真正理解的，不只是 H5 调一个 Native 方法，而是如何管理跨端请求的完整生命周期：用 requestId 关联并发请求，用 callback map 管 Promise，用 timeout 和 CALLBACK_LOST 处理异常时序，用 Dispatcher/Registry 扩展 action，用 Biz/Imp 隔离协议与平台，再用 HAR、H5 SDK、Manifest、测试和文档把链路整理成可复用、可解释的工程结构。
+
+## 下一步
+
+- [框架全景文章](juejin-framework-overview.md)
+- [实现原理文章](juejin-implementation.md)
+- [完整 React 示例](../examples/complete-react-app.md)

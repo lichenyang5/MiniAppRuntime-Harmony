@@ -1,6 +1,6 @@
 {
   "modelVersion": "6.1.0",
-  "description": "Independent npm H5 SDK and local HAR consumer demo.",
+  "description": "Independent npm H5 SDK and OHPM Runtime consumer demo.",
   "dependencies": {},
   "devDependencies": {}
 }

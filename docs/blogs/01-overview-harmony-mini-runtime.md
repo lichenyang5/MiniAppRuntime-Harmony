@@ -12,7 +12,7 @@ window.myascf.send -> JavaScriptProxy -> BridgeController
 
 H5 SDK 负责 requestId、callback map、timeout 和 Promise；JavaScriptProxy 建立通信边界；Controller 解析请求；Dispatcher 和 Registry 完成 action 分发；Biz 校验参数并组织响应；Imp 调用公开 HarmonyOS Kit；CallbackExecutor 集中处理 runJavaScript。
 
-项目当前接入了 Toast、Clipboard 和 Storage，并用 DebugPanel 展示请求生命周期。runtime 已抽成 `myascf_runtime` 本地 HAR，外部 Demo 只需创建 `MyASCFRuntime` 并注册 Native Proxy。
+项目当前接入了 Toast、Clipboard、Storage 和 Network，并用 DebugPanel 展示请求生命周期。runtime 已抽成 `myascf_runtime` OHPM HAR，外部 Demo 只需创建 `MyASCFRuntime` 并注册 Native Proxy。
 
 除了 JSBridge，entry 还维护加载进度、URL Guard、错误状态和重试入口。它们与 Bridge 不共享业务逻辑，但共同构成 H5 运行环境。
 

@@ -1,47 +1,45 @@
 # Runtime API
 
-这篇文档解决什么问题：说明 `runtime.getApiList` 如何让 H5 动态读取 HAR 内置 API Manifest，以及它为什么属于运行时自省而不是系统能力。
+你将学会什么：查询当前 Runtime 实际暴露的公开能力，并用于兼容检查和动态面板。
 
-## runtime.getApiList
+## `runtime.getApiList`
 
-该 action 读取 `BUILTIN_API_MANIFEST`，由 RuntimeInfoBiz 转换为适合 H5 展示的精简 `ApiSummary[]`。它不调用 HarmonyOS Kit，因此没有 Imp 层。
+返回 9 个非 internal API 的精简 Manifest。
 
-```js
-const response = await window.myascf.send('runtime.getApiList', {});
-console.log(response.data.apis);
+### 参数
+
+无参数。
+
+### 返回值
+
+| 字段 | 类型 | 说明 |
+| --- | --- | --- |
+| `apis` | `ApiSummary[]` | action、category、title、description、implemented、paramsText |
+
+### 最小与 React 示例
+
+```ts
+const response = await api.runtime.getApiList();
+console.log(response.data?.apis);
 ```
 
-## 成功响应
+React 中可把 `response.data?.apis ?? []` 存入 state，生成动态能力面板。也可以比对业务依赖的 action，发现 SDK 与 Runtime 版本不匹配。
+
+### 成功响应
 
 ```json
-{
-  "requestId": "req_xxx",
-  "code": 0,
-  "message": "get api list success",
-  "data": {
-    "echoAction": "runtime.getApiList",
-    "apis": [
-      {
-        "action": "ui.showToast",
-        "category": "ui",
-        "title": "显示 Toast",
-        "description": "从 H5 侧触发 HarmonyOS Toast 提示。",
-        "implemented": true,
-        "paramsText": "message: string"
-      }
-    ]
-  }
-}
+{"requestId":"myascf_...","code":0,"message":"get api list success","data":{"echoAction":"runtime.getApiList","apis":[]}}
 ```
 
-请求不要求参数，多余参数会被忽略。Manifest 读取或转换异常由 Dispatcher 转换为 `INTERNAL_ERROR`；TIMEOUT 和 CALLBACK_LOST 继续由既有 H5 机制处理。
+### 失败响应与错误
 
-## 调用链
+可能出现 `INTERNAL_ERROR`、H5 `TIMEOUT` 或 `CALLBACK_LOST`。它不会返回 internal `network.abort`。
 
-```text
-H5 -> JavaScriptProxy -> BridgeController -> BridgeDispatcher
--> HandlerRegistry -> RuntimeInfoBiz -> BUILTIN_API_MANIFEST
--> BridgeResponse.data.apis -> BridgeCallbackExecutor -> H5 Promise
-```
+### 权限与实现链路
 
-当前只返回 action、category、title、description、implemented 和 paramsText，不向 H5 暴露 Biz、Imp、错误详情或 example。后续可以基于同一 Manifest 生成 API 文档。
+无需额外权限。H5 SDK → RuntimeInfoBiz → `BUILTIN_API_MANIFEST`。
+
+## 下一步阅读
+
+- [API Manifest](../concepts/api-manifest.md)
+- [API 使用](../guide/api-usage.md)

@@ -4,7 +4,7 @@
 
 ## v0.1.0：GitHub 展示版
 
-- 提供 `myascf_runtime` 本地 HAR。
+- 提供已发布的 `myascf_runtime@1.0.0` OHPM HAR。
 - 提供 H5 SDK TypeScript 源码、dist 和类型声明。
 - 提供可运行 entry Demo、DebugPanel 和 Web 容器状态展示。
 - 提供 API、架构、接入、调试和 Release 文档。
@@ -27,6 +27,6 @@
 
 - 视包名、测试和文档状态决定是否发布 H5 SDK 到 npm。
 - 调研 HarmonyOS HAR 对应的包管理与发布方式。
-- 保持本地 HAR 接入可用，继续完善外部 Demo 指南。
+- 保持仓库内源码联调可用，外部 Demo 默认验证 OHPM 安装。
 
 版本号是计划边界，不是发布日期承诺。未完成验收时可以调整内容和版本节奏。

@@ -13,7 +13,7 @@ ArkWeb 可以承载 H5，HarmonyOS 可以提供 Native 能力，但“页面调�
 ## 做了什么
 
 - `entry` 提供 ArkWeb 容器、本地 H5 Demo、加载状态、URL Guard 和错误状态页。
-- `myascf_runtime` 以本地 HAR 组织 JavaScriptProxy、Controller、Dispatcher、Registry、Biz/Imp、CallbackExecutor 与内置 API。
+- `myascf_runtime` 以 OHPM HAR 组织 JavaScriptProxy、Controller、Dispatcher、Registry、Biz/Imp、CallbackExecutor 与内置 API。
 - `h5_sdk` 提供 IIFE/ESM、Promise `send`、requestId、callback map、timeout、错误处理和 typed API。
 - API Manifest 描述 9 个内置 action，并驱动 API 文档和 H5 类型生成。
 - DebugPanel、Node 测试、一致性脚本、npm pack 预检和 GitHub Actions CI 补充工程验证。
@@ -31,7 +31,7 @@ Controller 只负责协议入口，Dispatcher/Registry 负责扩展，Biz 负责
 
 ## 工程化亮点
 
-- 本地 HAR 门面 `MyASCFRuntime` 降低 Demo 接入成本。
+- OHPM HAR 门面 `MyASCFRuntime` 降低 Demo 接入成本。
 - H5 SDK 同时支持 rawfile script 和现代前端 ESM import。
 - Manifest 生成 typed API 和 Markdown，减少多处手工维护。
 - 测试覆盖 Promise、错误、timeout、callback lost、IIFE/ESM 和 DebugPanel 容错。

@@ -1,6 +1,8 @@
 # HAR 模块设计
 
-这篇文档解决的问题：说明为什么要把 runtime 抽取为 `myascf_runtime` HAR 模块，以及 entry 示例应用如何依赖这个可复用库。
+## 你将学会什么
+
+了解为什么把 runtime 抽取为 `myascf_runtime` HAR 模块，以及源码 Demo 和外部应用如何分别依赖它。
 
 ## 目标
 
@@ -41,7 +43,7 @@ myascf_runtime/
 
 HAR 是 HarmonyOS ArkTS 代码复用的一种常见模块形式。当前项目把 JSBridge runtime 放进 HAR，可以让 `entry` 更像示例应用，也让 runtime 后续具备被其他模块依赖的基础。
 
-## entry 如何依赖
+## 仓库 entry 如何依赖源码
 
 `entry/oh-package.json5`：
 
@@ -140,15 +142,13 @@ getMethodList()
 
 ## 当前状态
 
-HAR 模块结构已经建立，`oh-package.json5` 使用 `1.0.0` 本地模块元数据，runtime 核心代码位于 `myascf_runtime/src/main/ets`。当前 Hvigor 的模块版本校验要求 major 从 1 开始，因此 HAR 与根项目/H5 SDK 不共用 `0.1.0` 版本号。该元数据不代表正式发布。当前项目已完成 HAP 构建验证；设备交互仍需在模拟器或真机验收。
-
-本阶段只支持本地 `file:../myascf_runtime` 依赖。HAR 没有发布到 npm，也没有发布到 HarmonyOS 包仓库；未来发布方式需要独立调研，不能直接套用 H5 SDK 的 npm 流程。
+HAR 已以 `myascf_runtime@1.0.0` 发布 OHPM。仓库 `entry` 仍使用 `file:../myascf_runtime` 做源码联调；外部应用安装公开包。HAR 与 H5 SDK 分别进入 OHPM 和 npm，版本号不要求相同。
 
 ## 后续计划
 
 - 补充真实运行截图和设备回归记录。
 - 处理当前 SDK 的废弃 API 与权限警告。
-- 调研目标 HarmonyOS SDK 对应的 HAR 包管理和发布方式。
+- 补充更多设备与系统版本的兼容证据。
 ## Context 与 Storage
 
 这篇文档解决什么问题：说明需要 Context 的 Native 能力如何接入 HAR。
@@ -163,3 +163,9 @@ private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(t
 ## Web 容器公共模型
 
 HAR 对外提供 `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus` 和 `WebLoadState`。Web 日志由宿主使用自己的 HiLog 标签记录；Runtime 内部 Logger 不作为公共 API。ArkWeb 组件、`$rawfile` 和错误页 UI 仍由 entry 管理，避免 HAR 配置模型耦合页面资源。
+
+## 下一步
+
+- [Runtime 安装](../guide/runtime-installation.md)
+- [ArkWeb 接入](../guide/arkweb-integration.md)
+- [包边界](../concepts/npm-and-ohpm-boundaries.md)

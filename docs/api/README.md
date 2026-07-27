@@ -2,11 +2,15 @@
 
 # API Reference
 
-这篇文档解决什么问题：从真实 API Manifest 汇总当前公开 action、参数、响应、版本和权限边界。
+## 你将学会什么
 
-Current compatibility: H5 SDK `0.1.0` + HAR Runtime metadata `1.0.0`.
+从真实 API Manifest 查看当前公开 action、参数、响应、版本、权限和错误边界。
+
+Current compatibility: H5 SDK `0.1.0` + OHPM Runtime `1.0.0`.
 
 > Run `npm run docs:api` to regenerate this file. Internal actions are intentionally excluded.
+
+Category guides: [Runtime](runtime.md) · [UI](ui.md) · [Clipboard](clipboard.md) · [Storage](storage.md) · [Network](network.md)
 
 ## runtime.getApiList
 
@@ -232,3 +236,9 @@ try {
 ```
 
 Errors: `PARAM_ERROR`, `NETWORK_INVALID_URL`, `NETWORK_UNSUPPORTED_PROTOCOL`, `NETWORK_TIMEOUT`, `NETWORK_REQUEST_FAILED`, `NETWORK_INVALID_RESPONSE`, `NETWORK_ABORTED`, `TIMEOUT`, `CALLBACK_LOST`
+
+## 下一步
+
+- [API 使用指南](../guide/api-usage.md)
+- [错误处理](../guide/error-handling.md)
+- [扩展 API](../guide/extending-api.md)

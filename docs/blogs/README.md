@@ -26,7 +26,7 @@
 
 ## 当前项目状态
 
-代码已经完成本地 H5、Promise JSBridge、Dispatcher/Registry、Biz/Imp、Toast/Clipboard/Storage、DebugPanel、本地 HAR、MyASCFRuntime 门面，以及加载进度、URL Guard 和错误状态。截图和文章正式发布仍待完成。
+代码已经完成本地 H5、Promise JSBridge、Dispatcher/Registry、Biz/Imp、Toast/Clipboard/Storage/Network、DebugPanel、OHPM HAR、MyASCFRuntime 门面，以及加载进度、URL Guard 和错误状态。截图和文章正式发布仍待完成。
 
 ## 公开边界
 

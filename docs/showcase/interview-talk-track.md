@@ -4,7 +4,7 @@
 
 ## 1 分钟版本
 
-这个项目是一个 HarmonyOS Web 容器与 JSBridge 运行时实践。我把 ArkTS 侧抽成了本地 HAR runtime，把 H5 侧抽成了 SDK，通过 requestId、callback map、Dispatcher、Registry、Biz/Imp 和 CallbackExecutor 实现 H5 调 ArkTS 的完整链路，并补充了 API Manifest、类型化 SDK、DebugPanel、测试和 CI。当前实现 Toast、Clipboard、Storage 与运行时 API 查询，重点是架构和工程边界，不把它描述为完整或生产级小程序平台。
+这个项目是一个 HarmonyOS Web 容器与 JSBridge 运行时实践。我把 ArkTS 侧抽成了 OHPM HAR runtime，把 H5 侧抽成了 npm SDK，通过 requestId、callback map、Dispatcher、Registry、Biz/Imp 和 CallbackExecutor 实现 H5 调 ArkTS 的完整链路，并补充了 API Manifest、类型化 SDK、DebugPanel、测试和 CI。当前实现 Toast、Clipboard、Storage、Network 与运行时 API 查询，重点是架构和工程边界，不把它描述为完整或生产级小程序平台。
 
 ## 3 分钟版本
 

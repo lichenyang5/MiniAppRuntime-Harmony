@@ -1,18 +1,15 @@
-# Runtime HAR Placeholder
+# Legacy Local HAR Placeholder
 
-这篇文档解决什么问题：说明独立消费 Demo 为什么不直接提交构建产物，以及如何放入真实 HAR。
+这篇文档解决什么问题：说明公开包消费 Demo 为什么不再需要本地 HAR，以及本地调试的边界。
 
-此目录不提交 `myascf_runtime.har`。先在仓库根构建 Runtime，再复制到这里：
+独立 Demo 已从 OHPM 安装 `myascf_runtime@1.0.0`，正常运行不需要在此目录放置 HAR：
 
-```powershell
-.\scripts\build-har.ps1
-.\scripts\copy-har-to-demo.ps1
+```json5
+{
+  "dependencies": {
+    "myascf_runtime": "1.0.0"
+  }
+}
 ```
 
-复制后应得到：
-
-```text
-entry/libs/myascf_runtime.har
-```
-
-Demo 的 `entry/oh-package.json5` 固定使用 `file:./libs/myascf_runtime.har`，不会跨目录引用框架源码。
+只有调试尚未发布的 Runtime 版本时才临时使用本地 HAR。不要提交 HAR、签名配置、证书或本机路径。

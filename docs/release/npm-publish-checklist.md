@@ -19,7 +19,7 @@
 - [x] `npm pack --dry-run` 通过。
 - [x] registry consumer ESM、IIFE、类型检查和 `NATIVE_UNAVAILABLE` 边界通过。
 - [x] 独立 React/Vite 工程从 registry 安装 `0.1.0` 并构建通过。
-- [x] 本地 HAR 在独立 HarmonyOS Demo 中通过包名导入和 ArkTS 编译。
+- [x] OHPM Runtime 在独立 HarmonyOS Demo 中通过包名导入和 ArkTS 编译。
 - [ ] 独立 Demo 配置签名后完成 ArkWeb 真机 API 回归。
 
 ## 安全门

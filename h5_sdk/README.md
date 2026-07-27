@@ -1,18 +1,20 @@
 # @lcy453/miniapp-runtime-harmony-web-sdk
 
-这篇文档解决什么问题：说明 MiniAppRuntime-Harmony H5 SDK 的安装方式、公开入口、ArkWeb 边界、构建测试和首次发布状态。
+## 你将学会什么
+
+了解 MiniAppRuntime-Harmony H5 SDK 的安装方式、公开入口、ArkWeb 边界、构建测试和当前发布状态。
 
 该包是一个受小程序运行时架构启发的 HarmonyOS Web 容器与 JSBridge 框架的 H5 侧 SDK。它负责 requestId、callback map、Promise、timeout、AbortSignal、Native 消息发送和类型化 API，不包含 ArkTS Runtime 或 Native 业务实现。
 
 ## 安装
 
-发布后从 npm registry 安装：
+从 npm registry 安装：
 
 ```bash
-npm install @lcy453/miniapp-runtime-harmony-web-sdk
+npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 ```
 
-当前包处于首次发布前人工确认阶段。registry 回读完成前，不将上述命令描述为已验证可用。
+`0.1.0` 已发布并完成 registry consumer 验证。
 
 ## ESM
 
@@ -83,7 +85,7 @@ SDK 会释放 callback、timer 和 abort listener。对 `network.request`，还�
 ```text
 H5 SDK
 -> window.MyASCFNative.postMessage
--> local myascf_runtime HAR
+-> myascf_runtime OHPM package
 -> window.__myascf_on_native_response__
 -> Promise resolve / reject
 ```
@@ -122,6 +124,12 @@ npm pack
 - package 配置：`private: false`、`publishConfig.access = public`
 - npm registry consumer：已验证
 - npm publish：`0.1.0` 已发布
-- ArkTS Runtime：继续通过本地 HAR/GitHub 源码接入，不随 npm 包发布
+- ArkTS Runtime：通过 OHPM 安装 `myascf_runtime@1.0.0`
 
 项目用于开源学习和工程实践，不宣称达到生产级 SDK 的安全、兼容性或设备覆盖要求。
+
+## 下一步
+
+- [H5 SDK 安装](../docs/guide/h5-sdk-installation.md)
+- [API Reference](../docs/api/README.md)
+- [完整 React 示例](../docs/examples/complete-react-app.md)

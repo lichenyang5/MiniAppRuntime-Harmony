@@ -20,7 +20,7 @@ npm run check
 
 **预期结果：**应用进入 ArkWeb 容器页，没有 ArkTS 编译错误或启动崩溃。
 
-**失败排查：**检查本地 HAR 依赖、根 `build-profile.json5`、`entry/oh-package.json5` 和 [HAR 接入指南](../guide/har-usage.md)。
+**失败排查：**检查 OHPM registry、`entry/oh-package.json5`、Lockfile 和 [Runtime 安装指南](../guide/runtime-installation.md)。
 
 ## 2. 查看 H5 首页
 
