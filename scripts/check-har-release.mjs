@@ -39,7 +39,19 @@ const pkg = readJson(path.join(moduleDir, 'oh-package.json5'));
 });
 if (!/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+$/.test(pkg.name)) fail(`invalid package name: ${pkg.name}`);
 if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(pkg.version)) fail(`invalid package version: ${pkg.version}`);
-if (!pkg.repository || typeof pkg.repository.url !== 'string') fail('oh-package.json5 missing repository.url');
+const repositoryUrl =
+  typeof pkg.repository === 'string'
+    ? pkg.repository
+    : pkg.repository?.url;
+
+if (
+  typeof repositoryUrl !== 'string' ||
+  !/^(?:https?|ftp|rtsp|mms):\/\//i.test(repositoryUrl)
+) {
+  fail(
+    'oh-package.json5 repository must be a valid URL starting with http, https, ftp, rtsp, or mms'
+  );
+}
 if (!Array.isArray(pkg.keywords) || pkg.keywords.length === 0) fail('oh-package.json5 missing keywords');
 if (!pkg.dependencies || typeof pkg.dependencies !== 'object' || Array.isArray(pkg.dependencies)) {
   fail('oh-package.json5 dependencies must be an object');
@@ -135,6 +147,16 @@ if (!metadataOnly) {
   }
   if (artifactPkg.name !== pkg.name || artifactPkg.version !== pkg.version || artifactPkg.license !== pkg.license) {
     fail(`HAR metadata does not match source package: expected ${pkg.name}@${pkg.version}`);
+  }
+  const artifactRepositoryUrl =
+    typeof artifactPkg.repository === 'string'
+      ? artifactPkg.repository
+      : artifactPkg.repository?.url;
+
+  if (artifactRepositoryUrl !== repositoryUrl) {
+    fail(
+      `HAR repository does not match source package: expected ${repositoryUrl}`
+    );
   }
   if (artifactPkg.compatibleSdkVersion === undefined || artifactPkg.compatibleSdkType !== 'HarmonyOS') {
     fail('HAR compatibility metadata is incomplete');
