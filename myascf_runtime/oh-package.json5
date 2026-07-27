@@ -6,10 +6,7 @@
   "author": "Li Chenyang",
   "license": "MIT",
   "artifactType": "original",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lichenyang5/MiniAppRuntime-Harmony.git"
-  },
+  "repository": "https://github.com/lichenyang5/MiniAppRuntime-Harmony",
   "homepage": "https://github.com/lichenyang5/MiniAppRuntime-Harmony",
   "keywords": [
     "HarmonyOS",
