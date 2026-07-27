@@ -135,7 +135,7 @@ import { initMyASCF, createTypedApi } from '@lcy453/miniapp-runtime-harmony-web-
 
 npm 包状态以官方 registry 回读结果为准；HAR 仍保持本地构建与复制接入。
 
-`9de3f82` 的 [GitHub Actions CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/runs/29386035145) 已通过，但 `v0.1.0` 尚未创建 tag 或 GitHub Release。远端历史中的签名凭据必须先轮换或吊销并完成清理，这是发布阻塞项。详情见 [Release Preparation](RELEASE.md)、[v0.1.0 Release Notes](docs/release/v0.1.0-release-notes.md)、[Publish Record](docs/release/v0.1.0-publish-record.md) 和 [候选验收清单](docs/release/v0.1.0-checklist.md)。
+`9de3f82` 的 [GitHub Actions CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/runs/29386035145) 已通过，但最终发布 commit 的远端 CI 尚未产生，`v0.1.0` 也尚未创建 tag 或 GitHub Release。当前文件中的签名配置已移除；远端历史里的旧凭据仍必须轮换或吊销，并由作者决定是否重写历史。详情见 [Release Preparation](RELEASE.md)、[v0.1.0 Release Notes](docs/release/v0.1.0-release-notes.md)、[Publish Record](docs/release/v0.1.0-publish-record.md) 和 [候选验收清单](docs/release/v0.1.0-checklist.md)。
 
 ## H5 SDK 类型化调用
 
@@ -185,7 +185,7 @@ npm --prefix h5_sdk run check
 
 ## Quick Start
 
-1. 使用 DevEco Studio 打开仓库根目录 `ArkMiniRuntime`，执行 ohpm 依赖同步。`entry` 通过 `file:../myascf_runtime` 使用本地 HAR。
+1. 使用 DevEco Studio 打开仓库根目录，执行 OHPM 依赖同步。仓库内 `entry` 通过 `file:../myascf_runtime` 使用源码模块联调；外部项目应使用 `file:./libs/myascf_runtime.har`。
 2. 首次安装 H5 SDK 依赖：
 
 ```bash
@@ -425,7 +425,8 @@ CI 截图已归档在截图清单中，但在最终账号与隐私复核完成�
 ### Next
 
 - [ ] 补充 Clipboard、Web loading 和 URL Guard/错误页 3 类真实截图
-- [ ] 立即轮换已进入远端历史的签名凭据，并从当前文件与 Git 历史中移除签名材料
+- [x] 从当前公开配置移除签名材料并补充忽略规则
+- [ ] 轮换或吊销已进入远端历史的签名凭据，并决定是否清理 Git 历史
 - [ ] 完成 v0.1.0 源码讲解演练与设备回归记录
 - [ ] 发布并根据反馈修订博客系列
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型
@@ -441,7 +442,8 @@ CI 截图已归档在截图清单中，但在最终账号与隐私复核完成�
 - [x] Release Notes、Self-check Report 与 GitHub Release 模板
 - [x] `9de3f82` GitHub Actions CI
 - [x] 综合文章草稿与发布清单
-- [ ] 轮换/吊销签名凭据并清理当前文件与 Git 历史
+- [x] 清理当前文件中的签名配置
+- [ ] 轮换/吊销历史签名凭据并确认 Git 历史处置方案
 - [ ] 完成最终发布 commit 的 CI 与手工 smoke test 记录
 - [ ] 发布掘金文章并回填真实链接
 - [ ] 由项目作者手动创建 `v0.1.0` tag 和 GitHub Release

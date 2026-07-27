@@ -48,7 +48,8 @@ if (-not $env:JAVA_HOME -and $devEcoRoot) {
 Push-Location $repoRoot
 $buildStartedAt = Get-Date
 try {
-  & $hvigor --mode module -p product=default -p module=myascf_runtime@default -p buildMode=release assembleHar --no-daemon
+  # OHPM open-source packages require an original HAR. Hvigor produces it in debug mode.
+  & $hvigor --mode module -p product=default -p module=myascf_runtime@default -p buildMode=debug assembleHar --no-daemon
   if ($LASTEXITCODE -ne 0) { throw "HAR build failed with exit code $LASTEXITCODE" }
 } finally {
   Pop-Location

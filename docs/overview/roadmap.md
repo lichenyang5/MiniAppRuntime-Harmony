@@ -36,7 +36,8 @@
 ## 待完成
 
 - [ ] 补充 Clipboard、Web loading、URL Guard/错误页 3 类真实运行截图。
-- [ ] 立即轮换已进入远端历史的签名凭据，并从当前文件与 Git 历史中移除签名材料。
+- [x] 从当前公开配置移除签名材料并补充忽略规则。
+- [ ] 轮换或吊销已进入远端历史的签名凭据，并确认是否重写历史。
 - [ ] 补全候选版本的设备、SDK、日期和 CI 链接验收记录。
 - [ ] 发布并根据反馈修订博客。
 - [ ] 从单一数据源生成 ArkTS Manifest、Markdown 和 H5 类型。
@@ -54,7 +55,8 @@
 - [x] Release Notes、Self-check Report、Publish Record 和 GitHub Release 模板。
 - [x] `9de3f82` 的 GitHub Actions CI。
 - [x] 综合掘金文章草稿与发布清单。
-- [ ] 轮换或吊销已暴露签名凭据，并清理当前文件与 Git 历史。
+- [x] 清理当前文件中的签名配置。
+- [ ] 轮换或吊销历史凭据并确定 Git 历史处置方案。
 - [ ] 重新执行最终发布 commit 的自动检查、CI 和手工 smoke test。
 - [ ] 发布掘金文章并回填真实链接。
 - [ ] 由项目作者手动创建 `v0.1.0` tag 和 GitHub Release。

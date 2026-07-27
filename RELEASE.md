@@ -8,7 +8,7 @@
 
 ## 发布阻塞项
 
-签名凭据已经进入公开远端历史。必须先轮换或吊销相关凭据，从当前工程移除签名材料，并评估清理 Git 历史。完成清理并重新确认最终 commit 与 CI 之前，不得创建 `v0.1.0` tag 或 GitHub Release。
+签名凭据已经进入公开远端历史。当前工作树中的签名配置已经移除并加入忽略规则，但旧凭据仍必须轮换或吊销，项目作者还需决定是否重写 Git 历史。完成凭据处置、最终 commit 和 CI 复核之前，不得创建 `v0.1.0` tag、GitHub Release 或执行 OHPM publish。
 
 ## 候选发布物
 
@@ -40,7 +40,7 @@ H5 SDK `0.1.0` 已完成：
 
 ## 发布前检查
 
-- [x] 2026-07-17 运行根检查与 H5 SDK build/test，13/13 tests 通过。
+- [x] 2026-07-27 运行根检查与 H5 SDK build/test，24/24 tests 通过。
 - [x] 2026-07-15 同步 SDK dist 到 rawfile，并确认 copy:demo 成功。
 - [x] 2026-07-15 构建 HAP 成功，有 SDK warning，未记录设备启动。
 - [ ] 在模拟器或真机运行 Demo。
@@ -49,15 +49,16 @@ H5 SDK `0.1.0` 已完成：
 - [x] 运行 API 文档/类型生成一致性检查。
 - [x] 更新 README、CHANGELOG、Release 文案和文章草稿；版本仍为 `0.1.0`。
 - [x] 检查 LICENSE 与 H5 SDK npm tarball 候选包内容。
-- [ ] 检查公开内容不含内部信息或未经验证的能力声明。
+- [x] 当前发布表面敏感路径、签名文件和禁止描述静态检查通过。
 - [ ] 确认未把准备状态写成已发布状态。
 - [ ] 按 `docs/release/v0.1.0-checklist.md` 完成候选版本验收。
 - [ ] 按 `docs/assets/screenshots/README.md` 补充真实设备与 CI 截图。
 - [x] `9de3f82` 的 [GitHub Actions CI](https://github.com/lichenyang5/MiniAppRuntime-Harmony/actions/runs/29386035145) 通过。
-- [ ] 完成签名凭据轮换/吊销、当前文件清理与 Git 历史清理。
+- [x] 从当前公开配置移除签名材料并补充忽略规则。
+- [ ] 完成历史签名凭据轮换/吊销，并确认是否重写 Git 历史。
 - [ ] 确认最终发布 commit 的 CI 成功。
-- [ ] 构建 HAR、计算 SHA-256，并按 `docs/release/har-release-guide.md` 准备 GitHub Release 资产。
-- [ ] 确认 ohpm 账号、包名、scope 与公开发布意图；本次不执行 ohpm publish。
+- [x] 2026-07-27 构建最终 HAR、执行 `ohpm prepublish`、计算 SHA-256，并用独立 Demo 完成消费编译验证。
+- [ ] 确认 OHPM 账号、包名、发布码和私钥；`source_type` 固定为 `open`，本次不执行 publish。
 
 ## v0.1.0 文档
 

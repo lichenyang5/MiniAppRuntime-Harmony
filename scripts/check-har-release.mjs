@@ -19,6 +19,20 @@ function readJson(filePath) {
   catch (error) { fail(`cannot read ${path.relative(rootDir, filePath)}: ${error.message}`); }
 }
 
+function collectNamedExports(content) {
+  const exports = new Set();
+  const exportPattern = /export\s+(?:type\s+)?\{([\s\S]*?)\}\s+from\s+["'][^"']+["']/g;
+  let match;
+  while ((match = exportPattern.exec(content)) !== null) {
+    for (const item of match[1].split(',')) {
+      const name = item.trim().replace(/^type\s+/, '').split(/\s+as\s+/i)[1] ||
+        item.trim().replace(/^type\s+/, '').split(/\s+as\s+/i)[0];
+      if (name) exports.add(name.trim());
+    }
+  }
+  return exports;
+}
+
 const pkg = readJson(path.join(moduleDir, 'oh-package.json5'));
 ['name', 'version', 'description', 'main', 'license'].forEach((field) => {
   if (typeof pkg[field] !== 'string' || pkg[field].trim() === '') fail(`oh-package.json5 missing ${field}`);
@@ -33,6 +47,24 @@ if (!pkg.dependencies || typeof pkg.dependencies !== 'object' || Array.isArray(p
 
 const mainPath = path.resolve(moduleDir, pkg.main);
 if (!mainPath.startsWith(`${moduleDir}${path.sep}`) || !fs.existsSync(mainPath)) fail(`main entry does not exist: ${pkg.main}`);
+const publicEntry = fs.readFileSync(path.join(moduleDir, 'src', 'main', 'ets', 'Index.ets'), 'utf8');
+const forbiddenPublicExports = [
+  'RuntimeLogger', 'BUILTIN_API_MANIFEST', 'ApiManifestItem', 'BridgeRequest',
+  'BridgeDispatcher', 'HandlerRegistry', 'RuntimeBootstrap', 'BridgeController'
+];
+const requiredPublicExports = [
+  'MyASCFRuntime', 'MyASCFNativeProxy', 'ApiSummary', 'BridgeResponse',
+  'BridgeResponseData', 'BridgeErrorCode', 'WebContainerConfig', 'WebUrlGuard',
+  'WebLoadStatus', 'WebLoadState', 'NetworkMethod', 'NetworkPolicy',
+  'NetworkResponseType'
+];
+const sourceExports = collectNamedExports(publicEntry);
+for (const symbol of forbiddenPublicExports) {
+  if (sourceExports.has(symbol)) fail(`internal symbol is exported from the public entry: ${symbol}`);
+}
+for (const symbol of requiredPublicExports) {
+  if (!sourceExports.has(symbol)) fail(`required public symbol is missing from the source entry: ${symbol}`);
+}
 ['README.md', 'CHANGELOG.md', 'LICENSE'].forEach((name) => {
   if (!fs.existsSync(path.join(moduleDir, name))) fail(`missing release file: myascf_runtime/${name}`);
 });
@@ -41,8 +73,8 @@ if (!new RegExp(`^##\\s+${pkg.version.replace(/\./g, '\\.')}(?:\\s|$)`, 'm').tes
   fail(`myascf_runtime/CHANGELOG.md has no ${pkg.version} section`);
 }
 
-const forbiddenExtensions = /\.(?:p12|pfx|jks|keystore|cer|pem|key)$/i;
-const sensitiveText = /(?:[A-Za-z]:[\\/]Users[\\/]|\/Users\/|\/home\/|BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY|storePassword\s*[=:]|keyPassword\s*[=:])/i;
+const forbiddenExtensions = /\.(?:p12|p7b|pfx|jks|keystore|cer|pem|key)$/i;
+const sensitiveText = /(?:[A-Za-z]:[\\/]Users[\\/]|\/Users\/|\/home\/|BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY|(?:storePassword|keyPassword|_authToken|publish_id|key_path)\s*[=:]|--(?:publish_id|key_path)\s+(?!["']?<)[^\s]+)/i;
 for (const scanRoot of [moduleDir, path.join(rootDir, 'examples', 'npm-har-consumer-demo')]) {
   if (!fs.existsSync(scanRoot)) continue;
   const stack = [scanRoot];
@@ -104,13 +136,42 @@ if (!metadataOnly) {
   if (artifactPkg.name !== pkg.name || artifactPkg.version !== pkg.version || artifactPkg.license !== pkg.license) {
     fail(`HAR metadata does not match source package: expected ${pkg.name}@${pkg.version}`);
   }
-  const declarationEntry = `package/${artifactPkg.types || pkg.main.replace(/\.ets$/, '.d.ets')}`;
-  if (!archiveEntries.includes(declarationEntry)) fail(`HAR declaration entry is missing: ${declarationEntry}`);
+  if (artifactPkg.compatibleSdkVersion === undefined || artifactPkg.compatibleSdkType !== 'HarmonyOS') {
+    fail('HAR compatibility metadata is incomplete');
+  }
+  if (artifactPkg.artifactType !== 'original') fail(`open-source release requires artifactType original, got: ${artifactPkg.artifactType}`);
+  const publicArtifactEntry = `package/${artifactPkg.main || pkg.main}`;
+  if (!archiveEntries.includes(publicArtifactEntry)) fail(`HAR public entry is missing: ${publicArtifactEntry}`);
+  const apiExportEntry = 'package/src/main/ets/Index.ets';
+  if (!archiveEntries.includes(apiExportEntry)) fail(`HAR API export entry is missing: ${apiExportEntry}`);
   for (const releaseFile of ['README.md', 'CHANGELOG.md', 'LICENSE']) {
     if (!archiveEntries.includes(`package/${releaseFile}`)) fail(`HAR release file is missing: package/${releaseFile}`);
   }
+  const forbiddenArchivePath = /(?:^|\/)(?:node_modules|oh_modules|build|dist|\.hvigor|\.git)(?:\/|$)/i;
+  const archiveSensitiveText = /(?:[A-Za-z]:[\\/]Users[\\/]|\/Users\/|\/home\/|BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY|(?:storePassword|keyPassword|_authToken|publish_id|key_path)\s*[=:]|--(?:publish_id|key_path)\s+(?!["']?<)[^\s]+)/i;
+  for (const entry of archiveEntries) {
+    if (forbiddenArchivePath.test(entry)) fail(`cache or build path found in HAR: ${entry}`);
+    if (forbiddenExtensions.test(entry)) fail(`sensitive file found in HAR: ${entry}`);
+    if (!/(?:\.(?:json5?|md|txt|d\.ets|d\.ts|ets|ts)|\/(?:\.ohpmrc|\.npmrc|\.env(?:\..+)?))$/i.test(entry)) continue;
+    let content;
+    try {
+      content = execFileSync('tar', ['-xOf', harPath, entry], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+    } catch (error) {
+      fail(`cannot inspect HAR entry ${entry}: ${error.message}`);
+    }
+    if (archiveSensitiveText.test(content)) fail(`sensitive text found in HAR entry: ${entry}`);
+  }
+  const entryText = execFileSync('tar', ['-xOf', harPath, publicArtifactEntry], { encoding: 'utf8' });
+  const declarationText = execFileSync('tar', ['-xOf', harPath, apiExportEntry], { encoding: 'utf8' });
+  const artifactExports = collectNamedExports(declarationText);
+  for (const symbol of forbiddenPublicExports) {
+    if (artifactExports.has(symbol)) fail(`internal symbol found in HAR public declaration: ${symbol}`);
+  }
+  for (const symbol of requiredPublicExports) {
+    if (!artifactExports.has(symbol)) fail(`required symbol missing from HAR public entry: ${symbol}`);
+  }
   console.log(`[har-release] HAR: ${path.relative(rootDir, harPath)} (${stat.size} bytes)`);
-  console.log(`[har-release] archive metadata: ${artifactPkg.name}@${artifactPkg.version}, entry ${declarationEntry}`);
+  console.log(`[har-release] archive metadata: ${artifactPkg.name}@${artifactPkg.version}, entry ${publicArtifactEntry}, artifactType ${artifactPkg.artifactType}`);
 }
 
 console.log(`[har-release] metadata OK: ${pkg.name}@${pkg.version}`);

@@ -89,8 +89,10 @@ Web({ src: $rawfile('web/index.html'), controller: this.controller })
 - Bridge 请求/响应类型
 - `BridgeErrorCode`
 - `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus`、`WebLoadState`
-- `RuntimeLogger`
-- `BUILTIN_API_MANIFEST`、`ApiCategory` 和 Manifest 元信息类型
+- `MyASCFNativeProxy`、`ApiSummary`、`BridgeResponse` 和 `BridgeErrorCode`
+- `NetworkPolicy`、`NetworkMethod` 和 `NetworkResponseType`
+
+`RuntimeLogger`、`BUILTIN_API_MANIFEST`、请求解析类型、Dispatcher、Registry、Bootstrap、Biz 和 Imp 保留为 HAR 内部实现，不属于首版公共兼容契约。
 
 BridgeController、JavaScriptProxy、BridgeDispatcher、HandlerRegistry、RuntimeBootstrap、Biz 和 Imp 当前都保持为 HAR 内部实现，不建议 entry 直接依赖。
 
@@ -160,4 +162,4 @@ private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(t
 门面将 Context 交给 RuntimeBootstrap 和 StorageImp。外部仍只注册 `runtime.getNativeProxy()`，无需创建 StorageBiz、StorageImp 或手动注册 action。
 ## Web 容器公共模型
 
-HAR 对外提供 `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus`、`WebLoadState` 和 Web 日志方法。ArkWeb 组件、`$rawfile` 和错误页 UI 仍由 entry 管理，避免 HAR 配置模型耦合页面资源。
+HAR 对外提供 `WebContainerConfig`、`WebUrlGuard`、`WebLoadStatus` 和 `WebLoadState`。Web 日志由宿主使用自己的 HiLog 标签记录；Runtime 内部 Logger 不作为公共 API。ArkWeb 组件、`$rawfile` 和错误页 UI 仍由 entry 管理，避免 HAR 配置模型耦合页面资源。

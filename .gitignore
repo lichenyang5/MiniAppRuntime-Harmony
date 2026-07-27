@@ -15,3 +15,15 @@
 **/.test
 /.appanalyzer
 *.tgz
+
+# Signing and local credential material must never be committed.
+*.p12
+*.p7b
+*.pfx
+*.jks
+*.keystore
+*.cer
+*.pem
+*.key
+.ohos/
+/release-artifacts/

@@ -1,12 +1,15 @@
 import { webview } from '@kit.ArkWeb';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 import {
   MyASCFRuntime,
-  RuntimeLogger,
   WebContainerConfig,
   WebLoadState,
   WebLoadStatus,
   WebUrlGuard
 } from 'myascf_runtime';
+
+const LOG_DOMAIN: number = 0x1200;
+const LOG_TAG: string = 'MyASCFDemo';
 
 @Entry
 @Component
@@ -47,21 +50,22 @@ struct Index {
           controller: this.controller
         })
         .onPageBegin((event) => {
-          RuntimeLogger.logWebLoadBegin(event.url);
+          hilog.info(LOG_DOMAIN, LOG_TAG, '%{public}s', `[WebContainer] load begin: ${event.url}`);
           this.updateLoadState(WebLoadStatus.LOADING, 0, event.url, '');
         })
         .onProgressChange((event) => {
           if (this.loadState.status === WebLoadStatus.ERROR || this.loadState.status === WebLoadStatus.BLOCKED) {
             return;
           }
-          RuntimeLogger.logWebLoadProgress(this.loadState.url, event.newProgress);
+          hilog.info(LOG_DOMAIN, LOG_TAG, '%{public}s',
+            `[WebContainer] load progress: url=${this.loadState.url}, progress=${event.newProgress}`);
           this.updateLoadState(WebLoadStatus.LOADING, event.newProgress, this.loadState.url, '');
         })
         .onPageEnd((event) => {
           if (this.loadState.status === WebLoadStatus.ERROR || this.loadState.status === WebLoadStatus.BLOCKED) {
             return;
           }
-          RuntimeLogger.logWebLoadEnd(event.url);
+          hilog.info(LOG_DOMAIN, LOG_TAG, '%{public}s', `[WebContainer] load end: ${event.url}`);
           this.updateLoadState(WebLoadStatus.SUCCESS, 100, event.url, '');
         })
         .onLoadIntercept((event) => {
@@ -70,7 +74,7 @@ struct Index {
             return false;
           }
           const reason: string = this.urlGuard.getBlockReason(url);
-          RuntimeLogger.logWebUrlBlocked(url, reason);
+          hilog.warn(LOG_DOMAIN, LOG_TAG, '%{public}s', `[WebContainer] url blocked: url=${url}, reason=${reason}`);
           if (event.data.isMainFrame()) {
             this.updateLoadState(WebLoadStatus.BLOCKED, 0, url, 'URL 不在白名单内');
           }
@@ -82,7 +86,7 @@ struct Index {
           }
           const url: string = event.request.getRequestUrl();
           const message: string = event.error.getErrorInfo();
-          RuntimeLogger.logWebLoadError(url, message);
+          hilog.error(LOG_DOMAIN, LOG_TAG, '%{public}s', `[WebContainer] load error: url=${url}, message=${message}`);
           this.updateLoadState(WebLoadStatus.ERROR, 0, url, '页面加载失败');
         })
         .width('100%')

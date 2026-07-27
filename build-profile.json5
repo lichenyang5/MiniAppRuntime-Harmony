@@ -1,24 +1,8 @@
 {
   "app": {
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "C:\\Users\\30829\\.ohos\\config\\default_ArkMiniRuntime_lpRp3Gm8N8xHqhE8N5MG6o3cu8jwu0DP_YnvP3-DXR0=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001A9B42501628562926A8E4F8409210CC03B60CFAEED0CBE6C5C8C3BB13A35767CFA8596E7F1EBD",
-          "profile": "C:\\Users\\30829\\.ohos\\config\\default_ArkMiniRuntime_lpRp3Gm8N8xHqhE8N5MG6o3cu8jwu0DP_YnvP3-DXR0=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\30829\\.ohos\\config\\default_ArkMiniRuntime_lpRp3Gm8N8xHqhE8N5MG6o3cu8jwu0DP_YnvP3-DXR0=.p12",
-          "storePassword": "0000001A77E1E7787E4B6085B52B9648487786AD9FB04222DB39BFF89CB7BB592053F0E8B43F01C511C3"
-        }
-      }
-    ],
     "products": [
       {
         "name": "default",
-        "signingConfig": "default",
         "targetSdkVersion": "6.1.0(23)",
         "compatibleSdkVersion": "6.1.0(23)",
         "runtimeOS": "HarmonyOS",
@@ -32,10 +16,25 @@
     ],
     "buildModeSet": [
       {
-        "name": "debug",
+        "name": "debug"
       },
       {
         "name": "release"
+      }
+    ],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\30829\\.ohos\\config\\default_ArkMiniRuntime_lpRp3Gm8N8xHqhE8N5MG6o3cu8jwu0DP_YnvP3-DXR0=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001ACD456C4C56E20A0D8883C4062F7CB1B36C6F1F771E12164DBC103C21FE9A30C2372B6D5F640A",
+          "profile": "C:\\Users\\30829\\.ohos\\config\\default_ArkMiniRuntime_lpRp3Gm8N8xHqhE8N5MG6o3cu8jwu0DP_YnvP3-DXR0=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\30829\\.ohos\\config\\default_ArkMiniRuntime_lpRp3Gm8N8xHqhE8N5MG6o3cu8jwu0DP_YnvP3-DXR0=.p12",
+          "storePassword": "0000001AD23C0AC695346C0BB0E37DEFCDAA4A30B28A65B3572ECA78AEB66B91D18B04178221A28F320F"
+        }
       }
     ]
   },

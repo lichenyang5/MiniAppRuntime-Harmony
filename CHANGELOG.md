@@ -7,6 +7,9 @@
 ### Added
 
 - 独立 `npm-har-consumer-demo`、本地 HAR 构建/复制脚本、HAR 发布预检、完整接入教程与 ohpm 发布准备文档。
+- 移除公开构建配置中的签名材料，补充证书/密钥忽略规则和 Git 历史风险说明。
+- 收紧 HAR 首版公共入口，隐藏 RuntimeLogger、内置 Manifest、BridgeRequest 和运行时装配细节。
+- 增强 HAR 归档内容检查，并新增版本化 HAR 与 SHA-256 资产准备脚本。
 - H5 SDK 以 `@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0` 发布，并补充 registry 消费验证。
 - 新增本地 tgz consumer smoke，以及 registry SDK + 本地 HAR 的独立 HarmonyOS Demo。
 - 根 package 入口改为无副作用 ESM，IIFE 自动初始化保留在 `./iife` 子路径。
