@@ -2,8 +2,14 @@
 
 你将学会什么：从 OHPM 安装公开 HAR、声明宿主权限并从稳定入口导入门面类。
 
+先确认消费工程和测试设备支持 API 23 或更高；`myascf_runtime@1.0.0` 发布包的最低兼容版本是 23。完整新工程接入见[快速开始](../getting-started/quick-start.md)。
+
+在导入 Runtime 的 **entry 模块目录**执行安装：
+
 ```bash
+cd entry
 ohpm install myascf_runtime@1.0.0
+cd ..
 ```
 
 `entry/oh-package.json5`：
