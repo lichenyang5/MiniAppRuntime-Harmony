@@ -14,17 +14,19 @@
 
 以下代码是 API 摘要；安装包后还需要创建 H5 资源、配置页面启动和 Proxy。
 
-安装 H5 SDK：
+在消费工程根安装 H5 SDK：
 
 ```bash
 npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 ```
 
-安装 HarmonyOS Runtime：
+在消费工程的 `entry` 目录安装 HarmonyOS Runtime：
 
 ```bash
 ohpm install myascf_runtime@1.0.0
 ```
+
+纯 HTML 最小示例配置完成后，在消费工程根执行 `npm run sync:runtime-web`，将页面和 SDK 复制到 `rawfile/web`，再在 DevEco 构建运行。以后修改 `h5/index.html` 或更新 SDK，也要同步后重新构建运行；完整 `package.json` 和[再次上手步骤](docs/getting-started/quick-start.md#下次继续开发修改--同步--构建--运行)见快速开始。
 
 H5 调用：
 
