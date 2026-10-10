@@ -8,6 +8,12 @@
 
 ## 快速体验
 
+**第一次使用或已经忘记接入步骤：先按[从新建工程跑通 Runtime](docs/getting-started/quick-start.md)操作。** 该路径提供纯 HTML 页面、SDK 同步脚本、完整 `UIAbility`/`Index.ets` 和每一步的成功标准；通路成功后再接 React。
+
+当前 `myascf_runtime@1.0.0` 发布包要求最低兼容 API **23**，消费工程和设备均需满足要求。官方 ASCF 模板需要先调整启动入口，详见[Windows 初始化与真机验收](docs/guide/windows-initialization.md)。
+
+以下代码是 API 摘要；安装包后还需要创建 H5 资源、配置页面启动和 Proxy。
+
 安装 H5 SDK：
 
 ```bash
@@ -49,6 +55,7 @@ private runtime: MyASCFRuntime = new MyASCFRuntime(
 );
 
 Web({ src: $rawfile('web/index.html'), controller: this.controller })
+  .javaScriptAccess(true)
   .javaScriptProxy({
     object: this.runtime.getNativeProxy(),
     name: this.runtime.getProxyName(),
@@ -58,6 +65,8 @@ Web({ src: $rawfile('web/index.html'), controller: this.controller })
 ```
 
 完整接入步骤见 [Quick Start](docs/getting-started/quick-start.md) 和 [ArkWeb Integration](docs/guide/arkweb-integration.md)。
+
+2026-10-10 已在 API 24 真机验证纯 HTML 最小通路：Toast、9 个 API 的动态列表、Storage 写入/读回和 Network GET 200。Clipboard、取消和网络错误矩阵仍需按手工清单回归。
 
 ## 架构
 

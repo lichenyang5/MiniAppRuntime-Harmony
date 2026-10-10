@@ -7,7 +7,7 @@
 ## 推荐学习路径
 
 1. [项目介绍](getting-started/introduction.md)
-2. [五分钟快速开始](getting-started/quick-start.md)
+2. [从新建工程跑通 Runtime](getting-started/quick-start.md)
 3. [架构概览](getting-started/architecture-overview.md)
 4. [ArkWeb 接入](guide/arkweb-integration.md)
 5. [请求 ID 与 callback map](concepts/request-id-and-callback-map.md)
@@ -38,6 +38,9 @@
 - OHPM：`myascf_runtime@1.0.0`
 - 公开 API：9 个；内部取消 action：1 个
 - 独立 Demo：使用 registry 包，不依赖仓库内本地 HAR
+- Runtime 发布包最低兼容 API：23；本次初始化实测设备 API：24
+
+首次接入优先使用[纯 HTML 最小示例](../examples/minimal-runtime-consumer/README.md)。官方 ASCF 模板迁移、Windows 构建和真机验收记录见[初始化指南](guide/windows-initialization.md)；React 接入见[React 快速开始](getting-started/react-quick-start.md)。
 
 ## 按任务查找
 

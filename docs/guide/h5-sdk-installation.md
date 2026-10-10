@@ -2,6 +2,8 @@
 
 你将学会什么：安装 npm 包，选择 ESM 或 IIFE 入口，并理解 `initMyASCF` 与 `createMyASCF` 的区别。
 
+React/Vite 项目在 H5 工程根安装；[纯 HTML 最小接入](../getting-started/quick-start.md)则在 HarmonyOS 消费工程根安装，并通过同步脚本把 `dist/myascf.js` 复制到 `rawfile/web`。
+
 ```bash
 npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 ```

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime 接入验证</title>
+  <style>
+    body { margin: 0; padding: 24px 18px; font-family: sans-serif; color: #172033; background: #f4f6fa; }
+    h1 { font-size: 22px; } p { line-height: 1.6; }
+    button { display: block; width: 100%; margin: 10px 0; padding: 14px; border: 0; border-radius: 10px; background: #245cce; color: white; font-size: 16px; }
+    pre { background: white; padding: 14px; border-radius: 10px; white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <h1>MiniAppRuntime 接入验证</h1>
+  <p id="status">正在检查 SDK 和 Native Proxy…</p>
+  <button data-action="toast">1. Toast</button>
+  <button data-action="list">2. 查看 API</button>
+  <button data-action="set">3. 写入存储</button>
+  <button data-action="get">4. 读取存储</button>
+  <button data-action="network">5. 网络 GET</button>
+  <pre id="result">点击按钮后显示 BridgeResponse。</pre>
+  <script src="myascf.js"></script>
+  <script>
+    const output = document.getElementById('result');
+    const ready = typeof window.myascf === 'object' && typeof window.MyASCFNative?.postMessage === 'function';
+    document.getElementById('status').textContent = ready ? 'SDK 与 Native Proxy 已就绪' : 'Native Proxy 未就绪；请在鸿蒙应用中运行。';
+    const calls = {
+      toast: () => window.myascf.send('ui.showToast', { message: 'Runtime 通路已打通' }),
+      list: () => window.myascf.send('runtime.getApiList', {}),
+      set: () => window.myascf.send('system.storage.setItem', { key: 'runtime-smoke', value: 'hello-runtime' }),
+      get: () => window.myascf.send('system.storage.getItem', { key: 'runtime-smoke' }),
+      network: () => window.myascf.send('network.request', { url: 'https://example.com', method: 'GET', responseType: 'text' })
+    };
+    document.querySelectorAll('button[data-action]').forEach(button => {
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        output.textContent = '等待响应…';
+        try {
+          const response = await calls[button.dataset.action]();
+          output.textContent = JSON.stringify(response, null, 2);
+          console.info('[RuntimeSmoke] ' + button.dataset.action + ' resolved ' + JSON.stringify(response));
+        } catch (error) {
+          output.textContent = JSON.stringify({ code: error.code, message: error.message }, null, 2);
+          console.error('[RuntimeSmoke] ' + button.dataset.action + ' rejected ' + error.message);
+        } finally { button.disabled = false; }
+      });
+    });
+  </script>
+</body>
+</html>

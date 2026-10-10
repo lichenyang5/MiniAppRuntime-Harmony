@@ -2,6 +2,8 @@
 
 你将学会什么：创建 `WebviewController`、初始化 `MyASCFRuntime`、注册 JavaScriptProxy 并加载 rawfile H5。
 
+启动 Ability 还必须在 `onWindowStageCreate` 中调用 `windowStage.loadContent('pages/Index')`，否则下列页面不会自动出现。新工程可复制[完整 UIAbility](../../examples/minimal-runtime-consumer/ets/EntryAbility.ets)，官方 ASCF 模板迁移见[初始化指南](windows-initialization.md)。
+
 ```ets
 import { webview } from '@kit.ArkWeb';
 import { MyASCFRuntime } from 'myascf_runtime';
