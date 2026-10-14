@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- 新增 MyASCFRuntime.registerCustomApi 宿主能力注册入口。
+- 公开 BridgeHandler、BridgeRequest、BridgeRequestParams 和 CustomApiMetadata。
+- runtime.getApiList 支持发现宿主注册的 app.* 能力。
+- 增加重复注册保护、回归测试和接入示例。
+
 ## 1.0.0
 
 - 提供 `MyASCFRuntime` 统一入口。
