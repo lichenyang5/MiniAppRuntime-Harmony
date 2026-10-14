@@ -75,7 +75,8 @@ class StorageClearHandler implements BridgeHandler {
 }
 
 class RuntimeGetApiListHandler implements BridgeHandler {
-  private runtimeInfoBiz: RuntimeInfoBiz = new RuntimeInfoBiz();
+  private runtimeInfoBiz: RuntimeInfoBiz;
+  constructor(registry: HandlerRegistry) { this.runtimeInfoBiz = new RuntimeInfoBiz(registry); }
 
   async handle(request: BridgeRequest): Promise<BridgeResponse> {
     return await this.runtimeInfoBiz.getApiList(request);
@@ -120,7 +121,7 @@ export class RuntimeBootstrap {
     registry.register(ACTION_SYSTEM_STORAGE_GET_ITEM, new StorageGetItemHandler(storageBiz));
     registry.register(ACTION_SYSTEM_STORAGE_REMOVE_ITEM, new StorageRemoveItemHandler(storageBiz));
     registry.register(ACTION_SYSTEM_STORAGE_CLEAR, new StorageClearHandler(storageBiz));
-    registry.register(ACTION_RUNTIME_GET_API_LIST, new RuntimeGetApiListHandler());
+    registry.register(ACTION_RUNTIME_GET_API_LIST, new RuntimeGetApiListHandler(registry));
     registry.register(ACTION_NETWORK_REQUEST, new NetworkRequestHandler(new NetworkBiz(networkImp, networkPolicy)));
     registry.register(ACTION_NETWORK_ABORT, new NetworkAbortHandler(new NetworkAbortBiz(networkRequestRegistry)));
     return registry;

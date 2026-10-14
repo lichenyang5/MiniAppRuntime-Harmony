@@ -2,6 +2,10 @@ export { MyASCFRuntime } from './MyASCFRuntime';
 export { MyASCFNativeProxy } from './api/RuntimeTypes';
 export {
   ApiSummary,
+  BridgeHandler,
+  BridgeRequest,
+  BridgeRequestParams,
+  CustomApiMetadata,
   BridgeResponse,
   BridgeResponseData
 } from './api/BridgeTypes';

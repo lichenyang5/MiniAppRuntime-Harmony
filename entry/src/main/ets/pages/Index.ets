@@ -1,3 +1,4 @@
+import { HostEchoHandler } from '../custom/HostEchoHandler';
 import { webview } from '@kit.ArkWeb';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import {
@@ -16,6 +17,15 @@ const LOG_TAG: string = 'MyASCFDemo';
 struct Index {
   private controller: webview.WebviewController = new webview.WebviewController();
   private runtime: MyASCFRuntime = new MyASCFRuntime(this.controller, getContext(this));
+  private customApiRegistered: boolean = false;
+  aboutToAppear(): void {
+    if (!this.customApiRegistered) {
+      this.runtime.registerCustomApi('app.echo', new HostEchoHandler(), {
+        title: 'Host Echo', description: 'Echo implemented by this host', paramsText: 'text: string'
+      });
+      this.customApiRegistered = true;
+    }
+  }
   private config: WebContainerConfig = {
     homeUrl: 'web/index.html',
     allowedSchemes: ['resource', 'https'],

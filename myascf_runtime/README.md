@@ -34,6 +34,10 @@ const runtime = new MyASCFRuntime(controller, context, networkPolicy);
 
 首版公共类型还包括 Bridge 响应/错误、NetworkPolicy 与 WebContainerConfig 等必要契约；以包入口 `Index.ets` 的实际导出为准。
 
+## 开发分支的宿主扩展
+
+开发分支新增 registerCustomApi(action, handler, metadata?)，以及 BridgeHandler、BridgeRequest、BridgeRequestParams、CustomApiMetadata 公共契约。已发布 OHPM 1.0.0 不含这个注册入口；本地构建 HAR 验证，发布后消费项目再升级。使用步骤见[宿主 API 扩展教程](../docs/guide/extending-api.md)。
+
 ## 宿主权限
 
 | 能力 | 宿主声明 | 运行时授权 |

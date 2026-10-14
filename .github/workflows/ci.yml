@@ -40,6 +40,9 @@ jobs:
       - name: Check generated docs and types
         run: npm run check:generated
 
+      - name: Test host API registration
+        run: npm run test:runtime
+
       - name: Check API Manifest consistency
         run: npm run check:api
 

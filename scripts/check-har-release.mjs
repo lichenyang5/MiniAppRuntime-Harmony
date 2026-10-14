@@ -61,11 +61,12 @@ const mainPath = path.resolve(moduleDir, pkg.main);
 if (!mainPath.startsWith(`${moduleDir}${path.sep}`) || !fs.existsSync(mainPath)) fail(`main entry does not exist: ${pkg.main}`);
 const publicEntry = fs.readFileSync(path.join(moduleDir, 'src', 'main', 'ets', 'Index.ets'), 'utf8');
 const forbiddenPublicExports = [
-  'RuntimeLogger', 'BUILTIN_API_MANIFEST', 'ApiManifestItem', 'BridgeRequest',
+  'RuntimeLogger', 'BUILTIN_API_MANIFEST', 'ApiManifestItem',
   'BridgeDispatcher', 'HandlerRegistry', 'RuntimeBootstrap', 'BridgeController'
 ];
 const requiredPublicExports = [
   'MyASCFRuntime', 'MyASCFNativeProxy', 'ApiSummary', 'BridgeResponse',
+  'BridgeHandler', 'BridgeRequest', 'BridgeRequestParams', 'CustomApiMetadata',
   'BridgeResponseData', 'BridgeErrorCode', 'WebContainerConfig', 'WebUrlGuard',
   'WebLoadStatus', 'WebLoadState', 'NetworkMethod', 'NetworkPolicy',
   'NetworkResponseType'
