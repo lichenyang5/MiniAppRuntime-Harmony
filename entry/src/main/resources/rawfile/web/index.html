@@ -103,10 +103,26 @@
       <div id="debugRecords" class="debugRecords"></div>
       <pre id="debugExportOutput" class="debugExportOutput"></pre>
     </section>
+    <section class="card">
+      <h2>宿主自定义能力</h2>
+      <button id="hostEchoButton" type="button">测试 app.echo</button>
+      <pre id="hostEchoResult"></pre>
+    </section>
   </main>
 
   <script src="./js/debug-panel.js"></script>
   <script src="./js/myascf.js"></script>
   <script src="./js/demo.js"></script>
+  <script>
+    document.getElementById('hostEchoButton').addEventListener('click', async () => {
+      const result = document.getElementById('hostEchoResult');
+      try {
+        const response = await window.myascf.send('app.echo', { text: 'Host extension works' });
+        result.textContent = JSON.stringify(response, null, 2);
+      } catch (error) {
+        result.textContent = JSON.stringify(error, null, 2);
+      }
+    });
+  </script>
 </body>
 </html>

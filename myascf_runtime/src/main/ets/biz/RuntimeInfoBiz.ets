@@ -2,8 +2,11 @@ import { ACTION_RUNTIME_GET_API_LIST } from '../api/ActionNames';
 import { ApiManifestItem, ApiParamMeta, BUILTIN_API_MANIFEST } from '../api/ApiManifest';
 import { ApiSummary, BridgeRequest, BridgeResponse, BridgeResponseData } from '../api/BridgeTypes';
 import { BridgeErrorCode } from '../error/BridgeErrorCode';
+import { HandlerRegistry } from '../registry/HandlerRegistry';
 
 export class RuntimeInfoBiz {
+  private registry?: HandlerRegistry;
+  constructor(registry?: HandlerRegistry) { this.registry = registry; }
   async getApiList(request: BridgeRequest): Promise<BridgeResponse> {
     const apis: ApiSummary[] = [];
 
@@ -23,6 +26,9 @@ export class RuntimeInfoBiz {
       apis.push(summary);
     }
 
+    if (this.registry) {
+      apis.push(...this.registry.getCustomSummaries());
+    }
     const data: BridgeResponseData = {
       echoAction: ACTION_RUNTIME_GET_API_LIST,
       apis: apis

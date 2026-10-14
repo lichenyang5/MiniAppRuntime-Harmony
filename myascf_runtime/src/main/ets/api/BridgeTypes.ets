@@ -54,3 +54,9 @@ export interface BridgeResponse {
 export interface BridgeHandler {
   handle(request: BridgeRequest): Promise<BridgeResponse>;
 }
+
+export interface CustomApiMetadata {
+  title: string;
+  description: string;
+  paramsText: string;
+}
