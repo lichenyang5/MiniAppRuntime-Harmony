@@ -23,7 +23,7 @@ export class RuntimeLogger {
 
   static logBridgeParams(request: BridgeRequest): void {
     if (request.action !== 'network.request') {
-      RuntimeLogger.info(`[BridgeController] params: ${JSON.stringify(request.params)}`);
+      RuntimeLogger.info('[BridgeController] params: [redacted]');
       return;
     }
     const params: BridgeRequestParams | undefined = request.params;

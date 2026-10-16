@@ -25,11 +25,16 @@ for (const name of ['api/BridgeTypes', 'api/ActionNames', 'api/ApiManifest', 'er
   mkdirSync(path.dirname(destination), {recursive:true});
   writeFileSync(destination, output.replace('require("@kit.PerformanceAnalysisKit")', 'require("../platform-log.js")'));
 }
-writeFileSync(path.join(temporary, 'platform-log.js'), 'exports.hilog={info(){},warn(){},error(){}};');
+writeFileSync(path.join(temporary, 'platform-log.js'), `
+exports.messages=[];
+exports.hilog={info(...args){exports.messages.push(args.at(-1));},warn(){},error(){}};
+`);
 const require = createRequire(path.join(temporary, 'runner.js'));
 const {HandlerRegistry} = require('./registry/HandlerRegistry.js');
 const {RuntimeInfoBiz} = require('./biz/RuntimeInfoBiz.js');
 const {BridgeDispatcher} = require('./dispatcher/BridgeDispatcher.js');
+const {RuntimeLogger} = require('./logger/RuntimeLogger.js');
+const {messages} = require('./platform-log.js');
 const echo = { async handle(request) {
   return {requestId:request.requestId, code:0, message:'ok', data:{text:request.params?.text}};
 }};
@@ -91,4 +96,27 @@ test('registries keep host APIs isolated', () => {
   assert.equal(second.has('app.echo'), false);
   assert.deepEqual(second.getCustomSummaries(), []);
   assert.equal(first.getCustomSummaries()[0].title, 'app.echo');
+});
+
+test('parameter logs redact host backup, storage and clipboard contents without changing requests', () => {
+  for (const action of ['app.backup.saveFile', 'system.storage.setItem', 'system.clipboard.writeText']) {
+    messages.length = 0;
+    const request = {requestId:'private-1', action, params:{text:'private-todo-正文', key:'private-key', value:'private-value'}};
+    const before = structuredClone(request);
+    RuntimeLogger.logBridgeParams(request);
+    assert.deepEqual(request, before);
+    assert.deepEqual(messages, ['[BridgeController] params: [redacted]']);
+  }
+});
+
+test('network logs retain diagnostics while excluding credentials, query, header values and body', () => {
+  messages.length = 0;
+  RuntimeLogger.logBridgeParams({requestId:'network-private', action:'network.request', params:{
+    url:'https://alice:secret@example.com/tasks?token=private#secret', method:'POST',
+    headers:{Authorization:'Bearer private-token'}, body:'private-body', timeout:1000, responseType:'text'
+  }});
+  assert.equal(messages.length, 1);
+  assert.match(messages[0], /url=https:\/\/example.com\/tasks, method=POST/);
+  assert.match(messages[0], /headerNames=Authorization, bodyLength=12/);
+  assert.doesNotMatch(messages[0], /alice|secret|private|Bearer|token=/);
 });

@@ -2,6 +2,12 @@
 
 这份文件记录 MiniAppRuntime-Harmony 的公开功能和分发变化。
 
+## [Unreleased]
+
+### Fixed
+
+- 隐去非网络 Bridge 请求的参数正文，避免宿主自定义 API 的备份内容、存储值和剪贴板文本写入公共日志；保留请求 ID、action、响应码和原有网络诊断摘要。
+
 ## [1.0.0] - 2026-07-27
 
 ### Added

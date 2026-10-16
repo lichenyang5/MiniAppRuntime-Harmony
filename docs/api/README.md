@@ -6,7 +6,7 @@
 
 从真实 API Manifest 查看当前公开 action、参数、响应、版本、权限和错误边界。
 
-Current compatibility: H5 SDK `0.1.0` + OHPM Runtime `1.0.0`.
+Current compatibility: H5 SDK `0.1.0` + OHPM Runtime `1.1.0`.
 
 > Run `npm run docs:api` to regenerate this file. Internal actions are intentionally excluded.
 
@@ -16,7 +16,7 @@ Category guides: [Runtime](runtime.md) · [UI](ui.md) · [Clipboard](clipboard.m
 
 - Params: -
 - Response: `apis: ApiSummary[]`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -41,7 +41,7 @@ Errors: `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: `message: string`
 - Response: `echoAction: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -66,7 +66,7 @@ Errors: `PARAM_ERROR`, `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: `text: string`
 - Response: `echoAction: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -91,7 +91,7 @@ Errors: `PARAM_ERROR`, `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: -
 - Response: `echoAction: string, text: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: `ohos.permission.READ_PASTEBOARD`
 
 Success call:
@@ -116,7 +116,7 @@ Errors: `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: `key: string, value: string`
 - Response: `echoAction: string, key: string, value: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -141,7 +141,7 @@ Errors: `PARAM_ERROR`, `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: `key: string`
 - Response: `echoAction: string, key: string, value: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -166,7 +166,7 @@ Errors: `PARAM_ERROR`, `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: `key: string`
 - Response: `echoAction: string, key: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -191,7 +191,7 @@ Errors: `PARAM_ERROR`, `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: -
 - Response: `echoAction: string`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: No additional permission
 
 Success call:
@@ -216,7 +216,7 @@ Errors: `INTERNAL_ERROR`, `TIMEOUT`, `CALLBACK_LOST`
 
 - Params: `url: string, method?: NetworkMethod, headers?: NetworkHeaders, body?: string, timeout?: number, responseType?: NetworkResponseType`
 - Response: `ok: boolean, statusCode: number, statusText?: string, headers: NetworkHeaders, body: NetworkBody, duration: number`
-- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.0.0`
+- Supported combination: H5 SDK `0.1.0` / HAR Runtime `1.1.0`
 - Permission: `ohos.permission.INTERNET`
 
 Success call:
