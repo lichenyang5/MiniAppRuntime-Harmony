@@ -2,7 +2,7 @@
 
 这份文件记录 MiniAppRuntime-Harmony 的公开功能和分发变化。
 
-## [Unreleased]
+## [1.1.1] - 2026-10-16
 
 ### Fixed
 
