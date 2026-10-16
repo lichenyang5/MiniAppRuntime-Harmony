@@ -7,7 +7,8 @@
 ## 当前状态
 
 - 包名：`myascf_runtime`
-- 当前版本：`1.0.0`
+- 已发布版本：`1.1.0`
+- 待发布补丁：`1.1.1`，隐去 Bridge 参数正文日志，兼容原有 SDK 和调用协议
 - Registry：OHPM
 - 状态：已发布，`ohpm info` 与独立 Demo 安装验证通过
 - 源码类型：`open`
@@ -15,8 +16,8 @@
 ## 消费验证
 
 ```bash
-ohpm info myascf_runtime@1.0.0
-ohpm install myascf_runtime@1.0.0
+ohpm info myascf_runtime@1.1.0
+ohpm install myascf_runtime@1.1.0
 ohpm list
 ```
 
@@ -32,6 +33,35 @@ ohpm prepublish ".\myascf_runtime\build\default\outputs\default\myascf_runtime.h
 ```
 
 预检必须核对包名、版本、入口、README、LICENSE、公开导出、源码类型、依赖、凭据字段、本机路径和最终 SHA-256。
+
+## 发布 1.1.1
+
+先合并 1.1.1 发布准备 PR，再在项目根目录重新构建并预检，确认使用当前修复后的源码：
+
+```powershell
+.\scripts\build-har.ps1
+.\scripts\prepare-har-release.ps1
+$ohpmCli = 'C:\Program Files\Huawei\DevEco Studio\tools\ohpm\bin\ohpm.bat'
+& $ohpmCli prepublish '.\release-artifacts\myascf_runtime-v1.1.1.har'
+```
+
+预检通过后，由作者手动发布：
+
+```powershell
+& $ohpmCli publish '.\release-artifacts\myascf_runtime-v1.1.1.har' `
+  --source_type open `
+  --publish_registry 'https://ohpm.openharmony.cn/ohpm'
+```
+
+私钥口令只在终端提示时输入，不要粘贴到聊天或提交到仓库。沿用现有 OHPM 账号、发布码和私钥配置即可。源码包含提示符合本项目开源 HAR 的发布方式。
+
+显示发布成功或等待审核后，等待仓库可查询：
+
+```powershell
+& $ohpmCli info myascf_runtime@1.1.1
+```
+
+可查询后再将 Todo 的宿主依赖升级到 1.1.1，执行 `npm run setup:harmony`、`npm run check:all` 和 `npm run build:harmony`，重新安装并验收文件导出、导入与重启恢复。GitHub 合并本身不会上传 OHPM 包。
 
 ## 人工发布边界
 
