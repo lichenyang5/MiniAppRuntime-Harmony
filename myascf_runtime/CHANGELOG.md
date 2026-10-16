@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+- 隐去非网络 Bridge 参数正文，避免宿主备份、存储和剪贴板内容写入公共日志。
+- 保留请求 ID、action、响应码及网络请求脱敏摘要，调用协议与 1.1.0 兼容。
+- 补齐 OHPM author 联系 URL，并在发布检查中校验源包与 HAR 作者信息。
+
 ## 1.1.0
 
 - 新增 MyASCFRuntime.registerCustomApi 宿主能力注册入口。

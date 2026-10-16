@@ -9,7 +9,7 @@
 ## 安装
 
 ```bash
-ohpm install myascf_runtime@1.0.0
+ohpm install myascf_runtime@1.1.1
 ```
 
 模块依赖将写入：
@@ -17,7 +17,7 @@ ohpm install myascf_runtime@1.0.0
 ```json5
 {
   "dependencies": {
-    "myascf_runtime": "1.0.0"
+    "myascf_runtime": "1.1.1"
   }
 }
 ```
@@ -34,9 +34,9 @@ const runtime = new MyASCFRuntime(controller, context, networkPolicy);
 
 首版公共类型还包括 Bridge 响应/错误、NetworkPolicy 与 WebContainerConfig 等必要契约；以包入口 `Index.ets` 的实际导出为准。
 
-## 开发分支的宿主扩展
+## 宿主扩展
 
-开发分支新增 registerCustomApi(action, handler, metadata?)，以及 BridgeHandler、BridgeRequest、BridgeRequestParams、CustomApiMetadata 公共契约。已发布 OHPM 1.0.0 不含这个注册入口；本地构建 HAR 验证，发布后消费项目再升级。使用步骤见[宿主 API 扩展教程](../docs/guide/extending-api.md)。
+Runtime 1.1.0 起提供 registerCustomApi(action, handler, metadata?)，以及 BridgeHandler、BridgeRequest、BridgeRequestParams、CustomApiMetadata 公共契约。1.1.1 隐去自定义 API、存储和剪贴板请求的参数日志正文；调用协议不变。使用步骤见[宿主 API 扩展教程](../docs/guide/extending-api.md)。
 
 ## 宿主权限
 
@@ -50,7 +50,7 @@ HAR 不能替宿主声明或申请权限。剪贴板读取权限应按需申请�
 
 ## 配套版本
 
-- OHPM Runtime：`myascf_runtime@1.0.0`
+- OHPM Runtime：`myascf_runtime@1.1.1`
 - npm H5 SDK：`@lcy453/miniapp-runtime-harmony-web-sdk@0.1.0`
 - 公开 API：9 个；内部取消 action：1 个
 
