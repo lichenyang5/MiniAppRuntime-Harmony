@@ -57,7 +57,7 @@ Set-Location 'C:\你的目录\MyApplication\entry'
 ```
 
 ```bash
-ohpm install myascf_runtime@1.0.0
+ohpm install myascf_runtime@1.1.1
 ```
 
 以下字段位于消费工程 `entry/oh-package.json5`：
@@ -65,7 +65,7 @@ ohpm install myascf_runtime@1.0.0
 ```json5
 {
   "dependencies": {
-    "myascf_runtime": "1.0.0"
+    "myascf_runtime": "1.1.1"
   }
 }
 ```
