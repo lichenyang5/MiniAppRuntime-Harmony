@@ -65,6 +65,9 @@ jobs:
         working-directory: examples/npm-har-consumer-demo/web
         run: npm ci
 
+      - name: Check current onboarding versions and examples
+        run: npm run check:docs-code
+
       - name: Build and sync independent Web Demo
         working-directory: examples/npm-har-consumer-demo/web
         run: npm run build:harmony
