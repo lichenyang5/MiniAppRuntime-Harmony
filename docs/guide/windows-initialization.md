@@ -1,5 +1,9 @@
 # Windows 初始化与真机验收记录
 
+## 当前接入版本
+
+新项目推荐使用公开 OHPM 包 `myascf_runtime@1.1.1`，配套 npm SDK 仍为 0.1.0。完整安装步骤见[快速开始](../getting-started/quick-start.md)。下方表格保留 2026-10-10 使用 1.0.0 的历史设备结果；1.1.1 的独立 Demo 编译和 React Todo 设备验证范围见[版本矩阵](../version-compatibility.md)。
+
 ## 实测环境和结果
 
 2026-10-10，在 Windows 上将已有官方 ASCF 模板工程迁移为 MiniAppRuntime 消费工程。该工程此前已安装两个公开包，但启动入口仍继承 `AscfUIAbility`，`Index.ets` 引用的 `rawfile/web/index.html` 不存在，最低 API 为 12。

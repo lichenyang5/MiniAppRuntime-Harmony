@@ -118,16 +118,30 @@ if (sdkVersion !== '0.1.0') {
   process.exit(1);
 }
 
-const harmonyPackage = readRoot(path.join('examples', 'npm-har-consumer-demo', 'harmony', 'entry', 'oh-package.json5'));
-const harmonyLock = readRoot(path.join('examples', 'npm-har-consumer-demo', 'harmony', 'entry', 'oh-package-lock.json5'));
-if (!/"myascf_runtime"\s*:\s*"1\.0\.0"/.test(harmonyPackage)) {
-  console.error('[doc-examples] independent HarmonyOS demo must depend on myascf_runtime 1.0.0');
+const runtimeVersion = JSON.parse(readRoot('myascf_runtime/oh-package.json5')).version;
+const harmonyPackage = JSON.parse(readRoot('examples/npm-har-consumer-demo/harmony/entry/oh-package.json5'));
+const harmonyLock = JSON.parse(readRoot('examples/npm-har-consumer-demo/harmony/entry/oh-package-lock.json5'));
+const lockedRuntime = harmonyLock.packages?.[`myascf_runtime@${runtimeVersion}`];
+if (harmonyPackage.dependencies?.myascf_runtime !== runtimeVersion ||
+  lockedRuntime?.version !== runtimeVersion || lockedRuntime?.registryType !== 'ohpm' ||
+  lockedRuntime?.resolved !== `https://ohpm.openharmony.cn/ohpm/myascf_runtime/-/myascf_runtime-${runtimeVersion}.har` ||
+  !lockedRuntime?.integrity?.startsWith('sha512-')) {
+  console.error(`[doc-examples] independent HarmonyOS demo must pin public OHPM Runtime ${runtimeVersion}`);
   process.exit(1);
 }
-if (!harmonyLock.includes('https://ohpm.openharmony.cn/ohpm/myascf_runtime/-/myascf_runtime-1.0.0.har') ||
-  !harmonyLock.includes('"registryType": "ohpm"')) {
-  console.error('[doc-examples] independent HarmonyOS lockfile is not pinned to the public OHPM Runtime');
-  process.exit(1);
+for (const file of ['README.md', 'docs/getting-started/quick-start.md',
+  'docs/getting-started/react-quick-start.md', 'docs/guide/runtime-installation.md',
+  'docs/guide/windows-initialization.md', 'docs/guide/extending-api.md',
+  'examples/npm-har-consumer-demo/README.md']) {
+  // The Windows guide retains a dated historical verification table.
+  const content = file === 'docs/guide/windows-initialization.md'
+    ? readRoot(file).split('## 实测环境和结果')[0] : readRoot(file);
+  const versions = [...content.matchAll(/myascf_runtime@(\d+\.\d+\.\d+)|"myascf_runtime"\s*:\s*"(\d+\.\d+\.\d+)"/g)]
+    .map(match => match[1] ?? match[2]);
+  if (!versions.length || versions.some(version => version !== runtimeVersion)) {
+    console.error(`[doc-examples] ${file} must document current Runtime ${runtimeVersion}`);
+    process.exit(1);
+  }
 }
 
 const npmCommand = process.platform === 'win32' ? process.execPath : 'npm';

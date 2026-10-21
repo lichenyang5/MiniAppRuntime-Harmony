@@ -1,8 +1,8 @@
 # 宿主扩展与内置 API 开发
 
-当前开发分支提供 `runtime.registerCustomApi(action, handler, metadata?)`。宿主可以从 HAR 公共入口导入 handler 契约，直接注册自己的鸿蒙能力，继续使用 Runtime 原有解析、分发和 SDK 回调。
+Runtime 1.1.0 起提供 `runtime.registerCustomApi(action, handler, metadata?)`。宿主可以从 HAR 公共入口导入 handler 契约，直接注册自己的鸿蒙能力，继续使用 Runtime 原有解析、分发和 SDK 回调。
 
-**此入口尚未发布到 OHPM。已发布的 `myascf_runtime@1.0.0` 不含该方法。** 本地验证请从本分支源码构建 HAR；发布前不要把 registry 依赖改成一个尚不存在的版本。npm SDK `0.1.0` 的通用 `send` 可以调用自定义 action。
+**使用已发布的 `myascf_runtime@1.1.1`。** 该版本包含宿主注册入口和参数日志脱敏修复；1.0.0 不含注册入口。消费项目直接安装公开 OHPM 包，无需本地 HAR。npm SDK `0.1.0` 的通用 `send` 可以调用自定义 action。
 
 ## 注册宿主能力
 

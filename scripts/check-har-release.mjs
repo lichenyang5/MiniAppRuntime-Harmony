@@ -33,7 +33,22 @@ function collectNamedExports(content) {
   return exports;
 }
 
+function validateAuthor(author, label) {
+  const name = typeof author === 'string'
+    ? author.replace(/\s*<[^>]*>|\s*\([^)]*\)/g, '').trim()
+    : author?.name;
+  const email = typeof author === 'string' ? author.match(/<([^>]+)>/)?.[1] : author?.email;
+  const url = typeof author === 'string' ? author.match(/\((https?:\/\/[^)]+)\)/)?.[1] : author?.url;
+  const validEmail = typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  let validUrl = false;
+  try { validUrl = typeof url === 'string' && ['https:', 'http:'].includes(new URL(url).protocol); }
+  catch { /* Invalid URLs fail validation below. */ }
+  if (typeof name !== 'string' || !name.trim() || (!validEmail && !validUrl)) {
+    fail(label + ' author must include a name and a valid url or email for OHPM publishing');
+  }
+}
 const pkg = readJson(path.join(moduleDir, 'oh-package.json5'));
+validateAuthor(pkg.author, 'Source package');
 ['name', 'version', 'description', 'main', 'license'].forEach((field) => {
   if (typeof pkg[field] !== 'string' || pkg[field].trim() === '') fail(`oh-package.json5 missing ${field}`);
 });
@@ -146,6 +161,7 @@ if (!metadataOnly) {
   } catch (error) {
     fail(`cannot inspect HAR archive: ${error.message}`);
   }
+  validateAuthor(artifactPkg.author, 'HAR package');
   if (artifactPkg.name !== pkg.name || artifactPkg.version !== pkg.version || artifactPkg.license !== pkg.license) {
     fail(`HAR metadata does not match source package: expected ${pkg.name}@${pkg.version}`);
   }

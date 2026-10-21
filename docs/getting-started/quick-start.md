@@ -9,7 +9,7 @@
 | 操作 | PowerShell 当前目录 |
 | --- | --- |
 | 复制模板、`npm install`、`npm run sync:runtime-web` | 新建 HarmonyOS 工程根 |
-| `ohpm install myascf_runtime@1.0.0` | 新建工程的 `entry` 目录 |
+| `ohpm install myascf_runtime@1.1.1` | 新建工程的 `entry` 目录 |
 | 修改 `package.json` | 新建工程根的文件 |
 | 修改 `oh-package.json5` 中 Runtime 依赖 | 新建工程的 `entry/oh-package.json5` |
 
@@ -17,7 +17,7 @@
 
 在 DevEco Studio 创建 **Stage Model 的 Empty Ability** 工程，语言使用 ArkTS。本教程按 `entry` 模块、`EntryAbility` 和 `pages/Index` 命名。
 
-`myascf_runtime@1.0.0` 发布包声明最低兼容 API **23**。工程和测试设备均须支持 API 23 或更高。2026-10-10 实测使用 SDK `6.1.1.125`（API 24）及 API 24 真机。
+`myascf_runtime@1.1.1` 发布包声明最低兼容 API **23**。工程和测试设备均须支持 API 23 或更高。2026-10-10 实测使用 SDK `6.1.1.125`（API 24）及 API 24 真机。
 
 工程根 `build-profile.json5` 的 `app.products` 中，按已安装 SDK 配置，例如：
 
@@ -79,17 +79,17 @@ Runtime 安装在 **entry 模块目录**，让导入它的模块声明依赖：
 
 ```powershell
 Set-Location entry
-ohpm install myascf_runtime@1.0.0
+ohpm install myascf_runtime@1.1.1
 Set-Location ..
 ```
 
 终端找不到 `ohpm` 时，用 DevEco 自带路径替换安装命令（仍在 `entry` 目录）：
 
 ```powershell
-& 'C:\Program Files\Huawei\DevEco Studio\tools\ohpm\bin\ohpm.bat' install myascf_runtime@1.0.0
+& 'C:\Program Files\Huawei\DevEco Studio\tools\ohpm\bin\ohpm.bat' install myascf_runtime@1.1.1
 ```
 
-确认 `entry/oh-package.json5` 的 `dependencies` 含 `"myascf_runtime": "1.0.0"`。不需要复制本地 HAR 或添加框架源码模块。
+确认 `entry/oh-package.json5` 的 `dependencies` 含 `"myascf_runtime": "1.1.1"`。不需要复制本地 HAR 或添加框架源码模块。
 
 ## 4. 同步页面和 SDK
 

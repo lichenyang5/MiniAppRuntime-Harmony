@@ -4,6 +4,6 @@
   "description": "HarmonyOS ArkWeb consumer for the public npm H5 SDK and OHPM Runtime.",
   "main": "",
   "dependencies": {
-    "myascf_runtime": "1.0.0"
+    "myascf_runtime": "1.1.1"
   }
 }
