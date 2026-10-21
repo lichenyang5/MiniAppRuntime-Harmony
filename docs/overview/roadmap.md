@@ -4,7 +4,7 @@
 
 ## 当前版本与维护顺序
 
-截至 2026-10-10，当前公开组合为 H5 SDK `0.1.0` 与 OHPM Runtime `1.0.0`，GitHub 已创建 [v1.0.0 Release](https://github.com/lichenyang5/MiniAppRuntime-Harmony/releases/tag/v1.0.0)。包发布与消费证据见 [npm 发布记录](../release/v0.1.0-publish-record.md)、[OHPM 验证记录](../release/ohpm-readiness-report.md)和[独立消费 Demo](../../examples/npm-har-consumer-demo/README.md)。历史阶段编号不代表下一次发布版本。
+截至 2026-10-21，当前公开组合为 H5 SDK `0.1.0` 与 OHPM Runtime `1.1.1`。1.1.0 增加宿主 `registerCustomApi`，1.1.1 修复 Bridge 参数正文日志；独立 React Todo 已完成原生文件备份、合并恢复和重启真机验收。GitHub 已创建 [v1.0.0 Release](https://github.com/lichenyang5/MiniAppRuntime-Harmony/releases/tag/v1.0.0)。包发布与消费证据见 [npm 发布记录](../release/v0.1.0-publish-record.md)、[OHPM 验证记录](../release/ohpm-readiness-report.md)和[独立消费 Demo](../../examples/npm-har-consumer-demo/README.md)。历史阶段编号不代表下一次发布版本。
 
 优先维护以下事项：
 
@@ -95,4 +95,4 @@ v0.2.0 只证明现有运行时可承载一条复杂异步 API，不代表已经
 
 ## 边界
 
-当前项目用于开源学习和工程实践，不宣称实现完整小程序规范，也不夸大安全、兼容性和发布成熟度。H5 SDK `0.1.0` 已发布到 npm，Runtime `1.0.0` 已发布到 OHPM，独立消费 Demo 使用公开 registry 依赖；GitHub `v1.0.0` Release 已创建。设备链路验证、历史凭据处置和发布自动化仍按各自待办推进。
+当前项目用于开源学习和工程实践，不宣称实现完整小程序规范，也不夸大安全、兼容性和发布成熟度。H5 SDK `0.1.0` 已发布到 npm，Runtime `1.1.1` 已发布到 OHPM，独立消费 Demo 使用公开 registry 依赖；GitHub `v1.0.0` Release 已创建。设备链路验证、历史凭据处置和发布自动化仍按各自待办推进。
