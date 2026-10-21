@@ -7,8 +7,8 @@
 ## 当前状态
 
 - 包名：`myascf_runtime`
-- 已发布版本：`1.1.0`
-- 待发布补丁：`1.1.1`，隐去 Bridge 参数正文日志，兼容原有 SDK 和调用协议
+- 已发布版本：`1.1.1`
+- 补丁内容：隐去 Bridge 参数正文日志，兼容原有 SDK 和调用协议
 - Registry：OHPM
 - 状态：已发布，`ohpm info` 与独立 Demo 安装验证通过
 - 源码类型：`open`
@@ -16,8 +16,8 @@
 ## 消费验证
 
 ```bash
-ohpm info myascf_runtime@1.1.0
-ohpm install myascf_runtime@1.1.0
+ohpm info myascf_runtime@1.1.1
+ohpm install myascf_runtime@1.1.1
 ohpm list
 ```
 
@@ -34,9 +34,9 @@ ohpm prepublish ".\myascf_runtime\build\default\outputs\default\myascf_runtime.h
 
 预检必须核对包名、版本、入口、README、LICENSE、公开导出、源码类型、依赖、凭据字段、本机路径和最终 SHA-256。
 
-## 发布 1.1.1
+## 1.1.1 发布步骤记录
 
-先合并 1.1.1 发布准备 PR，再在项目根目录重新构建并预检，确认使用当前修复后的源码：
+1.1.1 已发布并可从公开 OHPM 下载，不要重复发布同一版本。以下保留本次发布流程；下次发布必须先升级版本号，再构建和预检：
 
 ```powershell
 .\scripts\build-har.ps1
