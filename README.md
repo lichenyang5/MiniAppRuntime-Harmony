@@ -10,7 +10,7 @@
 
 **第一次使用或已经忘记接入步骤：先按[从新建工程跑通 Runtime](docs/getting-started/quick-start.md)操作。** 该路径提供纯 HTML 页面、SDK 同步脚本、完整 `UIAbility`/`Index.ets` 和每一步的成功标准；通路成功后再接 React。
 
-当前 `myascf_runtime@1.0.0` 发布包要求最低兼容 API **23**，消费工程和设备均需满足要求。官方 ASCF 模板需要先调整启动入口，详见[Windows 初始化与真机验收](docs/guide/windows-initialization.md)。
+当前 `myascf_runtime@1.1.1` 发布包要求最低兼容 API **23**，消费工程和设备均需满足要求。官方 ASCF 模板需要先调整启动入口，详见[Windows 初始化与真机验收](docs/guide/windows-initialization.md)。
 
 以下代码是 API 摘要；安装包后还需要创建 H5 资源、配置页面启动和 Proxy。
 
@@ -23,7 +23,7 @@ npm install @lcy453/miniapp-runtime-harmony-web-sdk@0.1.0
 在消费工程的 `entry` 目录安装 HarmonyOS Runtime：
 
 ```bash
-ohpm install myascf_runtime@1.0.0
+ohpm install myascf_runtime@1.1.1
 ```
 
 纯 HTML 最小示例配置完成后，在消费工程根执行 `npm run sync:runtime-web`，将页面和 SDK 复制到 `rawfile/web`，再在 DevEco 构建运行。以后修改 `h5/index.html` 或更新 SDK，也要同步后重新构建运行；完整 `package.json` 和[再次上手步骤](docs/getting-started/quick-start.md#下次继续开发修改--同步--构建--运行)见快速开始。
@@ -123,7 +123,7 @@ flowchart LR
 | 包 | 当前版本 | 分发方式 | 作用 |
 | --- | --- | --- | --- |
 | `@lcy453/miniapp-runtime-harmony-web-sdk` | `0.1.0` | npm | H5 Promise、类型化 API、超时与取消 |
-| `myascf_runtime` | `1.0.0` | OHPM | ArkTS Bridge、分发注册、平台能力与回调 |
+| `myascf_runtime` | `1.1.1` | OHPM | ArkTS Bridge、分发注册、平台能力与回调 |
 
 仓库内 `entry` 使用源码模块联调；[`examples/npm-har-consumer-demo`](examples/npm-har-consumer-demo/README.md) 使用公开 npm 与 OHPM 包验证真实消费边界。
 
