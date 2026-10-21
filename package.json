@@ -12,6 +12,7 @@
     "check:generated": "node tools/check-generated-files.js",
     "check:api": "node tools/check-api-consistency.js",
     "check:package": "node tools/check-package-exports.js",
+    "check:dependencies": "npm --prefix h5_sdk audit --audit-level=moderate && npm --prefix examples/npm-har-consumer-demo/web audit --audit-level=moderate",
     "check:docs": "node scripts/check-doc-links.mjs",
     "check:docs-code": "node tools/check-doc-examples.mjs",
     "check:public": "node scripts/check-public-content.mjs",

@@ -65,6 +65,9 @@ jobs:
         working-directory: examples/npm-har-consumer-demo/web
         run: npm ci
 
+      - name: Audit SDK and consumer dependencies
+        run: npm run check:dependencies
+
       - name: Check current onboarding versions and examples
         run: npm run check:docs-code
 

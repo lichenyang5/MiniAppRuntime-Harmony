@@ -36,6 +36,10 @@ Set-Location ../harmony
 
 用 DevEco Studio 打开 `harmony` 目录，执行 Sync、Clean、Rebuild 和 Run。安装到设备前配置自己的调试签名，并确认 default product 关联该签名；仓库不提供签名材料。
 
+## 依赖审计
+
+在 Runtime 仓库根目录执行 `npm run check:dependencies`，检查 H5 SDK 工具链和本示例的已锁定依赖。CI 会在依赖安装后执行同一命令，中危及以上审计问题会使检查失败；该检查需要访问 npm registry。2026-10-21 已将本示例 Vite 修补到 6.4.5，并更新 PostCSS、nanoid 和 source-map-js 的兼容版本，当次审计为 0 项。审计结果会随漏洞数据库变化，不代表永久无漏洞。
+
 ## Demo Actions
 
 - Toast 与动态 API List
